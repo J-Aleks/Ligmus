@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<div>
+  <h1 th:text="|List of Students|"></h1>
+  <h3 th:if="${students.size()==0}"
+      th:text="|There are no students|"></h3>
+  <ol>
+    <li th:each="student:${students}">
+      <ul>
+        <li th:text="|Identyfikator Studenta ${student.id}|"></li>
+        <li th:text="|Imie ${student.firstName} |"></li>
+        <li th:text="|Nazwisko ${student.id}|"></li>
+        <li th:text="|Data urodzenia ${student.dateOfBirth} |"></li>
+        <a th:href="@{'/student/'+${student.id}}" th:text="'Zobacz studenta'"/>
+      </ul>
+    </li>
+  </ol>
+
+  <a th:href="@{/}" th:text="'Powrót'"/>
+</div>
+</body>
+</html>

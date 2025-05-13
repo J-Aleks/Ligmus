@@ -1,0 +1,65 @@
+package com.example.ligmus.repositories;
+
+
+import com.example.ligmus.data.grades.Grade;
+import com.example.ligmus.data.subjects.Subject;
+import lombok.Getter;
+import org.springframework.stereotype.Repository;
+
+import java.util.LinkedList;
+import java.util.List;
+
+@Repository
+public class GradeRepository {
+
+    private List<Grade> grades;
+    @Getter
+    private List<Subject> subjects;
+
+    GradeRepository(){
+        System.out.println("GradeRepos constructor");
+        grades = new LinkedList<>();
+        subjects = new LinkedList<>();
+        subjects.add(new Subject(1,"Mathematics"));
+        subjects.add(new Subject(2,"English"));
+        grades.add(new Grade(0,0, 10, 2, 1));
+        grades.add(new Grade(1,1, 10, 3,2));
+    }
+
+    public List<Grade> getGradesByUserId(int userId) {
+        List<Grade> tempGrade = new LinkedList<>();
+        for (Grade grade : grades) {
+            if (grade.getStudentId() == userId){
+                tempGrade.add(grade);
+            }
+        }
+        return tempGrade;
+
+    }
+
+    public Grade getGradeById(int gradeId) {
+        for (Grade grade : grades) {
+            if (grade.getGradeId() == gradeId){
+                return grade;
+            }
+        }
+        return null;
+    }
+
+    public void updateGradeById(int gradeId, Grade newGrade) {
+        this.grades.remove(gradeId);
+        this.grades.add(gradeId, newGrade);
+    }
+
+    public int getNextGradeIndex(){
+        int newId;
+        newId = this.grades.get(this.grades.size()-1).getGradeId()+1;
+        return newId;
+    }
+
+    public void addGrade(Grade grade) {
+        grades.add(grade);
+    }
+
+
+}

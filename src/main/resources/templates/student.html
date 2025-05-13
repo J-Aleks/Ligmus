@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<div>
+  <h1 th:text="|Student ${student.firstName} ${student.lastName}|"></h1>
+  <p th:text="|Identyfikator Studenta ${student.id}|"></p>
+  <p th:text="|Imie ${student.firstName} |"></p>
+  <p th:text="|Nazwisko ${student.id}|"></p>
+  <p th:text="|Data urodzenia ${student.dateOfBirth} |"></p>
+  <a th:href="@{'/student/'+${student.id}+ '/grades'}" th:text="'Zobacz oceny'"/><br>
+
+  <a th:href="@{/student/}" th:text="'Powrót'"/>
+</div>
+</body>
+</html>
