@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("student/{studentId}/grades/")
+@RequestMapping("student/{studentId}/grades")
 public class GradeController {
 
     @Autowired

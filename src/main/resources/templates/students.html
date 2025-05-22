@@ -16,7 +16,7 @@
         <li th:text="|Imie ${student.firstName} |"></li>
         <li th:text="|Nazwisko ${student.id}|"></li>
         <li th:text="|Data urodzenia ${student.dateOfBirth} |"></li>
-        <a th:href="@{'/student/'+${student.id}+'/'}" th:text="'Zobacz studenta'"/>
+        <a th:href="@{'/student/'+${student.id}}" th:text="'Zobacz studenta'"/>
       </ul>
     </li>
   </ol>

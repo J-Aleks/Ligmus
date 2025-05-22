@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 
 @Controller
-@RequestMapping("admin-dev")
+@RequestMapping("/admin-dev")
 public class AdminController {
 
     @Autowired
@@ -21,7 +21,7 @@ public class AdminController {
         return "admin-main";
     }
 
-    @GetMapping("users/")
+    @GetMapping("users")
     public String adminUsers(Model model)
     {
         System.out.println("Admin Users"+ this.ligmusService.getUsers());
@@ -29,12 +29,12 @@ public class AdminController {
         return "admin-users";
     }
 
-    @GetMapping("subjects/")
+    @GetMapping("subjects")
     public String adminSubjects(){
         return "admin-subjects";
     }
 
-    @GetMapping("grades/")
+    @GetMapping("grades")
     public String adminGrades(){
         return "admin-grades";
     }

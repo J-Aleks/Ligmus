@@ -11,7 +11,7 @@
   <p th:text="|Imie ${student.firstName} |"></p>
   <p th:text="|Nazwisko ${student.id}|"></p>
   <p th:text="|Data urodzenia ${student.dateOfBirth} |"></p>
-  <a th:href="@{'/student/'+${student.id}+ '/grades/'}" th:text="'Zobacz oceny'"/><br>
+  <a th:href="@{'/student/'+${student.id}+ '/grades'}" th:text="'Zobacz oceny'"/><br>
 
   <a th:href="@{../}" th:text="'Powrót'"/>
 </div>

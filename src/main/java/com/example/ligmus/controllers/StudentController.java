@@ -28,7 +28,7 @@ public class StudentController {
         return "students";
     }
 
-    @GetMapping("/{studentId}/")
+    @GetMapping("/{studentId}")
     public String ShowStudentById(@PathVariable int studentId, Model model) {
         Student student = this.ligmusService.getStudent(studentId);
         if ( student == null) {

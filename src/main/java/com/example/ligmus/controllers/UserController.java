@@ -8,13 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/admin-dev/users1/")
+@RequestMapping("/123")
 public class UserController {
 
-    @GetMapping("/login")
-    public String getItemsInCart(Model model) {
-        return "login";
-    }
 
     @GetMapping("/")
     public String Index() {

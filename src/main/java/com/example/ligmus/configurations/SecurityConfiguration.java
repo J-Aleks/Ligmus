@@ -1,5 +1,7 @@
 package com.example.ligmus.configurations;
 
+import com.example.ligmus.security.auth.CustomAuthenticationSuccessHandler;
+import com.example.ligmus.security.auth.CustomAuthenticationSuccessHandler;
 import com.example.ligmus.services.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -12,6 +14,9 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 public class SecurityConfiguration {
+
+    @Autowired
+    CustomAuthenticationSuccessHandler successHandler;
 
     @Autowired
     CustomUserDetailsService userDetailsService;
@@ -28,7 +33,7 @@ public class SecurityConfiguration {
                         .loginPage("/login")
                         .loginProcessingUrl("/login")
                         .failureUrl("/login?error")
-                        .defaultSuccessUrl("/")
+                        .successHandler(successHandler)
                         .permitAll()
                 )
                 .userDetailsService(customUserDetailsService)
