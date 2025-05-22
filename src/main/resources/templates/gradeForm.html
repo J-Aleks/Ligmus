@@ -8,6 +8,7 @@
     <h2 th:text="${'Dodaj ocene dla ucznia '+ student.firstName+' '+student.lastName}"></h2>
     <form th:object="${grade}" th:action="@{${isUpdate ? 'update' : 'add'}}" th:method="post">
 
+
         <input type="number" name="grade" min="1" max="5" value="1" th:field="*{grade}" >
         <input type="number" name="weight" min="1" max="5" value="1" th:field="*{weight}" >
         <select name="subject" th:field="*{subject}" >
@@ -21,5 +22,6 @@
         <textarea th:field="*{description}"></textarea><br/>
         <input type="submit" value="Zapisz">
     </form>
+    <a th:href="@{${isUpdate ? '../' : './'}}" th:text="'Anuluj'"/>
 </body>
 </html>

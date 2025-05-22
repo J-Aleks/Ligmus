@@ -13,15 +13,10 @@ import java.util.List;
 public class GradeRepository {
 
     private List<Grade> grades;
-    @Getter
-    private List<Subject> subjects;
 
     GradeRepository(){
         System.out.println("GradeRepos constructor");
         grades = new LinkedList<>();
-        subjects = new LinkedList<>();
-        subjects.add(new Subject(1,"Mathematics"));
-        subjects.add(new Subject(2,"English"));
         grades.add(new Grade(0,0, 10, 2, 1));
         grades.add(new Grade(1,1, 10, 3,2));
     }

@@ -28,7 +28,7 @@ public class StudentController {
         return "students";
     }
 
-    @GetMapping("/{studentId}")
+    @GetMapping("/{studentId}/")
     public String ShowStudentById(@PathVariable int studentId, Model model) {
         Student student = this.ligmusService.getStudent(studentId);
         if ( student == null) {
@@ -36,17 +36,6 @@ public class StudentController {
         }
         model.addAttribute("student",this.ligmusService.getStudent(studentId));
         return "student";
-    }
-
-    @GetMapping("/{id}/grades")
-    public String ShowStudentGrade(@PathVariable int id, Model model) {
-        List<Grade> grades = this.ligmusService.getGradesByUserId(id);
-        if (grades.isEmpty()) {
-            throw new ResourceNotFoundException("Student with id " + id + " don't have any grades");
-        }
-        model.addAttribute("studentId", id);
-        model.addAttribute("grades",grades);
-        return "grades";
     }
 
 }

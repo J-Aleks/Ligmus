@@ -1,14 +1,16 @@
 package com.example.ligmus.data.users;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class Admin extends Users {
+public class Admin extends User {
 
     public Admin(){
-        super(0);
+        super();
     }
-    public Admin(int id){
-        super(id);
+    public Admin(int id, String username, String password) {
+        super(id, username, password);
     }
 }

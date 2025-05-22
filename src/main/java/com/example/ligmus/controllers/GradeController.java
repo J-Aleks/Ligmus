@@ -9,12 +9,27 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
-@RequestMapping("student/{studentId}/grades")
+@RequestMapping("student/{studentId}/grades/")
 public class GradeController {
 
     @Autowired
     LigmusService ligmusService;
+
+
+    @GetMapping("/")
+    public String ShowStudentGrade(@PathVariable int studentId, Model model) {
+        List<Grade> grades = this.ligmusService.getGradesByUserId(studentId);
+        if (grades.isEmpty()) {
+            throw new ResourceNotFoundException("Student with id " + studentId + " don't have any grades");
+        }
+        model.addAttribute("studentId", studentId);
+        model.addAttribute("grades",grades);
+        return "grades";
+    }
+
 
     @GetMapping("/add")
     public String showGradeForm(@PathVariable int studentId ,Model model){
@@ -35,7 +50,7 @@ public class GradeController {
         newGrade.setStudentId(studentId);
         newGrade.setGradeId(this.ligmusService.getNextGradeIndex());
         this.ligmusService.addGrade(newGrade);
-        return "redirect:/student/" + studentId + "/grades";
+        return "redirect:/student/" + studentId + "/grades/";
     }
 
     @GetMapping("/{gradeId}/update")
@@ -56,8 +71,9 @@ public class GradeController {
     }
 
     @PostMapping("/{gradeId}/update")
-    public String updateGrade(@PathVariable int studentId, @PathVariable int gradeId, @ModelAttribute("grade") Grade grade){
+    public String updateGrade(@PathVariable int studentId, @PathVariable int gradeId,
+                              @ModelAttribute("grade") Grade grade){
         this.ligmusService.updateGradeById(gradeId, grade);
-        return "redirect:/student/" + studentId + "/grades";
+        return "redirect:/student/" + studentId + "/grades/";
     }
 }

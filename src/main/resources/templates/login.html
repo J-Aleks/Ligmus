@@ -1,13 +1,21 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+                xmlns:sec="https:www//thymeleaf.org/thymeleaf-extras-spring security3">
 <head>
   <meta charset="UTF-8">
   <title>Title</title>
 </head>
 <body>
 <div>
-  <h1 th:text="|Items in cart|"></h1>
-  <h3 th:text="|${cart}|">There is no items in cart</h3>
+  <h1 th:text="|Login|"></h1>
+  <form th:action="@{/login}" method="post">
+    <div><label> User Name: <input type="text" name="username"/></label></div>
+    <div><label> password: <input type="password" name="password"/></label></div>
+    <div th:if="${param.error}">
+      <p style="color:red;">Błędny login lub hasło</p>
+    </div>
+    <div> <input type="submit" value="Sign In"></div>
+  </form>
 </div>
 </body>
 </html>
