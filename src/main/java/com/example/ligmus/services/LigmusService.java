@@ -2,7 +2,9 @@ package com.example.ligmus.services;
 
 import com.example.ligmus.data.grades.Grade;
 import com.example.ligmus.data.subjects.Subject;
+import com.example.ligmus.data.users.Admin;
 import com.example.ligmus.data.users.Student;
+import com.example.ligmus.data.users.Teacher;
 import com.example.ligmus.data.users.User;
 import com.example.ligmus.repositories.GradeRepository;
 import com.example.ligmus.repositories.SubjectRepository;
@@ -35,6 +37,29 @@ public class LigmusService {
     public void updateGradeById(int gradeId, Grade newGrade) { this.gradeRepository.updateGradeById(gradeId, newGrade);}
 
     public List<Student> getStudents() {return this.userRepository.getStudents(); }
+
+    public void addStudent(Student student) { this.userRepository.addStudent(student);}
+
+    public void addAdmin(Admin admin) {this.userRepository.addAdmin(admin);}
+
+    public void addTeacher(Teacher teacher) {this.userRepository.addTeacher(teacher);}
+
+    public void addUser(User user) {
+        if(user instanceof Admin) {
+            this.userRepository.addAdmin((Admin) user);
+            return;
+        }
+        if (user instanceof Teacher) {
+            this.userRepository.addTeacher((Teacher) user);
+            return;
+        }
+        if (user instanceof Student) {
+            this.userRepository.addStudent((Student) user);
+            return;
+        }
+    }
+
+    public int getNextUserId() {return this.userRepository.getNewUserId();}
 
     public List<User> getUsers() {return this.userRepository.getUsers(); }
 

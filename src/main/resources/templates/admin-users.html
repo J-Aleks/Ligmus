@@ -11,13 +11,13 @@
         th:text="|There are no users|">
     </h3><br/>
     <div>
-        <a th:href="@{addUser}" th:text="|Dodaj nowego użytkownika|"></a>
+        <a th:href="@{/admin-dev/users/addUser}" th:text="|Dodaj nowego użytkownika|"></a>
     </div>
     <div th:each="user:${users}">
-        <a th:href="@{${user.getId()}}" th:text="|id: ${user.getId()}|">
+        <a th:href="@{${user.getId()}}" th:text="|Dane użytkownika o id: ${user.getId()}|">
         </a>
     </div>
-    <a th:href="@{../}" th:text="'Powrót'"/>
+    <a th:href="@{./}" th:text="'Powrót'"/>
 </div>
 </body>
 </html>

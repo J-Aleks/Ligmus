@@ -18,6 +18,10 @@ public class Teacher extends User {
     private LocalDate dateOfBirth;
     private List<Subject> subjects;
 
+    public Teacher(int id){
+        super(id);
+    }
+
     public Teacher(int id , String firstName, String lastName, LocalDate dateOfBirth, String username, String password) {
         super(id, username, password);
         this.firstName = firstName;

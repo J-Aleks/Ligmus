@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Dodawanie ocen ucznia</title>
+</head>
+<body>
+<h2 th:text="${'Dodaj Użytkownika'}"></h2>
+<form th:object="${newUser}" th:action="@{${isUpdate ? 'updateUser' : 'addUser'}}" th:method="post">
+
+
+    <input type="text" name="username" th:field="*{username}" >
+    <input type="password" name="password" th:field="*{password}" >
+    <select name="userType" th:field="*{userType}" >
+        <option
+                th:value="student"
+                th:text="Student">
+        </option>
+        <option
+                th:value="teacher"
+                th:text="Nauczyciel">
+        </option>
+        <option
+                th:value="admin"
+                th:text="Admin">
+        </option><br/>
+    </select></br>
+    <input type="submit" value="Zapisz">
+</form>
+<a th:href="@{${isUpdate ? '../' : './'}}" th:text="'Anuluj'"/>
+</body>
+</html>

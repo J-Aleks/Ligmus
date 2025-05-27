@@ -12,6 +12,9 @@ public class Student extends User {
     private String lastName;
     private LocalDate dateOfBirth;
 
+    public Student(int id){
+        super(id);
+    }
 
     public Student(int id , String firstName, String lastName, LocalDate dateOfBirth, String username, String password) {
         super(id, username, password);

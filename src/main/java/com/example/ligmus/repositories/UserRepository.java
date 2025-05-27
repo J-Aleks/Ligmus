@@ -19,7 +19,7 @@ public class UserRepository {
         users.add(new Student(0, "Test1", "Tere1", localDate, "test1", "{noop}password1"));
         localDate = LocalDate.of(2005, 5, 7);
         users.add(new Student(1, "Test2", "Tenko2", localDate,  "test2", "{noop}password2"));
-        users.add(new Admin(1, "admin", "{noop}admin"));
+        users.add(new Admin(2, "admin", "{noop}admin"));
     }
 
     public List<User> getUsers() {
@@ -33,6 +33,10 @@ public class UserRepository {
             }
         }
         return null;
+    }
+
+    public int getNewUserId() {
+        return users.size();
     }
 
     public List<Student> getStudents() {
