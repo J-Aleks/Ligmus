@@ -1,16 +1,17 @@
 package com.example.ligmus.configurations;
 
 import com.example.ligmus.security.auth.CustomAuthenticationSuccessHandler;
-import com.example.ligmus.security.auth.CustomAuthenticationSuccessHandler;
 import com.example.ligmus.services.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 
 
 @Configuration
@@ -27,9 +28,7 @@ public class SecurityConfiguration {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((requests) -> requests
-
                         .requestMatchers("/admin-dev/**").hasRole("ADMIN")
-
 //                        .requestMatchers("/api/**").hasRole("ADMIN")
                         .requestMatchers("/api/**").permitAll()
                         .requestMatchers("/").permitAll()
@@ -42,9 +41,12 @@ public class SecurityConfiguration {
                         .successHandler(successHandler)
                         .permitAll()
                 )
+//                .exceptionHandling(exception -> exception
+//                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+//                )
                 .userDetailsService(customUserDetailsService)
                 .logout((logout) -> logout.logoutSuccessUrl("/").permitAll());
-    return http.build();
+        return http.build();
     }
 
     @Bean
@@ -57,5 +59,4 @@ public class SecurityConfiguration {
 
     return authenticationManagerBuilder.build();
     }
-
 }

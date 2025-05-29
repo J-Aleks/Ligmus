@@ -4,20 +4,18 @@ package com.example.ligmus.controllers;
 import com.example.ligmus.data.users.*;
 import com.example.ligmus.services.LigmusService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin-dev")
@@ -38,24 +36,33 @@ public class AdminController {
     }
 
     @GetMapping("/users")
-    public String showUsers(Model model)
-    {
-        System.out.println("Admin Users"+ this.ligmusService.getUsers());
-        model.addAttribute("users", this.ligmusService.getUsers());
+    public String showUsers(Model model){
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+//        headers.setBasicAuth("admin", "admin");
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        ResponseEntity<List<User>> response = restTemplate.exchange("http://localhost:8080/Ligmus/api/users/",
+                HttpMethod.GET, entity, new ParameterizedTypeReference<>(){});
+
+        System.out.println("JSON body: "+ response.getBody());
+        List<User> users = response.getBody();
+        model.addAttribute("users", users);
         return "admin-users";
     }
+
 
     @GetMapping("/users/addUser")
     public String addUser(Model model){
 
         model.addAttribute("isUpdate", false);
-        model.addAttribute("newUser", new UserForm());
+        model.addAttribute("newUser", new UserAddForm());
 
         return "userForm";
     }
 
     @PostMapping("/users/addUser")
-    public String saveUser(@ModelAttribute("newUser") UserForm newUser) throws JsonProcessingException {
+    public String saveUser(@ModelAttribute("newUser") UserAddForm newUser) throws JsonProcessingException {
         System.out.println("AdminContr add new user");
         ObjectMapper mapper = new ObjectMapper();
         String newUserJson = mapper.writeValueAsString(newUser);
@@ -66,9 +73,37 @@ public class AdminController {
         ResponseEntity<String> response = restTemplate.postForEntity("http://localhost:8080/Ligmus/api/users/add"
                 , entity, String.class);
 
+
         System.out.println(response.getBody());
 
         return "redirect:/admin-dev/users";
+    }
+
+
+    @GetMapping("/users/{id}/update")
+    public String updateUser(@PathVariable int id, Model model){
+
+        User user = this.ligmusService.getUser(id);
+
+        model.addAttribute("newUser", user);
+        model.addAttribute("isUpdate", true);
+
+        return "userForm";
+    }
+
+    @PostMapping("/users/{id}/update")
+    public String updateUser(@PathVariable int id, @ModelAttribute UserUpdateForm updateUser) throws JsonProcessingException {
+        System.out.println("AdminContr update user");
+        ObjectMapper mapper = new ObjectMapper();
+        String updateUserJson = mapper.writeValueAsString(updateUser);
+        System.out.println("JSON: "+ updateUserJson);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> entity = new HttpEntity<>(updateUserJson, headers);
+        ResponseEntity<String> response = restTemplate
+                .postForEntity("http://localhost:8080/Ligmus/api/users/{"+id+"}/update", entity, String.class);
+        System.out.println(response.getBody());
+        return "redirect:/admin-dev/users/{"+id+"}";
     }
 
     @GetMapping("subjects")
@@ -81,6 +116,16 @@ public class AdminController {
         return "admin-grades";
     }
 
+    @PostMapping("/users/{id}/delete")
+    public String deleteUser(@PathVariable int id){
+        System.out.println("AdminContr delete user");
+        HttpHeaders headers = new HttpHeaders();
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate
+                .postForEntity("http://localhost:8080/Ligmus/api/users/{"+id+"}/delete", entity, String.class);
+        System.out.println(response.getBody());
+        return "redirect:/admin-dev/users";
+    }
 
 //    @GetMapping("subjects")
 //    public String adminStudentList (Model model) {

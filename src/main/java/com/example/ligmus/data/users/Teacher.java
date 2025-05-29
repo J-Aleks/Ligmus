@@ -13,9 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 public class Teacher extends User {
-    private String firstName;
-    private String lastName;
-    private LocalDate dateOfBirth;
+
     private List<Subject> subjects;
 
     public Teacher(int id){
@@ -23,10 +21,7 @@ public class Teacher extends User {
     }
 
     public Teacher(int id , String firstName, String lastName, LocalDate dateOfBirth, String username, String password) {
-        super(id, username, password);
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.dateOfBirth = dateOfBirth;
+        super(id, username, password, firstName, lastName, dateOfBirth);
         this.subjects = new LinkedList<>();
     }
 

@@ -3,7 +3,7 @@ package com.example.ligmus.data.users;
 import lombok.Data;
 
 @Data
-public class UserForm {
+public class UserAddForm {
 
     private String username;
     private String password;

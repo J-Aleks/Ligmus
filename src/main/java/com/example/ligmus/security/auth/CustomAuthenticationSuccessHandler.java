@@ -1,5 +1,8 @@
 package com.example.ligmus.security.auth;
 
+import com.example.ligmus.data.users.Student;
+import com.example.ligmus.data.users.Teacher;
+import com.example.ligmus.data.users.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,6 +20,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
                                         Authentication authentication) throws IOException, ServletException {
         String redirectUrl = "/Ligmus/";
         String role = authentication.getAuthorities().iterator().next().getAuthority();
+        Object user = authentication.getPrincipal();
 //        switch (role) {
 //            case "ROLE_ADMIN":
 //                redirectUrl = "/admin-dev";
@@ -25,6 +29,16 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 //                redirectUrl = "/";
         if (role.equals("ROLE_ADMIN")) {
             redirectUrl = redirectUrl + "admin-dev/";
+        }
+        if (user instanceof Student student) {
+            if (student.getFirstName() == null ){
+                redirectUrl = redirectUrl + "register";
+            }
+        }
+        if (user instanceof Teacher teacher) {
+            if (teacher.getFirstName() == null ){
+                redirectUrl = redirectUrl + "register";
+            }
         }
         response.sendRedirect(redirectUrl);
     }

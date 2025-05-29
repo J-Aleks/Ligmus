@@ -16,4 +16,9 @@ public class LoginController {
     public String home() {
         return "index";
     }
+
+    @GetMapping("/register")
+    public String register() {
+        return "register";
+    }
 }

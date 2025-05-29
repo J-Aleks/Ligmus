@@ -2,10 +2,7 @@ package com.example.ligmus.services;
 
 import com.example.ligmus.data.grades.Grade;
 import com.example.ligmus.data.subjects.Subject;
-import com.example.ligmus.data.users.Admin;
-import com.example.ligmus.data.users.Student;
-import com.example.ligmus.data.users.Teacher;
-import com.example.ligmus.data.users.User;
+import com.example.ligmus.data.users.*;
 import com.example.ligmus.repositories.GradeRepository;
 import com.example.ligmus.repositories.SubjectRepository;
 import com.example.ligmus.repositories.UserRepository;
@@ -59,6 +56,21 @@ public class LigmusService {
         }
     }
 
+    public boolean updateUser(int id, UserUpdateForm newUser) {
+        User oldUser = getUser(id);
+        if(oldUser == null) {
+            return false;
+        }
+        if(!this.userRepository.updateUser(id, newUser)) {
+            return false;
+        }
+        return true;
+    }
+
+    public User getUser(int id){
+        return this.userRepository.getUser(id);
+    }
+
     public int getNextUserId() {return this.userRepository.getNewUserId();}
 
     public List<User> getUsers() {return this.userRepository.getUsers(); }
@@ -67,6 +79,7 @@ public class LigmusService {
 
     public List<Subject> getSubjects(){ return this.subjectRepository.getSubjects();}
 
+    public boolean deleteUser(int id) { return this.userRepository.userDelete(id);}
 
 
 }
