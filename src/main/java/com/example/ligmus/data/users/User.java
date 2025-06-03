@@ -1,5 +1,6 @@
 package com.example.ligmus.data.users;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -13,24 +14,27 @@ public class User {
     private String firstName;
     private String lastName;
     private LocalDate dateOfBirth;
+    private UserType userType;
 
     public User(){
         this.id = 0;
     }
-    public User(int id) {this.id = id;}
-    public User(int id , String username, String password)
+    public User(int id, UserType userType) {this.id = id; this.userType=userType;}
+    public User(int id , String username, String password, UserType userType)
     {
         this.id = id;
         this.username = username;
         this.password = password;
+        this.userType = userType;
     }
 
-    public User(int id, String username, String password, String firstName, String lastName, LocalDate dateOfBirth) {
+    public User(int id, UserType userType, String username,  String firstName, String lastName, LocalDate dateOfBirth, String password) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
+        this.userType = userType;
     }
 }

@@ -33,27 +33,18 @@ public class LigmusService {
 
     public void updateGradeById(int gradeId, Grade newGrade) { this.gradeRepository.updateGradeById(gradeId, newGrade);}
 
-    public List<Student> getStudents() {return this.userRepository.getStudents(); }
+    public List<User> getStudents() {return this.userRepository.getStudents(); }
 
-    public void addStudent(Student student) { this.userRepository.addStudent(student);}
+//    public void addStudent(Student student) { this.userRepository.addStudent(student);}
 
-    public void addAdmin(Admin admin) {this.userRepository.addAdmin(admin);}
+//    public void addAdmin(Admin admin) {this.userRepository.addAdmin(admin);}
 
-    public void addTeacher(Teacher teacher) {this.userRepository.addTeacher(teacher);}
+//    public void addTeacher(Teacher teacher) {this.userRepository.addTeacher(teacher);}
 
-    public void addUser(User user) {
-        if(user instanceof Admin) {
-            this.userRepository.addAdmin((Admin) user);
-            return;
-        }
-        if (user instanceof Teacher) {
-            this.userRepository.addTeacher((Teacher) user);
-            return;
-        }
-        if (user instanceof Student) {
-            this.userRepository.addStudent((Student) user);
-            return;
-        }
+    public int getNextUserId() {return this.userRepository.getNextUserId();}
+
+    public void addUser(User newUser) {
+        this.userRepository.addUser(newUser);
     }
 
     public boolean updateUser(int id, UserUpdateForm newUser) {
@@ -71,11 +62,11 @@ public class LigmusService {
         return this.userRepository.getUser(id);
     }
 
-    public int getNextUserId() {return this.userRepository.getNewUserId();}
+
 
     public List<User> getUsers() {return this.userRepository.getUsers(); }
 
-    public Student getStudent(int id){return this.userRepository.getStudent(id);}
+    public User getStudent(int id){return this.userRepository.getStudent(id);}
 
     public List<Subject> getSubjects(){ return this.subjectRepository.getSubjects();}
 

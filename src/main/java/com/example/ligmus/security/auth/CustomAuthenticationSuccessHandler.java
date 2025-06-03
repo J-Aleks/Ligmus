@@ -1,8 +1,8 @@
 package com.example.ligmus.security.auth;
 
-import com.example.ligmus.data.users.Student;
-import com.example.ligmus.data.users.Teacher;
-import com.example.ligmus.data.users.User;
+
+
+import com.example.ligmus.data.users.UserType;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,27 +18,25 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
-        String redirectUrl = "/Ligmus/";
-        String role = authentication.getAuthorities().iterator().next().getAuthority();
-        Object user = authentication.getPrincipal();
-//        switch (role) {
-//            case "ROLE_ADMIN":
-//                redirectUrl = "/admin-dev";
-//                break;
-//            case "ROLE_TEACHER":
-//                redirectUrl = "/";
-        if (role.equals("ROLE_ADMIN")) {
-            redirectUrl = redirectUrl + "admin-dev/";
+        String redirectUrlDefault = "/Ligmus/";
+        String redirectUrl = redirectUrlDefault;
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        UserType userType = userDetails.getUserType();
+        switch (userType) {
+            case ADMIN:
+                redirectUrl = redirectUrl + "admin-dev/";
+                break;
+            case TEACHER:
+//                redirectUrl = redirectUrl;
+                break;
+            case STUDENT:
+                if(userDetails.getFirstName() == null)
+//                redirectUrl = redirectUrl;
+                break;
         }
-        if (user instanceof Student student) {
-            if (student.getFirstName() == null ){
-                redirectUrl = redirectUrl + "register";
-            }
-        }
-        if (user instanceof Teacher teacher) {
-            if (teacher.getFirstName() == null ){
-                redirectUrl = redirectUrl + "register";
-            }
+        if(userDetails.getFirstName() == null) {
+            int userId = userDetails.getId();
+            redirectUrl = redirectUrl + "user/"+userId+"/register";
         }
         response.sendRedirect(redirectUrl);
     }

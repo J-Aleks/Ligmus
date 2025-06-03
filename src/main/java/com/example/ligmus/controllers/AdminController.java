@@ -4,6 +4,8 @@ package com.example.ligmus.controllers;
 import com.example.ligmus.data.users.*;
 import com.example.ligmus.services.LigmusService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
@@ -40,7 +42,6 @@ public class AdminController {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-//        headers.setBasicAuth("admin", "admin");
         HttpEntity<String> entity = new HttpEntity<>(headers);
         ResponseEntity<List<User>> response = restTemplate.exchange("http://localhost:8080/Ligmus/api/users/",
                 HttpMethod.GET, entity, new ParameterizedTypeReference<>(){});
@@ -79,6 +80,17 @@ public class AdminController {
         return "redirect:/admin-dev/users";
     }
 
+    @GetMapping("/users/{id}")
+    public String showUser(@PathVariable int id, Model model){
+        User user = ligmusService.getUser(id);
+        if(user == null){
+            throw new RuntimeException("User not found");
+        }
+        model.addAttribute("user", user);
+        model.addAttribute("id", id);
+        return "admin-user";
+    }
+
 
     @GetMapping("/users/{id}/update")
     public String updateUser(@PathVariable int id, Model model){
@@ -92,18 +104,20 @@ public class AdminController {
     }
 
     @PostMapping("/users/{id}/update")
-    public String updateUser(@PathVariable int id, @ModelAttribute UserUpdateForm updateUser) throws JsonProcessingException {
+    public String updateUser(@PathVariable int id, @ModelAttribute("newUser") UserUpdateForm updateUser) throws JsonProcessingException {
         System.out.println("AdminContr update user");
-        ObjectMapper mapper = new ObjectMapper();
+        ObjectMapper mapper = new ObjectMapper()
+                .registerModule(new JavaTimeModule())
+                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         String updateUserJson = mapper.writeValueAsString(updateUser);
         System.out.println("JSON: "+ updateUserJson);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> entity = new HttpEntity<>(updateUserJson, headers);
         ResponseEntity<String> response = restTemplate
-                .postForEntity("http://localhost:8080/Ligmus/api/users/{"+id+"}/update", entity, String.class);
+                .postForEntity("http://localhost:8080/Ligmus/api/users/{id}/update", entity, String.class, id);
         System.out.println(response.getBody());
-        return "redirect:/admin-dev/users/{"+id+"}";
+        return "redirect:/admin-dev/users/"+id;
     }
 
     @GetMapping("subjects")
@@ -116,13 +130,13 @@ public class AdminController {
         return "admin-grades";
     }
 
-    @PostMapping("/users/{id}/delete")
+    @GetMapping("/users/{id}/delete")
     public String deleteUser(@PathVariable int id){
         System.out.println("AdminContr delete user");
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<String> entity = new HttpEntity<>(headers);
         ResponseEntity<String> response = restTemplate
-                .postForEntity("http://localhost:8080/Ligmus/api/users/{"+id+"}/delete", entity, String.class);
+                .postForEntity("http://localhost:8080/Ligmus/api/users/{id}/delete", entity, String.class, id);
         System.out.println(response.getBody());
         return "redirect:/admin-dev/users";
     }

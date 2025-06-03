@@ -1,8 +1,6 @@
 package com.example.ligmus.security.auth;
 
-import com.example.ligmus.data.users.Admin;
-import com.example.ligmus.data.users.Teacher;
-import com.example.ligmus.data.users.User;
+import com.example.ligmus.data.users.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,11 +20,12 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if ( this.user instanceof Admin)
+        if ( this.user.getUserType() == UserType.ADMIN)
             return List.of( new SimpleGrantedAuthority("ROLE_ADMIN") );
-        if ( this.user instanceof Teacher)
+        if ( this.user.getUserType() == UserType.TEACHER)
             return List.of( new SimpleGrantedAuthority("ROLE_TEACHER") );
-        return List.of( new SimpleGrantedAuthority("ROLE_STUDENT") );
+        else
+            return List.of( new SimpleGrantedAuthority("ROLE_STUDENT") );
     }
 
     @Override
@@ -39,5 +38,9 @@ public class CustomUserDetails implements UserDetails {
         return this.user.getUsername();
     }
 
+    public UserType getUserType() { return this.user.getUserType(); }
 
+    public String getFirstName() { return this.user.getFirstName(); }
+
+    public int getId() { return this.user.getId(); }
 }

@@ -1,16 +1,15 @@
 package com.example.ligmus.controllers;
 
 
-
-import com.example.ligmus.data.users.*;
+import com.example.ligmus.data.users.UserUpdateForm;
 import com.example.ligmus.services.LigmusService;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
-@RestController
-@RequestMapping("/api/users")
+@Controller
+@RequestMapping("user")
 public class UserController {
 
     final LigmusService ligmusService;
@@ -19,57 +18,21 @@ public class UserController {
         this.ligmusService = ligmusService;
     }
 
-
-
-    @GetMapping("/")
-    public List<User> getAllUsers() {
-        return ligmusService.getUsers();
+    @GetMapping("/{id}/register")
+    public String registerUser(@PathVariable int id ,@ModelAttribute("User") UserUpdateForm updateUser, Model model) {
+        model.addAttribute("User", updateUser);
+        model.addAttribute("isRegister", true);
+        return "updateUser";
     }
-
-    @PostMapping("/add")
-    public ResponseEntity<String> addUser(@RequestBody UserAddForm newUser){
-        System.out.println("Odebrano dane JSON: " + newUser);
-        int nextUserId = this.ligmusService.getNextUserId();
-        String userType = newUser.getUserType();
-        User user;
-        switch(userType){
-            case "student":
-                user = new Student(nextUserId);
-                break;
-            case "admin":
-                user = new Admin(nextUserId);
-                break;
-            case "teacher":
-                user = new Teacher(nextUserId);
-                break;
-            default:
-
-                return ResponseEntity.badRequest().body("Invalid user type");
-        }
-        user.setUsername(newUser.getUsername());
-        user.setPassword(newUser.getPassword());
-        this.ligmusService.addUser(user);
-        return ResponseEntity.ok("User " + user.getUsername() + " added");
+    @GetMapping("/{id}/update")
+    public String updateUser(Model model) {
+        model.addAttribute("isRegister", false);
+        model.addAttribute("User", new UserUpdateForm());
+        return "updateUser";
     }
     @PostMapping("/{id}/update")
-    public ResponseEntity<String> updateUser(@PathVariable int id, @RequestBody  UserUpdateForm updateUser){
-        System.out.println("Odebrano dane JSON: " + updateUser.toString());
-
-        if(!this.ligmusService.updateUser(id, updateUser)){
-            return ResponseEntity.badRequest().body("Invalid user Data");
-        }
-
-        return ResponseEntity.ok("User updated");
-    }
-
-
-    @PostMapping("/{id}/delete")
-    public ResponseEntity<String> deleteUser(@PathVariable int id){
-        System.out.println("Odebrano dane JSON: " + id);
-
-        if(!this.ligmusService.deleteUser(id)){
-            return ResponseEntity.badRequest().body("Invalid user id");
-        }
-        return ResponseEntity.ok("User deleted");
+    public String updateUser(@ModelAttribute("User") UserUpdateForm userUpdateForm, @PathVariable int id) {
+        this.ligmusService.updateUser(id,userUpdateForm);
+    return "index";
     }
 }

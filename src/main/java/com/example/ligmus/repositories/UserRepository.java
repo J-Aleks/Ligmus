@@ -1,6 +1,7 @@
 package com.example.ligmus.repositories;
 
 import com.example.ligmus.data.users.*;
+import com.example.ligmus.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -16,10 +17,12 @@ public class UserRepository {
     UserRepository(){
         users = new LinkedList<>();
         LocalDate localDate = LocalDate.of(1998, 4, 21);
-        users.add(new Student(0, "Test1", "Tere1", localDate, "test1", "{noop}password1"));
+        users.add(new User(0, UserType.STUDENT,"test1", "Test1", "Tere1", localDate,  "{noop}password1"));
         localDate = LocalDate.of(2005, 5, 7);
-        users.add(new Student(1, "Test2", "Tenko2", localDate,  "test2", "{noop}password2"));
-        users.add(new Admin(2, "admin", "{noop}admin"));
+        users.add(new User(1,UserType.STUDENT, "test2", "Test2", "Tenko2", localDate,  "{noop}password2"));
+        localDate = LocalDate.of(2006, 5, 7);
+        users.add(new User(2, UserType.ADMIN, "admin", "admin1", "admin1", localDate,"{noop}admin"));
+        users.add(new User(3,"test","{noop}test", UserType.STUDENT));
     }
 
     public List<User> getUsers() {
@@ -44,42 +47,48 @@ public class UserRepository {
         return null;
     }
 
-    public int getNewUserId() {
-        return users.size();
+    public int getNextUserId() {
+        int nextUserId = 0;
+        for (User user : users) {
+            if (user.getId() >= nextUserId) {
+                nextUserId = user.getId()+1;
+            }
+        }
+        return nextUserId;
     }
 
-    public List<Student> getStudents() {
-        List<Student> students = new LinkedList<>();
+    public List<User> getStudents() {
+        List<User> students = new LinkedList<>();
         for (User user : users) {
-            if ( user instanceof Student ) {
-                students.add((Student) user);
+            if ( user.getUserType() == UserType.STUDENT ) {
+                students.add(user);
             }
         }
         return students;
     }
 
-    public Student getStudent(int id) {
+    public User getStudent(int id) {
         for (User user : users) {
-            if ( user instanceof Student && user.getId() == id) {
-                return (Student) user;
+            if ( user.getUserType() == UserType.STUDENT && user.getId() == id) {
+                return user;
             }
         }
         return null;
     }
 
-    public Teacher getTeacher(int id) {
+    public User getTeacher(int id) {
         for (User user : users) {
-            if (user instanceof Teacher || user.getId() == id) {
-                return (Teacher) user;
+            if (user.getUserType() == UserType.TEACHER || user.getId() == id) {
+                return user;
             }
         }
         return null;
     }
 
-    public Admin getAdmin(int id) {
+    public User getAdmin(int id) {
         for (User user : users) {
-            if (user instanceof Admin || user.getId() == id) {
-                return (Admin) user;
+            if (user.getUserType() == UserType.ADMIN|| user.getId() == id) {
+                return user;
             }
         }
         return null;
@@ -87,28 +96,35 @@ public class UserRepository {
 
     public boolean updateUser(int id, UserUpdateForm newData){
         User user = getUser(id);
-        String userType = newData.getUserType();
         if (user == null) {
             return false;
         }
-        if(user instanceof Student){
-            if (!userType.equals("student")){
-                changeUserType(id, userType);
-                return true;
+        if(newData.getUserType() != null) {
+            String newUserType = newData.getUserType();
+            if (user.getUserType() == UserType.STUDENT) {
+                if (!newUserType.equals("student")) {
+                    changeUserType(id, newUserType);
+                    return true;
+                }
+            }
+            if (user.getUserType() == UserType.TEACHER) {
+                if (!newUserType.equals("teacher")) {
+                    changeUserType(id, newUserType);
+                    return true;
+                }
+            }
+            if (user.getUserType() == UserType.ADMIN) {
+                if (!newUserType.equals("admin")) {
+                    changeUserType(id, newUserType);
+                    return true;
+                }
             }
         }
-        if(user instanceof Teacher){
-            if (!userType.equals("teacher")){
-                changeUserType(id, userType);
-                return true;
-            }
-            ((Teacher) user).setSubjects(newData.getSubjects());
+        if(newData.getUsername() != null){
+            user.setUsername(newData.getUsername());
         }
-        if(user instanceof Admin){
-            if (!userType.equals("admin")){
-                changeUserType(id, userType);
-                return true;
-            }
+        if(newData.getPassword() != null){
+            user.setPassword(newData.getPassword());
         }
         user.setFirstName(newData.getFirstName());
         user.setLastName(newData.getLastName());
@@ -116,102 +132,118 @@ public class UserRepository {
         return true;
     }
 
-    public boolean updateStudent(Student newStudent) {
-        Student oldStudent = this.getStudent(newStudent.getId());
-        if(oldStudent == null){
-            return false;
-        }
-        oldStudent.setFirstName(newStudent.getFirstName());
-        oldStudent.setLastName(newStudent.getLastName());
-        oldStudent.setDateOfBirth(newStudent.getDateOfBirth());
-        return true;
-    }
-    public boolean updateTeacher(Teacher newTeacher) {
-        Teacher oldTeacher = this.getTeacher(newTeacher.getId());
-        if(oldTeacher == null){
-            return false;
-        }
-        oldTeacher.setFirstName(newTeacher.getFirstName());
-        oldTeacher.setLastName(newTeacher.getLastName());
-        oldTeacher.setDateOfBirth(newTeacher.getDateOfBirth());
-        oldTeacher.setSubjects(newTeacher.getSubjects());
-        return true;
-    }
+//    public boolean updateU(Student newStudent) {
+//        Student oldStudent = this.getStudent(newStudent.getId());
+//        if(oldStudent == null){
+//            return false;
+//        }
+//        oldStudent.setFirstName(newStudent.getFirstName());
+//        oldStudent.setLastName(newStudent.getLastName());
+//        oldStudent.setDateOfBirth(newStudent.getDateOfBirth());
+//        return true;
+//    }
+//    public boolean updateTeacher(Teacher newTeacher) {
+//        Teacher oldTeacher = this.getTeacher(newTeacher.getId());
+//        if(oldTeacher == null){
+//            return false;
+//        }
+//        oldTeacher.setFirstName(newTeacher.getFirstName());
+//        oldTeacher.setLastName(newTeacher.getLastName());
+//        oldTeacher.setDateOfBirth(newTeacher.getDateOfBirth());
+//        oldTeacher.setSubjects(newTeacher.getSubjects());
+//        return true;
+//    }
+//
+//    public boolean updateAdmin(Admin newAdmin) {
+//        Admin oldAdmin = this.getAdmin(newAdmin.getId());
+//        if(oldAdmin == null){
+//            return false;
+//        }
+//        oldAdmin.setUsername(newAdmin.getUsername());
+//        oldAdmin.setPassword(newAdmin.getPassword());
+//        return true;
+//    }
+//
 
-    public boolean updateAdmin(Admin newAdmin) {
-        Admin oldAdmin = this.getAdmin(newAdmin.getId());
-        if(oldAdmin == null){
-            return false;
-        }
-        oldAdmin.setUsername(newAdmin.getUsername());
-        oldAdmin.setPassword(newAdmin.getPassword());
-        return true;
-    }
+//    public boolean addStudent(Student student) {
+//        return this.users.add(student);
+//    }
 
 
-    public boolean addStudent(Student student) {
-        return this.users.add(student);
-    }
-
-
-    public List<Teacher> getTeachers() {
-        List<Teacher> teachers = new LinkedList<>();
+    public List<User> getTeachers() {
+        List<User> teachers = new LinkedList<>();
         for (User user : users) {
-            if ( user instanceof Teacher ) {
-                teachers.add((Teacher) user);
+            if ( user.getUserType() == UserType.TEACHER ) {
+                teachers.add(user);
             }
         }
         return teachers;
     }
 
-    public boolean addTeacher(Teacher teacher) {
-        return this.users.add(teacher);
-    }
+//    public boolean addTeacher(Teacher teacher) {
+//        return this.users.add(teacher);
+//    }
 
-    public List<Admin> getAdmins() {
-        List<Admin> admins = new LinkedList<>();
+    public List<User> getAdmins() {
+        List<User> admins = new LinkedList<>();
         for (User user : users) {
-            if ( user instanceof Admin ) {
-                admins.add((Admin) user);
+            if ( user.getUserType() == UserType.ADMIN ) {
+                admins.add( user);
             }
         }
         return admins;
     }
 
-    public boolean addAdmin(Admin admin) {
-        return this.users.add(admin);
-    }
+//    public boolean addAdmin(Admin admin) {
+//        return this.users.add(admin);
+//    }
 
     public User changeUserType(int id, String type) {
-        User oldUser = getUser(id);
-        if(oldUser == null){
+        User user = getUser(id);
+        if(user == null){
             return null;
         }
-        User newUser;
         switch (type) {
             case "student":
-                newUser = new Student();
-
+                user.setUserType(UserType.STUDENT);
                 break;
             case "teacher":
-                newUser = new Teacher();
+                user.setUserType(UserType.TEACHER);
                 break;
             case "admin":
-                newUser = new Admin();
+                user.setUserType(UserType.ADMIN);
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + type);
         }
-        newUser.setUsername(oldUser.getUsername());
-        newUser.setPassword(oldUser.getPassword());
-        newUser.setId(id);
-        newUser.setDateOfBirth(oldUser.getDateOfBirth());
-        newUser.setFirstName(oldUser.getFirstName());
-        newUser.setLastName(oldUser.getLastName());
-        return newUser;
+
+        return user;
     }
 
     public boolean userDelete(int id){
         return this.users.remove(getUser(id));
+    }
+
+    public boolean addUser(User newUser){
+        UserType userType = newUser.getUserType();
+        User user;
+        int nextUserId = getNextUserId();
+        switch(userType){
+            case STUDENT:
+                user = new User(nextUserId, UserType.STUDENT);
+                break;
+            case ADMIN:
+                user = new User(nextUserId, UserType.ADMIN);
+                break;
+            case TEACHER:
+                user = new User(nextUserId, UserType.TEACHER);
+                break;
+            default:
+                throw new ResourceNotFoundException("User Type is invalid");
+        }
+        user.setUsername(newUser.getUsername());
+        user.setPassword(newUser.getPassword());
+        this.users.add(user);
+        return true;
     }
 }

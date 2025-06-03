@@ -1,8 +1,7 @@
 package com.example.ligmus.controllers;
 
 
-import com.example.ligmus.data.grades.Grade;
-import com.example.ligmus.data.users.Student;
+import com.example.ligmus.data.users.User;
 import com.example.ligmus.exception.ResourceNotFoundException;
 import com.example.ligmus.services.LigmusService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +29,7 @@ public class StudentController {
 
     @GetMapping("/{studentId}")
     public String ShowStudentById(@PathVariable int studentId, Model model) {
-        Student student = this.ligmusService.getStudent(studentId);
+        User student = this.ligmusService.getStudent(studentId);
         if ( student == null) {
             throw new ResourceNotFoundException("Student with id " + studentId + " not found");
         }

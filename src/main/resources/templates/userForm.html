@@ -2,11 +2,11 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Dodawanie ocen ucznia</title>
+    <title>Dodawanie użytkowników</title>
 </head>
 <body>
 <h2 th:text="${'Dodaj Użytkownika'}"></h2>
-<form th:object="${newUser}" th:action="@{${isUpdate ? 'updateUser' : 'addUser'}}" th:method="post">
+<form th:object="${newUser}" th:action="@{${isUpdate ? 'update' : 'addUser'}}" th:method="post">
 
 
     <input type="text" name="username" th:field="*{username}" >
@@ -25,8 +25,13 @@
                 th:text="Admin">
         </option><br/>
     </select></br>
+    <div th:if="${isUpdate}">
+        <input type="text" name="name" th:field="*{firstName}" >
+        <input type="text" name="lastname" th:field="*{lastName}" >
+        <input type="date" name="username" th:field="*{dateOfBirth}" >
+    </div>
     <input type="submit" value="Zapisz">
 </form>
-<a th:href="@{${isUpdate ? '../' : './'}}" th:text="'Anuluj'"/>
+<a th:href="@{${isUpdate ? '../../users' : './users'}}" th:text="'Anuluj'"/>
 </body>
 </html>
