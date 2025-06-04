@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<div>
+  <h1 th:text="|Użytkownik ${user.username}|"></h1>
+  <p th:text="|Identyfikator Użytkownika ${user.id}|"></p>
+  <p th:text="|Imie ${user.firstName} |"></p>
+  <p th:text="|Nazwisko ${user.id}|"></p>
+  <p th:text="|Data urodzenia ${user.dateOfBirth} |"></p>
+  <p th:text="|Typ Użytkownika ${user.userType}|"></p>
+<!--  <a th:href="@{'/user/'+${user.id}+ '/grades'}" th:text="'Zobacz oceny'"/><br>-->
+
+  <a th:href="@{../}" th:text="'Powrót'"/>
+</div>
+</body>
+</html>

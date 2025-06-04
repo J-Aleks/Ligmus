@@ -7,8 +7,9 @@
 <body>
 <h1>Strona główna</h1>
 <a th:href="@{/login}" th:text="'Zaloguj się'"></a>
-<a th:href="@{/student}" th:text="'Lista studentów'"/>
-<form th:action="@{/logout}" method="post">
+<a th:href="@{/student/}" th:text="'Lista studentów'"/>
+
+<form th:action="@{/logout}" method="post" th:fragment="logout">
     <button type="submit">Wyloguj</button>
 </form>
 </body>

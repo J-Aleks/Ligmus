@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Dodawanie ocen uczniów</title>
+</head>
+<body>
+<div >
+    <form th:action="@{./GradesSerialForm}" th:method="Get" >
+        <label>
+            <select name="sort" onchange="this.form.submit()">
+                <option value="id_asc" th:selected="${methodSelect == 'id_asc'}">Id rosnąco</option>
+                <option value="id_desc" th:selected="${methodSelect  == 'id_desc'}">Id malejąco</option>
+                <option value="firstname_asc" th:selected="${methodSelect  == 'firstname_asc'}">Imię A-Z</option>
+                <option value="firstname_desc" th:selected="${methodSelect  == 'firstname_desc'}">Imię Z-A</option>
+            </select>
+        </label>
+    </form>
+</div><br>
+<!--<h2 th:text="${'Dodaj ocene dla ucznia '+ student.firstName+' '+student.lastName}"></h2>-->
+<form th:object="${form}" th:action="@{${isUpdate ? 'update' : 'add'}}" th:method="post">
+    <label>
+        <select name="subject" th:field="*{subject}">
+            <option th:each="subject:${subjects}"
+                    th:value="${subject.id}"
+                    th:text="${subject.name}"
+                    th:selected="${subject.name == selectedSubject}">
+            </option>
+        </select>
+    </label>
+    <table>
+        <tr>
+            <th>id</th>
+            <th>imię i nazwisko</th>
+            <th>ocena</th>
+            <th>waga</th>
+            <th>opis</th>
+        </tr>
+
+        <tbody >
+            <tr th:each="student, iterStat :*{grades}">
+                <td>
+                    <p th:text="${student.id}"></p>
+                    <input type="hidden" th:field="*{grades[__${iterStat.index}__].id}">
+                </td>
+                <td>
+                    <p th:text="|${student.firstName} ${student.lastName}|"></p>
+                    <input type="hidden" th:field="*{grades[__${iterStat.index}__].firstName}">
+                    <input type="hidden" th:field="*{grades[__${iterStat.index}__].lastName}">
+                </td>
+                <td>
+                    <label>
+                        <input type="number" name="grade" min="1" max="5" value="1"
+                               th:field="*{grades[__${iterStat.index}__].grade}" >
+                    </label>
+                </td>
+                <td>
+                    <label>
+                        <input type="number" name="weight" min="1" max="5" value="1"
+                               th:field="*{grades[__${iterStat.index}__].weight}" >
+                    </label>
+                </td>
+                <td>
+                    <label>
+                        <textarea th:field="*{grades[__${iterStat.index}__].description}"></textarea>
+                    </label>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <input type="submit" value="Zapisz">
+    <button type="submit" formaction="./GradesSerialForm/saveDraft">Zapisz wersję roboczą</button>
+</form>
+
+<a th:href="@{${isUpdate ? '../' : './'}}" th:text="'Anuluj'"/>
+</body>
+</html>

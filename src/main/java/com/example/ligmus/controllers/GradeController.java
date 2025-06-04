@@ -1,14 +1,19 @@
 package com.example.ligmus.controllers;
 
 import com.example.ligmus.data.grades.Grade;
+import com.example.ligmus.data.subjects.Subject;
 import com.example.ligmus.data.users.*;
 import com.example.ligmus.exception.ResourceNotFoundException;
 import com.example.ligmus.services.LigmusService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -20,15 +25,31 @@ public class GradeController {
 
 
     @GetMapping("/")
-    public String ShowStudentGrade(@PathVariable int studentId, Model model) {
-        List<Grade> grades = this.ligmusService.getGradesByUserId(studentId);
-        if (grades.isEmpty()) {
-            throw new ResourceNotFoundException("Student with id " + studentId + " don't have any grades");
+    public String ShowStudentGrade(@PathVariable int studentId, Model model, HttpSession session, HttpServletRequest request) {
+        int teacherId = (int) session.getAttribute("userId");
+        List<Grade> grades = new ArrayList<>();
+        if (request.isUserInRole("ROLE_TEACHER")) {
+            List<Subject> TeacherSubjectList = this.ligmusService.getTeacherSubjects(teacherId);
+            for (Subject subject : TeacherSubjectList) {
+                grades.addAll(this.ligmusService.getStudentGradesFromSubject(studentId, subject.getId()));
+            }
+            model.addAttribute("isTeacher",true);
+        }
+        else if (request.isUserInRole("ROLE_ADMIN"))
+        {
+            grades = this.ligmusService.getGradesByUserId(studentId);
+            model.addAttribute("isTeacher",true);
+        }
+        else if (request.isUserInRole("ROLE_STUDENT"))
+        {
+            grades = this.ligmusService.getGradesByUserId(studentId);
+            model.addAttribute("isTeacher",false);
         }
         model.addAttribute("studentId", studentId);
         model.addAttribute("grades",grades);
         return "grades";
     }
+
 
 
     @GetMapping("/add")

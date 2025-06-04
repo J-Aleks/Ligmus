@@ -6,6 +6,17 @@
 </head>
 <body>
 <div>
+  <div th:fragment="userSort">
+  <form th:action="@{./}" th:method="Get" >
+    <select name="sort" onchange="this.form.submit()">
+      <option value="id_asc" th:selected="${methodSelect == 'id_asc'}">Id rosnąco</option>
+      <option value="id_desc" th:selected="${methodSelect  == 'id_desc'}">Id malejąco</option>
+      <option value="firstname_asc" th:selected="${methodSelect  == 'firstname_asc'}">Imię A-Z</option>
+      <option value="firstname_desc" th:selected="${methodSelect  == 'firstname_desc'}">Imię Z-A</option>
+    </select>
+  </form>
+  </div>
+
   <h1 th:text="|List of Students|"></h1>
   <h3 th:if="${students.size()==0}"
       th:text="|There are no students|"></h3>
@@ -16,12 +27,13 @@
         <li th:text="|Imie ${student.firstName} |"></li>
         <li th:text="|Nazwisko ${student.id}|"></li>
         <li th:text="|Data urodzenia ${student.dateOfBirth} |"></li>
-        <a th:href="@{'/student/'+${student.id}}" th:text="'Zobacz studenta'"/>
+        <a th:href="@{'/student/'+${student.id}+'/grades/'}" th:text="'Zobacz oceny studenta'"/>
       </ul>
     </li>
   </ol>
 
   <a th:href="@{../}" th:text="'Powrót'"/>
+  <div th:replace="~{index::logout}"></div>
 </div>
 </body>
 </html>

@@ -43,7 +43,7 @@ public class LigmusService {
 
     public int getNextUserId() {return this.userRepository.getNextUserId();}
 
-    public void addUser(User newUser) {
+    public void addUser(UserAddForm newUser) {
         this.userRepository.addUser(newUser);
     }
 
@@ -72,5 +72,14 @@ public class LigmusService {
 
     public boolean deleteUser(int id) { return this.userRepository.userDelete(id);}
 
+    public List<User> sortUsers(List <User> users, String sortMethod) {
+        return this.userRepository.sortUsers(users, sortMethod);
+    }
+
+    public List<Subject> getTeacherSubjects(int teacherId) {return this.userRepository.getTeacherSubjects(teacherId);}
+
+    public List<Grade> getStudentGradesFromSubject(int studentId, int subjectId) {
+        return this.gradeRepository.getGradesFromSubject(studentId, subjectId);
+    }
 
 }

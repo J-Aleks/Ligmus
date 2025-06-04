@@ -6,6 +6,7 @@ import com.example.ligmus.data.users.UserType;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -38,6 +39,9 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
             int userId = userDetails.getId();
             redirectUrl = redirectUrl + "user/"+userId+"/register";
         }
+        HttpSession session = request.getSession();
+        session.setAttribute("userId", userDetails.getId());
+
         response.sendRedirect(redirectUrl);
     }
 }

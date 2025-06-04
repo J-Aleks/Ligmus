@@ -18,11 +18,17 @@
                 <li th:text="|Waga: ${grade.weight} |"></li>
                 <li th:text="|Opis: ${grade.description} |"></li>
             </ul>
+            <div th:if="${isTeacher}">
             <a th:href="@{{id}/update(id=${grade.gradeId})}" th:text="'Edytuj'"/>
+            </div>
         </li>
+
     </ol>
+    <div th:if="${isTeacher}">
     <a th:href="@{'add'}" th:text="'Dodaj nową ocenę'"/><br/>
+    </div>
     <a th:href="@{../}" th:text="'Powrót'"/>
+    <div th:replace="index::logout"></div>
 </div>
 </body>
 </html>

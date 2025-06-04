@@ -28,26 +28,8 @@ public class ApiUserController {
     @PostMapping("/add")
     public ResponseEntity<String> addUser(@RequestBody UserAddForm newUser){
         System.out.println("Odebrano dane JSON: " + newUser);
-        int nextUserId = this.ligmusService.getNextUserId();
-        String userType = newUser.getUserType();
-        User user;
-        switch(userType){
-            case "student":
-                user = new User(nextUserId, UserType.STUDENT);
-                break;
-            case "admin":
-                user = new User(nextUserId, UserType.ADMIN);
-                break;
-            case "teacher":
-                user = new User(nextUserId, UserType.TEACHER);
-                break;
-            default:
-                return ResponseEntity.badRequest().body("Invalid user type");
-        }
-        user.setUsername(newUser.getUsername());
-        user.setPassword(newUser.getPassword());
-        this.ligmusService.addUser(user);
-        return ResponseEntity.ok("User " + user.getUsername() + " added");
+        this.ligmusService.addUser(newUser);
+        return ResponseEntity.ok("User " + newUser.getUsername() + " added");
     }
     @PostMapping("/{id}/update")
     public ResponseEntity<String> updateUser(@PathVariable int id, @RequestBody  UserUpdateForm updateUser){

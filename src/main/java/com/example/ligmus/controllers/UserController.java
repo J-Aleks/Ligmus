@@ -1,7 +1,9 @@
 package com.example.ligmus.controllers;
 
 
+import com.example.ligmus.data.users.User;
 import com.example.ligmus.data.users.UserUpdateForm;
+import com.example.ligmus.exception.ResourceNotFoundException;
 import com.example.ligmus.services.LigmusService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,5 +36,14 @@ public class UserController {
     public String updateUser(@ModelAttribute("User") UserUpdateForm userUpdateForm, @PathVariable int id) {
         this.ligmusService.updateUser(id,userUpdateForm);
     return "index";
+    }
+    @GetMapping("/{id}")
+    public String showUserData(@PathVariable int id, Model model) {
+        User user = this.ligmusService.getUser(id);
+        if ( user == null) {
+            throw new ResourceNotFoundException("User with id " + id + " not found");
+        }
+        model.addAttribute("user",user);
+        return "userDetails";
     }
 }

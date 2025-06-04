@@ -19,6 +19,8 @@ public class GradeRepository {
         grades = new LinkedList<>();
         grades.add(new Grade(0,0, 10, 2, 1));
         grades.add(new Grade(1,1, 10, 3,2));
+        grades.add(new Grade(2,0, 1, 2, 1));
+        grades.add(new Grade(3,0, 1, 2, 2));
     }
 
     public List<Grade> getGradesByUserId(int userId) {
@@ -56,5 +58,17 @@ public class GradeRepository {
         grades.add(grade);
     }
 
+    //TODO: Czy nauczyciele mogą modyfikować oceny innych nauczycieli?
+    public List<Grade> getGradesFromSubject(int studentId, int subjectId) {
+        List<Grade> tempGrade = new LinkedList<>();
+        for (Grade grade : grades) {
+            if (grade.getStudentId() == studentId) {
+                if (grade.getGradeId() == subjectId) {
+                    tempGrade.add(grade);
+                }
+            }
+        }
+        return tempGrade;
+    }
 
 }

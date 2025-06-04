@@ -4,12 +4,12 @@ package com.example.ligmus.controllers;
 import com.example.ligmus.data.users.User;
 import com.example.ligmus.exception.ResourceNotFoundException;
 import com.example.ligmus.services.LigmusService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -21,20 +21,27 @@ public class StudentController {
     LigmusService ligmusService;
 
     @GetMapping("/")
-    public String ShowStudents(Model model) {
-        System.out.println("Students List"+this.ligmusService.getStudents());
-        model.addAttribute("students",this.ligmusService.getStudents());
+    public String ShowStudents(Model model, @RequestParam(value = "sort", required = false) String sort,
+                               @CookieValue(value = "sortCookie", required = false) String sortCookie,
+                                HttpServletResponse response) {
+
+        String sortMethod = (sort != null) ? sort :
+                (sortCookie != null) ? sortCookie : "id_asc";
+        System.out.println("sortMethod: " + sortMethod);
+        if(sort != null) {
+            Cookie cookie = new Cookie("sortCookie", sort);
+            cookie.setPath("/");
+            cookie.setMaxAge( 60 * 60);
+            response.addCookie(cookie);
+        }
+        List <User> students = this.ligmusService.sortUsers(this.ligmusService.getStudents(), sortMethod);
+
+        System.out.println("Students List"+ students);
+        model.addAttribute("methodSelect" , sortMethod);
+        model.addAttribute("students",students);
         return "students";
     }
 
-    @GetMapping("/{studentId}")
-    public String ShowStudentById(@PathVariable int studentId, Model model) {
-        User student = this.ligmusService.getStudent(studentId);
-        if ( student == null) {
-            throw new ResourceNotFoundException("Student with id " + studentId + " not found");
-        }
-        model.addAttribute("student",this.ligmusService.getStudent(studentId));
-        return "student";
-    }
+
 
 }

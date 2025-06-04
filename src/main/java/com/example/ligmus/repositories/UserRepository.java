@@ -1,28 +1,37 @@
 package com.example.ligmus.repositories;
 
 import com.example.ligmus.data.users.*;
+import com.example.ligmus.data.subjects.Subject;
 import com.example.ligmus.exception.ResourceNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Repository
 public class UserRepository {
     private List<User> users;
 
+    final
+    SubjectRepository SubjectRepository;
 
-
-    UserRepository(){
+    UserRepository(SubjectRepository SubjectRepository){
+        this.SubjectRepository = SubjectRepository;
         users = new LinkedList<>();
+        List<Subject> subjects = new LinkedList<>();
+        subjects.add(this.SubjectRepository.getSubject(1));
         LocalDate localDate = LocalDate.of(1998, 4, 21);
         users.add(new User(0, UserType.STUDENT,"test1", "Test1", "Tere1", localDate,  "{noop}password1"));
         localDate = LocalDate.of(2005, 5, 7);
         users.add(new User(1,UserType.STUDENT, "test2", "Test2", "Tenko2", localDate,  "{noop}password2"));
         localDate = LocalDate.of(2006, 5, 7);
         users.add(new User(2, UserType.ADMIN, "admin", "admin1", "admin1", localDate,"{noop}admin"));
-        users.add(new User(3,"test","{noop}test", UserType.STUDENT));
+//        users.add(new User(3,"test","{noop}test", UserType.STUDENT));
+        users.add(new User(3, UserType.TEACHER, "teach1", "teacher1", "teach", localDate, "{noop}teach",
+              subjects));
+
     }
 
     public List<User> getUsers() {
@@ -169,6 +178,17 @@ public class UserRepository {
 //        return this.users.add(student);
 //    }
 
+    public List<Subject> getTeacherSubjects(int teacherId) {
+        List<Subject> subjects = null;
+        for (User user : users) {
+            if (user.getUserType() == UserType.TEACHER) {
+                if(teacherId == user.getId()) {
+                    subjects = new ArrayList<>(user.getSubjects());
+                }
+            }
+        }
+        return subjects;
+    }
 
     public List<User> getTeachers() {
         List<User> teachers = new LinkedList<>();
@@ -223,27 +243,63 @@ public class UserRepository {
     public boolean userDelete(int id){
         return this.users.remove(getUser(id));
     }
-
-    public boolean addUser(User newUser){
-        UserType userType = newUser.getUserType();
+    public boolean addUser(UserAddForm newUser){
+        String userType = newUser.getUserType();
         User user;
         int nextUserId = getNextUserId();
         switch(userType){
-            case STUDENT:
+            case "student":
                 user = new User(nextUserId, UserType.STUDENT);
                 break;
-            case ADMIN:
+            case "admin":
                 user = new User(nextUserId, UserType.ADMIN);
                 break;
-            case TEACHER:
+            case "teacher":
                 user = new User(nextUserId, UserType.TEACHER);
                 break;
             default:
-                throw new ResourceNotFoundException("User Type is invalid");
+                throw new IllegalStateException("Unexpected value: " + userType);
         }
         user.setUsername(newUser.getUsername());
         user.setPassword(newUser.getPassword());
         this.users.add(user);
         return true;
     }
+
+    public List<User> sortUsers(List <User> users , String sortMethod){
+
+        Comparator <User> comparator = switch (sortMethod){
+            case "id_asc" -> Comparator.comparing(User::getId);
+            case "id_desc" -> Comparator.comparing(User::getId).reversed();
+            case "firstname_asc" -> Comparator.comparing(User::getFirstName);
+            case "firstname_desc" -> Comparator.comparing(User::getFirstName).reversed();
+            case "type_asc" -> Comparator.comparing(User::getUserType);
+            case "type_desc" -> Comparator.comparing(User::getUserType).reversed();
+            default -> Comparator.comparing(User::getId);
+        };
+    return users.stream().sorted(comparator).collect(Collectors.toList());
+    }
+
+//    public boolean addUser(User newUser){
+//        UserType userType = newUser.getUserType();
+//        User user;
+//        int nextUserId = getNextUserId();
+//        switch(userType){
+//            case STUDENT:
+//                user = new User(nextUserId, UserType.STUDENT);
+//                break;
+//            case ADMIN:
+//                user = new User(nextUserId, UserType.ADMIN);
+//                break;
+//            case TEACHER:
+//                user = new User(nextUserId, UserType.TEACHER);
+//                break;
+//            default:
+//                throw new ResourceNotFoundException("User Type is invalid");
+//        }
+//        user.setUsername(newUser.getUsername());
+//        user.setPassword(newUser.getPassword());
+//        this.users.add(user);
+//        return true;
+//    }
 }

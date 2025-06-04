@@ -1,5 +1,6 @@
 package com.example.ligmus.security.auth;
 
+import com.example.ligmus.data.subjects.Subject;
 import com.example.ligmus.data.users.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -43,4 +44,6 @@ public class CustomUserDetails implements UserDetails {
     public String getFirstName() { return this.user.getFirstName(); }
 
     public int getId() { return this.user.getId(); }
+
+    public List<Subject> getSubjects() {return this.user.getSubjects();}
 }
