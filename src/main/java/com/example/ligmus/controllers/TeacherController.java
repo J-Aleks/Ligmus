@@ -3,6 +3,7 @@ package com.example.ligmus.controllers;
 
 import com.example.ligmus.data.DTO.GradeFormDTO;
 import com.example.ligmus.data.DTO.StudentsGradeDTO;
+import com.example.ligmus.data.grades.Grade;
 import com.example.ligmus.data.subjects.Subject;
 import com.example.ligmus.data.users.User;
 import com.example.ligmus.exception.ResourceNotFoundException;
@@ -62,29 +63,33 @@ public class TeacherController {
                 (subjectCookie != null) ? subjectCookie :
                         teacherSubjectList.get(0).getName();
         System.out.println("selectedSubject: " + selectedSubject);
-//        if (subject != null) {
-//            Cookie cookie = new Cookie("subjectCookie", selectedSubject);
-//            cookie.setPath("/");
-//            cookie.setMaxAge(24 * 60 * 60);
-//            response.addCookie(cookie);
-//        }
-
+        if (subject != null) {
+            Cookie cookie = new Cookie("subjectCookie", selectedSubject);
+            cookie.setPath("/");
+            cookie.setMaxAge(24 * 60 * 60);
+            response.addCookie(cookie);
+        }
+        GradeFormDTO gradeFormDTO = new GradeFormDTO();
         if (session.getAttribute("gradesSerialFormDraft" )== null) {
+            if(gradeFormDTO.getGrades() == null) {
+                List<User> students = this.ligmusService.sortUsers(this.ligmusService.getStudents(), sortMethod);
+                if (students.isEmpty()) {
+                    throw new ResourceNotFoundException("No students found");
+                }
+                List<StudentsGradeDTO> studentsDTOList = new ArrayList<>();
+                for (User student : students) {
+                    StudentsGradeDTO tempStudent = new StudentsGradeDTO();
+                    tempStudent.setId(student.getId());
+                    tempStudent.setFirstName(student.getFirstName());
+                    tempStudent.setLastName(student.getLastName());
+                    studentsDTOList.add(tempStudent);
+                    gradeFormDTO.setGrades(studentsDTOList);
+                }
+            }
+            else {
+                gradeFormDTO.setGrades(gradeFormDTO.sortStudents(gradeFormDTO.getGrades(), sortMethod));
+            }
 
-            List<User> students = this.ligmusService.sortUsers(this.ligmusService.getStudents(), sortMethod);
-            if (students.isEmpty()) {
-                throw new ResourceNotFoundException("No students found");
-            }
-            List<StudentsGradeDTO> studentsDTOList = new ArrayList<>();
-            for (User student : students) {
-                StudentsGradeDTO tempStudent = new StudentsGradeDTO();
-                tempStudent.setId(student.getId());
-                tempStudent.setFirstName(student.getFirstName());
-                tempStudent.setLastName(student.getLastName());
-                studentsDTOList.add(tempStudent);
-            }
-            GradeFormDTO gradeFormDTO = new GradeFormDTO();
-            gradeFormDTO.setGrades(studentsDTOList);
 
 
 
@@ -92,12 +97,15 @@ public class TeacherController {
             model.addAttribute("form", gradeFormDTO);
         }
         else {
+            GradeFormDTO tempForm = (GradeFormDTO) session.getAttribute("gradesSerialFormDraft");
+            tempForm.setGrades(tempForm.sortStudents(tempForm.getGrades(), sortMethod));
             boolean isUpdate = (boolean) session.getAttribute("isFormUpdate");
             if (isUpdate) {
                 return "redirect:/teacherGradeSerialForm/update";
             }
 //            model.addAttribute("selectedSubject", session.getAttribute("selectedSubject"));
-            model.addAttribute("form", session.getAttribute("gradesSerialFormDraft"));
+//            model.addAttribute("form", session.getAttribute("gradesSerialFormDraft"));
+            model.addAttribute("form", tempForm);
         }
         model.addAttribute("methodSelect" , sortMethod);
         model.addAttribute("subjects", teacherSubjectList);
@@ -106,7 +114,7 @@ public class TeacherController {
     }
 
     @PostMapping("/GradesSerialForm/saveDraft")
-    public String SaveGrades(@ModelAttribute("form") GradeFormDTO gradeFormDTO,
+    public String saveDraftGrades(@ModelAttribute("form") GradeFormDTO gradeFormDTO,
 //                             @ModelAttribute("subjects") String subject,
                              HttpSession session) {
         session.setAttribute("gradesSerialFormDraft", gradeFormDTO);
@@ -114,6 +122,28 @@ public class TeacherController {
         session.setAttribute("isFormUpdate", false);
 
      return "index";
+    }
+
+    @PostMapping("/GradesSerialForm/add")
+    public String saveGrades(@ModelAttribute("form") GradeFormDTO gradeForm,
+                             HttpSession session) {
+        int subId = gradeForm.getSubject();
+        if(subId == -1) {
+            throw new ResourceNotFoundException("Subject not found");
+        }
+        for (StudentsGradeDTO studentsGradeDTO : gradeForm.getGrades()) {
+            Grade tempGrade = new Grade();
+            tempGrade.setGradeId(this.ligmusService.getNextGradeIndex());
+            tempGrade.setStudentId(studentsGradeDTO.getId());
+            tempGrade.setTeacherId((int) session.getAttribute("userId"));
+            tempGrade.setSubject(subId);
+            tempGrade.setWeight(studentsGradeDTO.getWeight());
+            tempGrade.setGrade(studentsGradeDTO.getGrade());
+            tempGrade.setDescription(studentsGradeDTO.getDescription());
+            this.ligmusService.addGrade(tempGrade);
+        }
+        System.out.println(this.ligmusService.getGradesByUserId(subId));
+        return "index";
     }
 
 }

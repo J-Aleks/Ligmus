@@ -1,12 +1,14 @@
 package com.example.ligmus.controllers;
 
-
+import com.example.ligmus.validation.groups.*;
 import com.example.ligmus.data.users.User;
 import com.example.ligmus.data.users.UserUpdateForm;
 import com.example.ligmus.exception.ResourceNotFoundException;
 import com.example.ligmus.services.LigmusService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -33,7 +35,16 @@ public class UserController {
         return "updateUser";
     }
     @PostMapping("/{id}/update")
-    public String updateUser(@ModelAttribute("User") UserUpdateForm userUpdateForm, @PathVariable int id) {
+    public String updateUser(@ModelAttribute("User") @Validated(OnUpdate.class) UserUpdateForm userUpdateForm,
+                             BindingResult result,
+                             @PathVariable int id, Model model) {
+        System.out.println("przed walidacją");
+        System.out.println(result);
+        if(result.hasErrors()) {
+            model.addAttribute("isRegister", true);
+            return "updateUser";
+        }
+        System.out.println("po walidacji");
         this.ligmusService.updateUser(id,userUpdateForm);
     return "index";
     }

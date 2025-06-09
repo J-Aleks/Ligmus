@@ -82,4 +82,6 @@ public class LigmusService {
         return this.gradeRepository.getGradesFromSubject(studentId, subjectId);
     }
 
+    public int getIdSubject(String subjectName) { return this.subjectRepository.getSubjectId(subjectName);}
+
 }

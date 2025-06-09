@@ -38,4 +38,13 @@ public class SubjectRepository {
         return newId;
     }
 
+    public int getSubjectId(String name){
+        for (Subject subject : subjects) {
+            if (subject.getName().equals(name)) {
+              return subject.getId();
+            }
+        }
+        return -1;
+    }
+
 }

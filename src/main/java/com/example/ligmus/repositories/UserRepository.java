@@ -28,8 +28,8 @@ public class UserRepository {
         users.add(new User(1,UserType.STUDENT, "test2", "Test2", "Tenko2", localDate,  "{noop}password2"));
         localDate = LocalDate.of(2006, 5, 7);
         users.add(new User(2, UserType.ADMIN, "admin", "admin1", "admin1", localDate,"{noop}admin"));
-//        users.add(new User(3,"test","{noop}test", UserType.STUDENT));
-        users.add(new User(3, UserType.TEACHER, "teach1", "teacher1", "teach", localDate, "{noop}teach",
+        users.add(new User(3,"test","{noop}test", UserType.STUDENT));
+        users.add(new User(4, UserType.TEACHER, "teach1", "teacher1", "teach", localDate, "{noop}teach",
               subjects));
 
     }

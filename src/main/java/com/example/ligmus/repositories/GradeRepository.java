@@ -63,7 +63,7 @@ public class GradeRepository {
         List<Grade> tempGrade = new LinkedList<>();
         for (Grade grade : grades) {
             if (grade.getStudentId() == studentId) {
-                if (grade.getGradeId() == subjectId) {
+                if (grade.getSubject() == subjectId) {
                     tempGrade.add(grade);
                 }
             }

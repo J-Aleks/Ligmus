@@ -18,7 +18,7 @@
     </form>
 </div><br>
 <!--<h2 th:text="${'Dodaj ocene dla ucznia '+ student.firstName+' '+student.lastName}"></h2>-->
-<form th:object="${form}" th:action="@{${isUpdate ? 'update' : 'add'}}" th:method="post">
+<form th:object="${form}" th:action="@{${isUpdate ? './GradesSerialForm/update' : './GradesSerialForm/add'}}" th:method="post">
     <label>
         <select name="subject" th:field="*{subject}">
             <option th:each="subject:${subjects}"

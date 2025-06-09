@@ -32,6 +32,7 @@ public class GradeController {
             List<Subject> TeacherSubjectList = this.ligmusService.getTeacherSubjects(teacherId);
             for (Subject subject : TeacherSubjectList) {
                 grades.addAll(this.ligmusService.getStudentGradesFromSubject(studentId, subject.getId()));
+                System.out.println(grades);
             }
             model.addAttribute("isTeacher",true);
         }

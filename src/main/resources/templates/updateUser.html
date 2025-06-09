@@ -17,11 +17,14 @@
 </div>
     <label >Imie</label>
     <input type="text" name="name" th:field="*{firstName}" ><br>
+    <div th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></div>
     <label >Nazwisko</label>
     <input type="text" name="lastname" th:field="*{lastName}" >
+    <div th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></div>
     <br>
     <label >Data urodzenia</label>
     <input type="date" name="username" th:field="*{dateOfBirth}" >
+    <div th:if="${#fields.hasErrors('dateOfBirth')}" th:errors="*{dateOfBirth}"></div>
 
 <input type="submit" value="Zapisz">
     <div th:if="${!isRegister}">
