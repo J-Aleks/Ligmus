@@ -32,6 +32,15 @@ public class SubjectRepository {
         return null;
     }
 
+    public Subject getSubject(String subjectName) {
+        for (Subject subject : subjects) {
+            if (subject.getName().equals(subjectName)) {
+                return subject;
+            }
+        }
+        return null;
+    }
+
     public int getNextSubjectId() {
         int newId;
         newId = this.subjects.get(this.subjects.size()-1).getId()+1;
@@ -47,4 +56,12 @@ public class SubjectRepository {
         return -1;
     }
 
+    public String getSubjectName(int subjectId) {
+        for (Subject subject : subjects) {
+            if (subject.getId() == subjectId) {
+                return subject.getName();
+            }
+        }
+        return null;
+    }
 }

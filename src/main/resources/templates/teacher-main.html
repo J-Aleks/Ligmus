@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Teacher</title>
+</head>
+<body>
+<a th:href="@{students/}" th:text="'Lista uczonych Studentów'"/>
+<a th:href="@{share/}" th:text="'Udostępnij oceny z przedmiotu innym nauczycielom'"/>
+<a th:href="@{GradesSerialForm}" th:text="'Dodaj oceny seryjnie'"/>
+<div th:replace="index::logout"></div>
+</body>
+</html>

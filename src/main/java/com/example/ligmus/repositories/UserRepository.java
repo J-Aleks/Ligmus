@@ -31,6 +31,10 @@ public class UserRepository {
         users.add(new User(3,"test","{noop}test", UserType.STUDENT));
         users.add(new User(4, UserType.TEACHER, "teach1", "teacher1", "teach", localDate, "{noop}teach",
               subjects));
+//        subjects = new LinkedList<>();
+        subjects.add(this.SubjectRepository.getSubject(2));
+        users.add(new User(5, UserType.TEACHER, "teach2", "teacher2", "teach", localDate, "{noop}teach",
+                subjects));
 
     }
 
@@ -70,7 +74,9 @@ public class UserRepository {
         List<User> students = new LinkedList<>();
         for (User user : users) {
             if ( user.getUserType() == UserType.STUDENT ) {
-                students.add(user);
+                if(user.getFirstName() != null && user.getLastName() != null) {
+                    students.add(user);
+                }
             }
         }
         return students;
@@ -247,19 +253,12 @@ public class UserRepository {
         String userType = newUser.getUserType();
         User user;
         int nextUserId = getNextUserId();
-        switch(userType){
-            case "student":
-                user = new User(nextUserId, UserType.STUDENT);
-                break;
-            case "admin":
-                user = new User(nextUserId, UserType.ADMIN);
-                break;
-            case "teacher":
-                user = new User(nextUserId, UserType.TEACHER);
-                break;
-            default:
-                throw new IllegalStateException("Unexpected value: " + userType);
-        }
+        user = switch (userType) {
+            case "student" -> new User(nextUserId, UserType.STUDENT);
+            case "admin" -> new User(nextUserId, UserType.ADMIN);
+            case "teacher" -> new User(nextUserId, UserType.TEACHER);
+            default -> throw new IllegalStateException("Unexpected value: " + userType);
+        };
         user.setUsername(newUser.getUsername());
         user.setPassword(newUser.getPassword());
         this.users.add(user);
@@ -280,6 +279,20 @@ public class UserRepository {
     return users.stream().sorted(comparator).collect(Collectors.toList());
     }
 
+
+    public List<User> getOtherTeachers(int loggedUserId){
+        List<User> otherTeachers = new LinkedList<>();
+        for (User user : users) {
+            if (user.getUserType() == UserType.TEACHER) {
+                if(loggedUserId == user.getId()) {
+                    continue;
+                }
+                otherTeachers.add(user);
+            }
+        }
+        System.out.println("otherTeachers: " + otherTeachers);
+        return otherTeachers;
+    }
 //    public boolean addUser(User newUser){
 //        UserType userType = newUser.getUserType();
 //        User user;

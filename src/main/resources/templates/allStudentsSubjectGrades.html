@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div>
+    <table border="1">
+        <thead>
+        <tr>
+            <th>Uczeń</th>
+            <th>Oceny</th>
+            <th>Średnia</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="student : ${studentsDTO.studentsList}">
+            <td th:text="${student.firstName + ' ' + student.lastName}">Jan Kowalski</td>
+            <td>
+                <span th:each="grade : ${student.grades}" style="margin-right: 8px; position: relative;">
+                    <span th:text="${grade.grade}"
+                          style="cursor: help;"
+                          th:title="|Waga: ${grade.weight}&#10;Opis: ${grade.description}|">
+                        5
+                    </span>
+                </span>
+            </td>
+            <td>
+                <!-- Zakładamy, że student.averageGrade jest już wyliczone w DTO -->
+<!--                <span th:text="${#numbers.formatDecimal(student.averageGrade, 1, 1)}">4.5</span>-->
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

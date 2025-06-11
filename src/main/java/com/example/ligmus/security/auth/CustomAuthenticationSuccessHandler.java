@@ -28,11 +28,10 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
                 redirectUrl = redirectUrl + "admin-dev/";
                 break;
             case TEACHER:
-//                redirectUrl = redirectUrl;
+                redirectUrl = redirectUrl + "teacher/";
                 break;
             case STUDENT:
-                if(userDetails.getFirstName() == null)
-//                redirectUrl = redirectUrl;
+                redirectUrl = redirectUrl + "student/";
                 break;
         }
         if(userDetails.getFirstName() == null) {

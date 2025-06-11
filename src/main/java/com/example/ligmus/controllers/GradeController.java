@@ -1,57 +1,76 @@
 package com.example.ligmus.controllers;
 
+import com.example.ligmus.data.DTO.GradeDTO;
 import com.example.ligmus.data.grades.Grade;
 import com.example.ligmus.data.subjects.Subject;
 import com.example.ligmus.data.users.*;
 import com.example.ligmus.exception.ResourceNotFoundException;
+import com.example.ligmus.security.auth.CustomUserDetails;
 import com.example.ligmus.services.LigmusService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-@RequestMapping("student/{studentId}/grades")
+@RequestMapping("teacher/students/{studentId}/grades")
 public class GradeController {
 
     @Autowired
     LigmusService ligmusService;
 
+//    @GetMapping("/")
+//    public String ShowStudentGrades(@PathVariable int studentId, Model model,
+//                                    @AuthenticationPrincipal CustomUserDetails user,
+//                                    HttpServletRequest request) {
+//        List<Grade> grades = new ArrayList<>();
+//        if (request.isUserInRole("ROLE_TEACHER")) {
+//            int teacherId = user.getId();
+//            List<Subject> TeacherSubjectList = this.ligmusService.getTeacherSubjects(teacherId);
+//            for (Subject subject : TeacherSubjectList) {
+//                grades.addAll(this.ligmusService.getStudentGradesFromSubject(studentId, subject.getId()));
+//                System.out.println(grades);
+//            }
+//            model.addAttribute("isTeacher",true);
+//        }
+//        else if (request.isUserInRole("ROLE_ADMIN"))
+//        {
+//            grades = this.ligmusService.getGradesByUserId(studentId);
+//            model.addAttribute("isTeacher",true);
+//        }
+//        else if (request.isUserInRole("ROLE_STUDENT"))
+//        {
+//            grades = this.ligmusService.getGradesByUserId(studentId);
+//            model.addAttribute("isTeacher",false);
+//        }
+//        model.addAttribute("studentId", studentId);
+//        model.addAttribute("grades",grades);
+//        return "grades";
+//    }
 
     @GetMapping("/")
-    public String ShowStudentGrade(@PathVariable int studentId, Model model, HttpSession session, HttpServletRequest request) {
-        int teacherId = (int) session.getAttribute("userId");
+    public String ShowStudentGrades(@PathVariable int studentId, Model model,
+                                    @AuthenticationPrincipal CustomUserDetails user) {
         List<Grade> grades = new ArrayList<>();
-        if (request.isUserInRole("ROLE_TEACHER")) {
-            List<Subject> TeacherSubjectList = this.ligmusService.getTeacherSubjects(teacherId);
-            for (Subject subject : TeacherSubjectList) {
-                grades.addAll(this.ligmusService.getStudentGradesFromSubject(studentId, subject.getId()));
-                System.out.println(grades);
-            }
-            model.addAttribute("isTeacher",true);
+        int teacherId = user.getId();
+        List<Subject> TeacherSubjectList = this.ligmusService.getTeacherSubjects(teacherId);
+        for (Subject subject : TeacherSubjectList) {
+            grades.addAll(this.ligmusService.getStudentGradesFromSubject(studentId, subject.getId()));
+            System.out.println(grades);
         }
-        else if (request.isUserInRole("ROLE_ADMIN"))
-        {
-            grades = this.ligmusService.getGradesByUserId(studentId);
-            model.addAttribute("isTeacher",true);
-        }
-        else if (request.isUserInRole("ROLE_STUDENT"))
-        {
-            grades = this.ligmusService.getGradesByUserId(studentId);
-            model.addAttribute("isTeacher",false);
-        }
+        model.addAttribute("isTeacher",true);
         model.addAttribute("studentId", studentId);
         model.addAttribute("grades",grades);
         return "grades";
     }
-
-
 
     @GetMapping("/add")
     public String showGradeForm(@PathVariable int studentId ,Model model){
@@ -62,12 +81,22 @@ public class GradeController {
         model.addAttribute("isUpdate", false);
         model.addAttribute("subjects", this.ligmusService.getSubjects());
         model.addAttribute("student",student);
-        model.addAttribute("grade", new Grade());
+        model.addAttribute("grade", new GradeDTO());
         return "gradeForm";
     }
 
     @PostMapping("/add")
-    public String saveGrade(@PathVariable int studentId, @ModelAttribute("grade") Grade newGrade){
+    public String saveGrade(@PathVariable int studentId, @ModelAttribute("grade")  @Validated GradeDTO newGrade,
+                            BindingResult bindingResult, Model model) {
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("isUpdate", false);
+            model.addAttribute("subjects", this.ligmusService.getSubjects());
+            model.addAttribute("student",this.ligmusService.getStudent(studentId));
+            model.addAttribute("grade",newGrade);
+            return "gradeForm";
+        }
+
         System.out.println("Saving grade");
         newGrade.setStudentId(studentId);
         newGrade.setGradeId(this.ligmusService.getNextGradeIndex());
@@ -81,7 +110,7 @@ public class GradeController {
         if ( student == null) {
             throw new ResourceNotFoundException("Student with id " + studentId + " not found");
         }
-        Grade grade = this.ligmusService.getGradeById(gradeId);
+        GradeDTO grade = this.ligmusService.getGradeDTOById(gradeId);
         if (grade == null) {
             throw new ResourceNotFoundException("Grade with id " + gradeId + " not found");
         }
@@ -94,7 +123,17 @@ public class GradeController {
 
     @PostMapping("/{gradeId}/update")
     public String updateGrade(@PathVariable int studentId, @PathVariable int gradeId,
-                              @ModelAttribute("grade") Grade grade){
+                              @ModelAttribute("grade") @Validated GradeDTO grade,
+                              BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("isUpdate", true);
+            model.addAttribute("subjects", this.ligmusService.getSubjects());
+            model.addAttribute("student", this.ligmusService.getStudent(studentId));
+            model.addAttribute("grade",grade);
+            return "gradeForm";
+        }
+
+
         this.ligmusService.updateGradeById(gradeId, grade);
         return "redirect:/student/" + studentId + "/grades/";
     }

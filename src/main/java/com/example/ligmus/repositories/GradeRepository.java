@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 public class GradeRepository {
 
-    private List<Grade> grades;
+    private final List<Grade> grades;
 
     GradeRepository(){
         System.out.println("GradeRepos constructor");
@@ -58,7 +58,6 @@ public class GradeRepository {
         grades.add(grade);
     }
 
-    //TODO: Czy nauczyciele mogą modyfikować oceny innych nauczycieli?
     public List<Grade> getGradesFromSubject(int studentId, int subjectId) {
         List<Grade> tempGrade = new LinkedList<>();
         for (Grade grade : grades) {
@@ -70,5 +69,7 @@ public class GradeRepository {
         }
         return tempGrade;
     }
+
+
 
 }

@@ -1,18 +1,24 @@
 package com.example.ligmus.controllers;
 
 
+import com.example.ligmus.data.DTO.GradeDTO;
 import com.example.ligmus.data.DTO.GradeFormDTO;
-import com.example.ligmus.data.DTO.StudentsGradeDTO;
+import com.example.ligmus.data.DTO.StudentsAddGradeDTO;
 import com.example.ligmus.data.grades.Grade;
 import com.example.ligmus.data.subjects.Subject;
 import com.example.ligmus.data.users.User;
 import com.example.ligmus.exception.ResourceNotFoundException;
+import com.example.ligmus.security.auth.CustomUserDetails;
 import com.example.ligmus.services.LigmusService;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -31,7 +37,7 @@ public class TeacherController {
 
     @GetMapping("/")
     public String showTeacherIndex(){
-        return "teacher";
+        return "teacher-main";
     }
 
 
@@ -76,9 +82,9 @@ public class TeacherController {
                 if (students.isEmpty()) {
                     throw new ResourceNotFoundException("No students found");
                 }
-                List<StudentsGradeDTO> studentsDTOList = new ArrayList<>();
+                List<StudentsAddGradeDTO> studentsDTOList = new ArrayList<>();
                 for (User student : students) {
-                    StudentsGradeDTO tempStudent = new StudentsGradeDTO();
+                    StudentsAddGradeDTO tempStudent = new StudentsAddGradeDTO();
                     tempStudent.setId(student.getId());
                     tempStudent.setFirstName(student.getFirstName());
                     tempStudent.setLastName(student.getLastName());
@@ -89,10 +95,6 @@ public class TeacherController {
             else {
                 gradeFormDTO.setGrades(gradeFormDTO.sortStudents(gradeFormDTO.getGrades(), sortMethod));
             }
-
-
-
-
 //            model.addAttribute("selectedSubject", selectedSubject);
             model.addAttribute("form", gradeFormDTO);
         }
@@ -131,19 +133,50 @@ public class TeacherController {
         if(subId == -1) {
             throw new ResourceNotFoundException("Subject not found");
         }
-        for (StudentsGradeDTO studentsGradeDTO : gradeForm.getGrades()) {
+        for (StudentsAddGradeDTO studentsAddGradeDTO : gradeForm.getGrades()) {
+            if(studentsAddGradeDTO.getGrade() == 0 || studentsAddGradeDTO.getWeight() == 0){
+                continue;
+            }
             Grade tempGrade = new Grade();
             tempGrade.setGradeId(this.ligmusService.getNextGradeIndex());
-            tempGrade.setStudentId(studentsGradeDTO.getId());
+            tempGrade.setStudentId(studentsAddGradeDTO.getId());
             tempGrade.setTeacherId((int) session.getAttribute("userId"));
             tempGrade.setSubject(subId);
-            tempGrade.setWeight(studentsGradeDTO.getWeight());
-            tempGrade.setGrade(studentsGradeDTO.getGrade());
-            tempGrade.setDescription(studentsGradeDTO.getDescription());
+            tempGrade.setWeight(studentsAddGradeDTO.getWeight());
+            tempGrade.setGrade(studentsAddGradeDTO.getGrade());
+            tempGrade.setDescription(studentsAddGradeDTO.getDescription());
             this.ligmusService.addGrade(tempGrade);
         }
         System.out.println(this.ligmusService.getGradesByUserId(subId));
         return "index";
     }
+
+
+    @GetMapping("/students/")
+    public String ShowStudents(Model model, @RequestParam(value = "sort", required = false) String sort,
+                               @CookieValue(value = "sortCookie", required = false) String sortCookie,
+                               HttpServletResponse response) {
+
+        String sortMethod = (sort != null) ? sort :
+                (sortCookie != null) ? sortCookie : "id_asc";
+        System.out.println("sortMethod: " + sortMethod);
+        if(sort != null) {
+            Cookie cookie = new Cookie("sortCookie", sort);
+            cookie.setPath("/");
+            cookie.setMaxAge( 60 * 60);
+            response.addCookie(cookie);
+        }
+        List <User> students = this.ligmusService.sortUsers(this.ligmusService.getStudents(), sortMethod);
+
+        System.out.println("Students List"+ students);
+        model.addAttribute("methodSelect" , sortMethod);
+        model.addAttribute("students",students);
+        return "students";
+    }
+    @GetMapping("/students/{studentId}/")
+    public String redirectToGrades(@PathVariable int studentId) {
+        return "redirect:/teacher/students/" + studentId + "/grades/";
+    }
+
 
 }

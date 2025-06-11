@@ -9,19 +9,27 @@
     <form th:object="${grade}" th:action="@{${isUpdate ? 'update' : 'add'}}" th:method="post">
 
 
-        <input type="number" name="grade" min="1" max="5" value="1" th:field="*{grade}" >
-        <input type="number" name="weight" min="1" max="5" value="1" th:field="*{weight}" >
+        <input type="number" name="grade" min="1" max="5"  th:field="*{grade}" required>
+        <div th:if="${#fields.hasErrors('grade')}"
+             th:errors="*{grade}">Błąd</div>
+        <input type="number" name="weight" min="1" max="5"  th:field="*{weight}" required>
+        <div th:if="${#fields.hasErrors('weight')}"
+             th:errors="*{weight}">Błąd</div>
         <select name="subject" th:field="*{subject}" >
-            <option th:value="-1"
+            <option value=""
                     th:text="|Wybierz odpowiedni przedmiot|"></option>
             <option th:each="subject:${subjects}"
                     th:value="${subject.id}"
-                    th:text="${subject.name}">
+                    th:text="${subject.name}">Java
             </option><br/>
-        </select></br>
-        <textarea th:field="*{description}"></textarea><br/>
+        </select>
+        <div th:if="${#fields.hasErrors('subject')}"
+             th:errors="*{subject}">Błąd</div></br>
+        <textarea th:field="*{description}">Opis</textarea>
+        <div th:if="${#fields.hasErrors('description')}"
+             th:errors="*{description}">Błąd</div><br/>
         <input type="submit" value="Zapisz">
     </form>
-    <a th:href="@{${isUpdate ? '../' : './'}}" th:text="'Anuluj'"/>
+    <a th:href="@{${isUpdate ? '../../' : './'}}" th:text="'Anuluj'"/>
 </body>
 </html>

@@ -19,7 +19,7 @@
                 <li th:text="|Opis: ${grade.description} |"></li>
             </ul>
             <div th:if="${isTeacher}">
-            <a th:href="@{{id}/update(id=${grade.gradeId})}" th:text="'Edytuj'"/>
+            <a th:href="@{./grades/{id}/update(id=${grade.gradeId})}" th:text="'Edytuj'"/>
             </div>
         </li>
 
@@ -27,7 +27,7 @@
     <div th:if="${isTeacher}">
     <a th:href="@{'add'}" th:text="'Dodaj nową ocenę'"/><br/>
     </div>
-    <a th:href="@{../}" th:text="'Powrót'"/>
+    <a th:href="@{${isTeacher ? '../../../' : './'}}" th:text="'Powrót'"/>
     <div th:replace="index::logout"></div>
 </div>
 </body>

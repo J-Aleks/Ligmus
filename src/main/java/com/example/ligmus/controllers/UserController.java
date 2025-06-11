@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @Controller
-@RequestMapping("user")
+@RequestMapping("user/{id}")
 public class UserController {
 
     final LigmusService ligmusService;
@@ -22,19 +22,19 @@ public class UserController {
         this.ligmusService = ligmusService;
     }
 
-    @GetMapping("/{id}/register")
-    public String registerUser(@PathVariable int id ,@ModelAttribute("User") UserUpdateForm updateUser, Model model) {
+    @GetMapping("/register")
+    public String registerUser(@ModelAttribute("User") UserUpdateForm updateUser, Model model) {
         model.addAttribute("User", updateUser);
         model.addAttribute("isRegister", true);
         return "updateUser";
     }
-    @GetMapping("/{id}/update")
+    @GetMapping("/update")
     public String updateUser(Model model) {
         model.addAttribute("isRegister", false);
         model.addAttribute("User", new UserUpdateForm());
         return "updateUser";
     }
-    @PostMapping("/{id}/update")
+    @PostMapping("/update")
     public String updateUser(@ModelAttribute("User") @Validated(OnUpdate.class) UserUpdateForm userUpdateForm,
                              BindingResult result,
                              @PathVariable int id, Model model) {
@@ -48,7 +48,7 @@ public class UserController {
         this.ligmusService.updateUser(id,userUpdateForm);
     return "index";
     }
-    @GetMapping("/{id}")
+    @GetMapping("/")
     public String showUserData(@PathVariable int id, Model model) {
         User user = this.ligmusService.getUser(id);
         if ( user == null) {
