@@ -1,44 +1,74 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <link rel="stylesheet" th:href="@{/css/select.css}">
+  <link rel="stylesheet" th:href="@{/css/a.css}">
+  <link rel="stylesheet" th:href="@{/css/button.css}">
+  <link rel="stylesheet" th:href="@{/css/table.css}">
   <meta charset="UTF-8">
   <title>Title</title>
 </head>
 <body>
 <div>
-  <div th:fragment="userSort">
-  <form th:action="@{./}" th:method="Get" >
-    <select name="sort" onchange="this.form.submit()">
-      <option th:if="${methodSelect == 'id_asc'}" selected disabled hidden>Id rosnąco</option>
-      <option th:if="${methodSelect == 'id_desc'}" selected disabled hidden>Id malejąco</option>
-      <option th:if="${methodSelect == 'firstname_asc'}" selected disabled hidden>Imię A-Z</option>
-      <option th:if="${methodSelect == 'firstname_desc'}" selected disabled hidden>Imię Z-A</option>
-
-      <option value="id_asc" th:if="${methodSelect != 'id_asc'}">Id rosnąco</option>
-      <option value="id_desc" th:if="${methodSelect != 'id_desc'}">Id malejąco</option>
-      <option value="firstname_asc" th:if="${methodSelect != 'firstname_asc'}">Imię A-Z</option>
-      <option value="firstname_desc" th:if="${methodSelect != 'firstname_desc'}">Imię Z-A</option>
-
-    </select>
-  </form>
-  </div>
-
   <h1 th:text="|List of Students|"></h1>
+  <div th:fragment="userSort">
+    <form th:action="@{./}" th:method="Get" >
+      <select name="sort" onchange="this.form.submit()" id="sortSelect">
+        <option th:if="${methodSelect == 'id_asc'}" selected disabled hidden>Id rosnąco</option>
+        <option th:if="${methodSelect == 'id_desc'}" selected disabled hidden>Id malejąco</option>
+        <option th:if="${methodSelect == 'firstname_asc'}" selected disabled hidden>Imię A-Z</option>
+        <option th:if="${methodSelect == 'firstname_desc'}" selected disabled hidden>Imię Z-A</option>
+
+        <option value="id_asc" th:if="${methodSelect != 'id_asc'}">Id rosnąco</option>
+        <option value="id_desc" th:if="${methodSelect != 'id_desc'}">Id malejąco</option>
+        <option value="firstname_asc" th:if="${methodSelect != 'firstname_asc'}">Imię A-Z</option>
+        <option value="firstname_desc" th:if="${methodSelect != 'firstname_desc'}">Imię Z-A</option>
+
+      </select>
+    </form>
+  </div>
   <h3 th:if="${students.size()==0}"
       th:text="|There are no students|"></h3>
-  <ol>
-    <li th:each="student:${students}">
-      <ul>
-        <li th:text="|Identyfikator Studenta ${student.id}|"></li>
-        <li th:text="|Imie ${student.firstName} |"></li>
-        <li th:text="|Nazwisko ${student.id}|"></li>
-        <li th:text="|Data urodzenia ${student.dateOfBirth} |"></li>
-        <a th:href="@{'/teacher/students/'+${student.id}+'/grades/'}" th:text="'Zobacz oceny studenta'"/>
-      </ul>
-    </li>
-  </ol>
+<!--  <ol>-->
+<!--    <li th:each="student:${students}">-->
+<!--      <ul>-->
+<!--        <li th:text="|Identyfikator Studenta ${student.id}|"></li>-->
+<!--        <li th:text="|Imie ${student.firstName} |"></li>-->
+<!--        <li th:text="|Nazwisko ${student.id}|"></li>-->
+<!--        <li th:text="|Data urodzenia ${student.dateOfBirth} |"></li>-->
+<!--        <a th:href="@{'/teacher/students/'+${student.id}+'/grades/'}" th:text="'Zobacz oceny studenta'"/>-->
+<!--      </ul>-->
+<!--    </li>-->
+<!--  </ol>-->
 
-  <a th:href="@{../}" th:text="'Powrót'"/>
+  <table>
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Imię</th>
+      <th>Nazwisko</th>
+      <th>Data urodzenia</th>
+      <th>Oceny</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="student : ${students}">
+      <td th:text="${student.id}">1</td>
+      <td th:text="${student.firstName}">Jan</td>
+      <td th:text="${student.lastName}">Kowalski</td>
+      <td th:text="${student.dateOfBirth}">2005-09-01</td>
+      <td>
+        <a th:href="@{'/teacher/students/' + ${student.id} + '/grades/'}">
+          Zobacz oceny
+        </a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+
+  <a th:href="@{../}" th:text="'Powrót'" class="btn btn-secondary"/>
   <div th:replace="~{index::logout}"></div>
 </div>
 </body>

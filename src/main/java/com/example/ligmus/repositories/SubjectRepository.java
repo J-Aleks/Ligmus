@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -63,5 +64,14 @@ public class SubjectRepository {
             }
         }
         return null;
+    }
+
+    public HashMap<Integer, String> getSubjectNamesForId() {
+        List<Subject> subjects = getSubjects();
+        HashMap<Integer, String> subjectsNamesId = new HashMap<>();
+        for (Subject subject : subjects) {
+            subjectsNamesId.put(subject.getId(), subject.getName());
+        }
+        return subjectsNamesId;
     }
 }

@@ -1,6 +1,13 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="Pl" xmlns:th="http://www.thymeleaf.org">
 <head>
+<!--    <link rel="stylesheet" th:href="@{/css/style.css}">-->
+    <link rel="stylesheet" th:href="@{/css/a.css}">
+    <link rel="stylesheet" th:href="@{/css/select.css}">
+    <link rel="stylesheet" th:href="@{/css/button.css}">
+    <link rel="stylesheet" th:href="@{/css/textarea.css}">
+    <link rel="stylesheet" th:href="@{/css/input.css}">
+    <link rel="stylesheet" th:href="@{/css/table.css}">
     <meta charset="UTF-8">
     <title>Generuj link udostępnienia</title>
 </head>
@@ -10,31 +17,37 @@
 
 <form th:object="${shareForm}" th:action="@{/teacher/share/generate}" method="post">
 
-    <div>
-        <div th:if="${#fields.hasErrors('subjectName')}"
-             th:errors="*{subjectName}">Błąd</div>
-    </div>
+<!--    <div>-->
+<!--        <div th:if="${#fields.hasErrors('subjectName')}"-->
+<!--             th:errors="*{subjectName}">Błąd</div>-->
+<!--    </div>-->
         <label for="subjectId">Przedmiot:</label>
-        <select th:field="*{subjectName}" name="subjectName" id="subjectId" >
+        <select th:field="*{subjectName}" name="subjectName" id="subjectId"
+                th:classappend="${#fields.hasErrors('subjectName')} ? 'is-invalid' : ''">
             <option value=""></option>
             <option th:each="subject : ${subjects}"
                     th:value="${subject.id}"
                     th:text="${subject.name}">Matematyka</option>
         </select>
-
-    </div>
-
+    <p class="invalid-feedback" th:if="${#fields.hasErrors('subjectName')}"
+       th:errors="*{subjectName}">
+        Komunikat błędu
+    </p><br>
     <div>
-        <div th:if="${#fields.hasErrors('grantedToTeacherId')}"
-             th:errors="*{grantedToTeacherId}">Błąd</div>
+<!--        <div th:if="${#fields.hasErrors('grantedToTeacherId')}"-->
+<!--             th:errors="*{grantedToTeacherId}">Błąd </div>-->
         <label for="recipientId">Udostępnij nauczycielowi:</label>
-        <select th:field="*{grantedToTeacherId}" name="grantedToTeacherId" id="recipientId" >
+        <select th:field="*{grantedToTeacherId}" name="grantedToTeacherId" id="recipientId"
+                th:classappend="${#fields.hasErrors('grantedToTeacherId')} ? 'is-invalid' : ''">>
             <option value=""></option>
             <option th:each="teacher : ${otherTeachers}"
                     th:value="${teacher.id}"
                     th:text="${teacher.firstName}+' '+${teacher.lastName}">Anna Nowak</option>
         </select>
-
+        <p class="invalid-feedback" th:if="${#fields.hasErrors('grantedToTeacherId')}"
+           th:errors="*{grantedToTeacherId}">
+            Komunikat błędu
+        </p><br>
 
     </div>
 
@@ -42,14 +55,12 @@
         <label for="expiresAt">Data wygaśnięcia linku:</label>
         <input type="date" th:field="*{expiresAt}" id="expiresAt" name="expiresAt">
     </div>
-
+<br>
     <div>
-        <button type="submit">Wygeneruj link</button>
+        <button class="btn btn-secondary" type="submit">Wygeneruj link</button>
+        <a th:href="@{./}" th:text="'Powrót'" class="btn btn-secondary"></a>
     </div>
 
 </form>
-<div>
-<a th:href="@{./}" th:text="'Powrót'"></a>
-</div>
 </body>
 </html>

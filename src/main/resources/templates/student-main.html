@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
+  <link rel="stylesheet" th:href="@{/css/a.css}">
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <link rel="stylesheet" th:href="@{/css/button.css}">
   <meta charset="UTF-8">
   <title>Student</title>
 </head>
 <body>
-<a th:href="@{grades}" th:text="'Zobacz oceny'"/>
+<a th:href="@{grades}" th:text="'Zobacz oceny'" class="btn btn-secondary"/>
 <div th:replace="index::logout"></div>
 </body>
 </html>

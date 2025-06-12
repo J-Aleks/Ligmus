@@ -249,6 +249,7 @@ public class UserRepository {
     public boolean userDelete(int id){
         return this.users.remove(getUser(id));
     }
+
     public boolean addUser(UserAddForm newUser){
         String userType = newUser.getUserType();
         User user;
@@ -293,6 +294,15 @@ public class UserRepository {
         System.out.println("otherTeachers: " + otherTeachers);
         return otherTeachers;
     }
+
+    public String getStudentFullName(int studentId){
+        User student = this.getStudent(studentId);
+        if (student == null) {
+            return null;
+        }
+        return student.getFirstName() +' '+ student.getLastName();
+    }
+
 //    public boolean addUser(User newUser){
 //        UserType userType = newUser.getUserType();
 //        User user;

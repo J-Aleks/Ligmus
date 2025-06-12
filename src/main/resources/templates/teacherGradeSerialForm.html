@@ -1,22 +1,16 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
+    <link rel="stylesheet" th:href="@{/css/a.css}">
+    <link rel="stylesheet" th:href="@{/css/select.css}">
+    <link rel="stylesheet" th:href="@{/css/button.css}">
+    <link rel="stylesheet" th:href="@{/css/textarea.css}">
+    <link rel="stylesheet" th:href="@{/css/input.css}">
+    <link rel="stylesheet" th:href="@{/css/table.css}">
     <meta charset="UTF-8">
     <title>Dodawanie ocen uczniów</title>
 </head>
 <body>
-<div >
-    <form th:action="@{./GradesSerialForm}" th:method="Get" >
-        <label>
-            <select name="sort" onchange="this.form.submit()">
-                <option value="id_asc" th:selected="${methodSelect == 'id_asc'}">Id rosnąco</option>
-                <option value="id_desc" th:selected="${methodSelect  == 'id_desc'}">Id malejąco</option>
-                <option value="firstname_asc" th:selected="${methodSelect  == 'firstname_asc'}">Imię A-Z</option>
-                <option value="firstname_desc" th:selected="${methodSelect  == 'firstname_desc'}">Imię Z-A</option>
-            </select>
-        </label>
-    </form>
-</div><br>
 <!--<h2 th:text="${'Dodaj ocene dla ucznia '+ student.firstName+' '+student.lastName}"></h2>-->
 <form th:object="${form}" th:action="@{${isUpdate ? './GradesSerialForm/update' : './GradesSerialForm/add'}}" th:method="post">
     <label>
@@ -68,10 +62,10 @@
             </tr>
         </tbody>
     </table>
-    <input type="submit" value="Zapisz">
-    <button type="submit" formaction="./GradesSerialForm/saveDraft">Zapisz wersję roboczą</button>
+    <button type="submit" class=" btn btn-secondary" >Zapisz</button>
+    <button class="btn btn-secondary" type="submit" formaction="./GradesSerialForm/saveDraft">Zapisz wersję roboczą</button>
 </form>
 
-<a th:href="@{${isUpdate ? '../' : './'}}" th:text="'Anuluj'"/>
+<a class="btn btn-secondary" th:href="@{${isUpdate ? '../' : './'}}" th:text="'Anuluj'"/>
 </body>
 </html>

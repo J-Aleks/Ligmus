@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <link rel="stylesheet" th:href="@{/css/table.css}">
+  <link rel="stylesheet" th:href="@{/css/a.css}">
+  <link rel="stylesheet" th:href="@{/css/button.css}">
   <meta charset="UTF-8">
   <title>Udostępnione linki</title>
 </head>
@@ -67,8 +71,8 @@
   </tbody>
 </table>
 <div>
-  <a th:href="@{generate}" th:text="'Stwórz nowy link'"></a><br>
-  <a th:href="@{../}" th:text="'Powrót'"></a>
+  <a th:href="@{generate}" th:text="'Stwórz nowy link'" class="btn btn-secondary"></a>
+  <a th:href="@{../}" th:text="'Powrót'" class="btn btn-secondary"></a>
   <div th:replace="index::logout"></div>
 </div>
 </body>

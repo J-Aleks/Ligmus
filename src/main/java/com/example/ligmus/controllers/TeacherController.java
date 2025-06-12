@@ -42,20 +42,8 @@ public class TeacherController {
     public String showGradeSerialForm(Model model, @RequestParam(value = "sort", required = false) String sort,
                                       @RequestParam(value = "subject", required = false) String subject,
                                       @CookieValue(value = "subjectCookie", required = false) String subjectCookie,
-                                      @CookieValue(value = "sortCookie", required = false) String sortCookie,
                                       HttpServletResponse response, HttpSession session,
                                       @AuthenticationPrincipal CustomUserDetails user) {
-
-//TODO: sortowanie usuwa wszytkie wprowadzone zmiany formularza
-        String sortMethod = (sort != null) ? sort :
-                (sortCookie != null) ? sortCookie : "id_asc";
-        System.out.println("sortMethod: " + sortMethod);
-        if (sort != null) {
-            Cookie cookie = new Cookie("sortUserInFormCookie", sort);
-            cookie.setPath("/");
-            cookie.setMaxAge(24 * 60 * 60);
-            response.addCookie(cookie);
-        }
 
 
         int teacherId = user.getId();
@@ -76,7 +64,7 @@ public class TeacherController {
         GradeFormDTO gradeFormDTO = new GradeFormDTO();
         if (session.getAttribute("gradesSerialFormDraft" )== null) {
             if(gradeFormDTO.getGrades() == null) {
-                List<User> students = this.ligmusService.sortUsers(this.ligmusService.getStudents(), sortMethod);
+                List<User> students = this.ligmusService.getStudents();
                 if (students.isEmpty()) {
                     throw new ResourceNotFoundException("No students found");
                 }
@@ -90,15 +78,14 @@ public class TeacherController {
                     gradeFormDTO.setGrades(studentsDTOList);
                 }
             }
-            else {
-                gradeFormDTO.setGrades(gradeFormDTO.sortStudents(gradeFormDTO.getGrades(), sortMethod));
-            }
+//            else {
+//                gradeFormDTO.setGrades(gradeFormDTO.sortStudents(gradeFormDTO.getGrades(), sortMethod));
+//            }
 //            model.addAttribute("selectedSubject", selectedSubject);
             model.addAttribute("form", gradeFormDTO);
         }
         else {
             GradeFormDTO tempForm = (GradeFormDTO) session.getAttribute("gradesSerialFormDraft");
-            tempForm.setGrades(tempForm.sortStudents(tempForm.getGrades(), sortMethod));
             boolean isUpdate = (boolean) session.getAttribute("isFormUpdate");
             if (isUpdate) {
                 return "redirect:/teacherGradeSerialForm/update";
@@ -107,7 +94,6 @@ public class TeacherController {
 //            model.addAttribute("form", session.getAttribute("gradesSerialFormDraft"));
             model.addAttribute("form", tempForm);
         }
-        model.addAttribute("methodSelect" , sortMethod);
         model.addAttribute("subjects", teacherSubjectList);
         model.addAttribute("isUpdate", false);
         return "teacherGradeSerialForm";
@@ -119,7 +105,7 @@ public class TeacherController {
         session.setAttribute("gradesSerialFormDraft", gradeFormDTO);
         session.setAttribute("isFormUpdate", false);
 
-     return "index";
+     return "teacher-main";
     }
 
     @PostMapping("/GradesSerialForm/add")

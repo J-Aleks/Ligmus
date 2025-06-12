@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/student")
@@ -34,10 +35,13 @@ public class StudentController {
     public String ShowStudentGrades(@AuthenticationPrincipal CustomUserDetails user, Model model) {
 
         int studentId = user.getId();
+        String studentFullName = this.ligmusService.getStudentFullName(studentId);
+        Map<Integer, String> SubjectDescriptions = this.ligmusService.getSubjectNamesForId();
         List<Grade> grades = this.ligmusService.getGradesByUserId(studentId);
         model.addAttribute("isTeacher",false);
-        model.addAttribute("studentId", studentId);
+        model.addAttribute("studentFullName", studentFullName);
         model.addAttribute("grades",grades);
+        model.addAttribute("subjectMap",SubjectDescriptions);
         return "grades";
     }
 

@@ -33,6 +33,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/student/**").hasRole("STUDENT")
 //                        .requestMatchers("/api/**").hasRole("ADMIN")
                         .requestMatchers("/api/**").permitAll()
+                                .requestMatchers("/css/**").permitAll()
                         .requestMatchers("/").permitAll()
                         .anyRequest().authenticated()
                 )

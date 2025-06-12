@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("teacher/students/{studentId}/grades")
@@ -59,16 +60,20 @@ public class GradeController {
     @GetMapping("/")
     public String ShowStudentGrades(@PathVariable int studentId, Model model,
                                     @AuthenticationPrincipal CustomUserDetails user) {
-        List<Grade> grades = new ArrayList<>();
+        List<GradeDTO> gradeDTO = new ArrayList<>();
         int teacherId = user.getId();
+        Map<Integer, String> SubjectDescriptions = this.ligmusService.getSubjectNamesForId();
         List<Subject> TeacherSubjectList = this.ligmusService.getTeacherSubjects(teacherId);
         for (Subject subject : TeacherSubjectList) {
-            grades.addAll(this.ligmusService.getStudentGradesFromSubject(studentId, subject.getId()));
-            System.out.println(grades);
+            gradeDTO.addAll(this.ligmusService.getStudentGradesFromSubjectDTO(studentId, subject.getId()));
+            System.out.println(gradeDTO);
         }
+
+        String studentFullName = this.ligmusService.getStudentFullName(studentId);
         model.addAttribute("isTeacher",true);
-        model.addAttribute("studentId", studentId);
-        model.addAttribute("grades",grades);
+        model.addAttribute("studentFullName", studentFullName);
+        model.addAttribute("grades",gradeDTO);
+        model.addAttribute("subjectMap",SubjectDescriptions);
         return "grades";
     }
 
@@ -87,9 +92,11 @@ public class GradeController {
 
     @PostMapping("/add")
     public String saveGrade(@PathVariable int studentId, @ModelAttribute("grade")  @Validated GradeDTO newGrade,
-                            BindingResult bindingResult, Model model) {
+                            BindingResult bindingResult, Model model,
+                            @AuthenticationPrincipal CustomUserDetails user) {
 
         if (bindingResult.hasErrors()) {
+            System.out.println(bindingResult.getAllErrors());
             model.addAttribute("isUpdate", false);
             model.addAttribute("subjects", this.ligmusService.getSubjects());
             model.addAttribute("student",this.ligmusService.getStudent(studentId));
@@ -98,10 +105,11 @@ public class GradeController {
         }
 
         System.out.println("Saving grade");
+        newGrade.setTeacherId(user.getId());
         newGrade.setStudentId(studentId);
         newGrade.setGradeId(this.ligmusService.getNextGradeIndex());
         this.ligmusService.addGrade(newGrade);
-        return "redirect:/student/" + studentId + "/grades/";
+        return "redirect:/teacher/students/" + studentId + "/grades/";
     }
 
     @GetMapping("/{gradeId}/update")
@@ -135,6 +143,6 @@ public class GradeController {
 
 
         this.ligmusService.updateGradeById(gradeId, grade);
-        return "redirect:/student/" + studentId + "/grades/";
+        return "redirect:/teacher/students/" + studentId + "/grades/";
     }
 }

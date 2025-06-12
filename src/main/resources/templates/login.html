@@ -1,7 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-                xmlns:sec="https:www//thymeleaf.org/thymeleaf-extras-spring security3">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <link rel="stylesheet" th:href="@{/css/input.css}">
+  <link rel="stylesheet" th:href="@{/css/button.css}">
+
   <meta charset="UTF-8">
   <title>Title</title>
 </head>
@@ -14,7 +17,7 @@
     <div th:if="${param.error}">
       <p style="color:red;">Błędny login lub hasło</p>
     </div>
-    <div> <input type="submit" value="Sign In"></div>
+    <button class="btn-secondary" type="submit">Sign In</button>
   </form>
 </div>
 </body>

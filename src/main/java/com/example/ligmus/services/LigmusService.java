@@ -41,6 +41,13 @@ public class LigmusService {
         return convertGradeToGradeDto(grade);
     }
 
+    public List<GradeDTO> getStudentGradesFromSubjectDTO(int studentId, int subjectId){
+        List<Grade> grades = this.getStudentGradesFromSubject(studentId, subjectId);
+        return grades.stream()
+                .map(this::convertGradeToGradeDto)
+                .toList();
+    }
+
     private GradeDTO convertGradeToGradeDto(Grade grade) {
         GradeDTO gradeDTO = new GradeDTO();
         gradeDTO.setGradeId(grade.getGradeId());
@@ -176,4 +183,12 @@ public class LigmusService {
         }
         return teachersNamesId;
     }
+    public HashMap<Integer, String> getSubjectNamesForId(){
+        return this.subjectRepository.getSubjectNamesForId();
+    }
+    public String getStudentFullName(int studentId){
+        return this.userRepository.getStudentFullName(studentId);
+    }
+
+
 }
