@@ -11,14 +11,11 @@ import com.example.ligmus.exception.ResourceNotFoundException;
 import com.example.ligmus.security.auth.CustomUserDetails;
 import com.example.ligmus.services.LigmusService;
 import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -46,7 +43,8 @@ public class TeacherController {
                                       @RequestParam(value = "subject", required = false) String subject,
                                       @CookieValue(value = "subjectCookie", required = false) String subjectCookie,
                                       @CookieValue(value = "sortCookie", required = false) String sortCookie,
-                                      HttpServletResponse response, HttpSession session) {
+                                      HttpServletResponse response, HttpSession session,
+                                      @AuthenticationPrincipal CustomUserDetails user) {
 
 //TODO: sortowanie usuwa wszytkie wprowadzone zmiany formularza
         String sortMethod = (sort != null) ? sort :
@@ -60,7 +58,7 @@ public class TeacherController {
         }
 
 
-        int teacherId = (int) session.getAttribute("userId");
+        int teacherId = user.getId();
         List<Subject> teacherSubjectList = this.ligmusService.getTeacherSubjects(teacherId);
         if (teacherSubjectList.isEmpty()) {
             throw new IllegalStateException("Teacher not teach any subjects");
@@ -117,10 +115,8 @@ public class TeacherController {
 
     @PostMapping("/GradesSerialForm/saveDraft")
     public String saveDraftGrades(@ModelAttribute("form") GradeFormDTO gradeFormDTO,
-//                             @ModelAttribute("subjects") String subject,
                              HttpSession session) {
         session.setAttribute("gradesSerialFormDraft", gradeFormDTO);
-//        session.setAttribute("selectedSubject", subject);
         session.setAttribute("isFormUpdate", false);
 
      return "index";
