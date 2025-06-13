@@ -28,6 +28,10 @@ a.btn {
     text-decoration: none;
 }
 
+a.back {
+    margin-top: 1rem;
+}
+
 
 /* end of Odnośnik (link tekstowy) component */
 

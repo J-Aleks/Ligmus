@@ -8,10 +8,14 @@
     <link rel="stylesheet" th:href="@{/css/input.css}">
     <link rel="stylesheet" th:href="@{/css/table.css}">
     <meta charset="UTF-8">
-    <title>Dodawanie ocen uczniów</title>
+    <title>Dodawanie ocen seryjnie uczniów</title>
 </head>
 <body>
-<!--<h2 th:text="${'Dodaj ocene dla ucznia '+ student.firstName+' '+student.lastName}"></h2>-->
+<header>
+<h1 th:text="|Dodaj oceny seryjnie|"></h1>
+
+</form>
+</header>
 <form th:object="${form}" th:action="@{${isUpdate ? './GradesSerialForm/update' : './GradesSerialForm/add'}}" th:method="post">
     <label>
         <select name="subject" th:field="*{subject}">
@@ -63,9 +67,9 @@
         </tbody>
     </table>
     <button type="submit" class=" btn btn-secondary" >Zapisz</button>
-    <button class="btn btn-secondary" type="submit" formaction="./GradesSerialForm/saveDraft">Zapisz wersję roboczą</button>
+    <button class=" btn btn btn-secondary" type="submit" formaction="./GradesSerialForm/saveDraft">Zapisz wersję roboczą</button>
 </form>
 
-<a class="btn btn-secondary" th:href="@{${isUpdate ? '../' : './'}}" th:text="'Anuluj'"/>
+<a class="btn btn-secondary back" th:href="@{${isUpdate ? '../' : './'}}" th:text="'Anuluj'"/>
 </body>
 </html>

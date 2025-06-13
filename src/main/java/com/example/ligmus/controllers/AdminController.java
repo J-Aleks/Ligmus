@@ -1,12 +1,12 @@
 package com.example.ligmus.controllers;
 
 
+import com.example.ligmus.data.DTO.UserUpdateFormDTO;
 import com.example.ligmus.data.users.*;
 import com.example.ligmus.services.LigmusService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
@@ -104,7 +104,7 @@ public class AdminController {
     }
 
     @PostMapping("/users/{id}/update")
-    public String updateUser(@PathVariable int id, @ModelAttribute("newUser") UserUpdateForm updateUser) throws JsonProcessingException {
+    public String updateUser(@PathVariable int id, @ModelAttribute("newUser") UserUpdateFormDTO updateUser) throws JsonProcessingException {
         System.out.println("AdminContr update user");
         ObjectMapper mapper = new ObjectMapper()
                 .registerModule(new JavaTimeModule())

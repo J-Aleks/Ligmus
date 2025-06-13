@@ -8,19 +8,17 @@
     <link rel="stylesheet" th:href="@{/css/textarea.css}">
     <link rel="stylesheet" th:href="@{/css/input.css}">
     <link rel="stylesheet" th:href="@{/css/table.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
     <meta charset="UTF-8">
     <title>Generuj link udostępnienia</title>
 </head>
 <body>
-
-<h2>Generuj link do udostępnienia ocen z przedmiotu</h2>
-
+<header>
+    <h1 th:text="|Generuj link do udostępnienia ocen z przedmiotu|"></h1>
+</header>
+<div id="formDiv">
 <form th:object="${shareForm}" th:action="@{/teacher/share/generate}" method="post">
 
-<!--    <div>-->
-<!--        <div th:if="${#fields.hasErrors('subjectName')}"-->
-<!--             th:errors="*{subjectName}">Błąd</div>-->
-<!--    </div>-->
         <label for="subjectId">Przedmiot:</label>
         <select th:field="*{subjectName}" name="subjectName" id="subjectId"
                 th:classappend="${#fields.hasErrors('subjectName')} ? 'is-invalid' : ''">
@@ -51,10 +49,9 @@
 
     </div>
 
-    <div>
         <label for="expiresAt">Data wygaśnięcia linku:</label>
         <input type="date" th:field="*{expiresAt}" id="expiresAt" name="expiresAt">
-    </div>
+
 <br>
     <div>
         <button class="btn btn-secondary" type="submit">Wygeneruj link</button>
@@ -62,5 +59,6 @@
     </div>
 
 </form>
+</div>
 </body>
 </html>

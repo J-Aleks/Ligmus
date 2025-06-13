@@ -374,3 +374,55 @@ input[type=number].is-invalid:focus {
 input[type=number].is-invalid ~ .invalid-feedback {
     display: inline-block;
 }
+
+input[type="date"] {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    display: block;
+    /*width: 10%;*/
+    padding: 0.5rem 0.75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #1b1b1b;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #b7b7b7;
+    border-radius: 0.25rem;
+
+    /* dla czytelności */
+    min-height: 2.75rem;
+}
+
+/* focus (nawigacja klawiaturą) */
+input[type="date"]:focus {
+    outline: none;
+    border-color: #0052a5;
+    box-shadow: 0 0 0 3px rgba(0, 82, 165, 0.3);
+}
+
+/* nieaktywne */
+input[type="date"]:disabled,
+input[type="date"][readonly] {
+    background-color: #f1f1f1;
+    color: #767676;
+    cursor: not-allowed;
+    opacity: 1;
+}
+
+/* błąd walidacji */
+input[type="date"].is-invalid {
+    border-bottom: 3px solid #d5233f;
+    border-radius: 0;
+}
+
+input[type="date"].is-invalid:focus {
+    box-shadow: 0 0 0 3px rgba(213, 35, 63, 0.3);
+}
+
+/* wspierany przez większość przeglądarek: ikona kalendarza */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    color: #0052a5;
+    opacity: 0.7;
+    cursor: pointer;
+}

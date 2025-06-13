@@ -106,15 +106,12 @@ public class LigmusService {
         this.userRepository.addUser(newUser);
     }
 
-    public boolean updateUser(int id, UserUpdateForm newUser) {
+    public boolean updateUser(int id, UserUpdateFormDTO newUser) {
         User oldUser = getUser(id);
         if(oldUser == null) {
             return false;
         }
-        if(!this.userRepository.updateUser(id, newUser)) {
-            return false;
-        }
-        return true;
+        return this.userRepository.updateUser(id, newUser);
     }
 
     public User getUser(int id){

@@ -5,9 +5,12 @@
     <link rel="stylesheet" th:href="@{/css/style.css}">
 
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Udostępnione oceny uczniów</title>
 </head>
 <body>
+<header>
+    <h1 th:text="|Oceny uczniów z przedmiotu: ${studentsDTO.subject} |"></h1>
+</header>
 <div>
     <table>
         <thead>
@@ -27,8 +30,6 @@
                     </span>
                 </span>
             </td>
-<!--            <td>-->
-<!--            </td>-->
         </tr>
         </tbody>
     </table>

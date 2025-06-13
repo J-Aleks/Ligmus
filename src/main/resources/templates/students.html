@@ -10,8 +10,15 @@
   <title>Title</title>
 </head>
 <body>
+<header>
+  <h1 th:text="|Lista Studentów|"></h1>
+
+  <form th:action="@{/logout}" method="post" th:fragment="logout">
+    <button class=" btn btn-secondary" type="submit">Wyloguj</button>
+  </form>
+</header>
+
 <div>
-  <h1 th:text="|List of Students|"></h1>
   <div th:fragment="userSort">
     <form th:action="@{./}" th:method="Get" >
       <select name="sort" onchange="this.form.submit()" id="sortSelect">
@@ -30,18 +37,6 @@
   </div>
   <h3 th:if="${students.size()==0}"
       th:text="|There are no students|"></h3>
-<!--  <ol>-->
-<!--    <li th:each="student:${students}">-->
-<!--      <ul>-->
-<!--        <li th:text="|Identyfikator Studenta ${student.id}|"></li>-->
-<!--        <li th:text="|Imie ${student.firstName} |"></li>-->
-<!--        <li th:text="|Nazwisko ${student.id}|"></li>-->
-<!--        <li th:text="|Data urodzenia ${student.dateOfBirth} |"></li>-->
-<!--        <a th:href="@{'/teacher/students/'+${student.id}+'/grades/'}" th:text="'Zobacz oceny studenta'"/>-->
-<!--      </ul>-->
-<!--    </li>-->
-<!--  </ol>-->
-
   <table>
     <thead>
     <tr>

@@ -1,9 +1,8 @@
 package com.example.ligmus.repositories;
 
+import com.example.ligmus.data.DTO.UserUpdateFormDTO;
 import com.example.ligmus.data.users.*;
 import com.example.ligmus.data.subjects.Subject;
-import com.example.ligmus.exception.ResourceNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -109,7 +108,7 @@ public class UserRepository {
         return null;
     }
 
-    public boolean updateUser(int id, UserUpdateForm newData){
+    public boolean updateUser(int id, UserUpdateFormDTO newData){
         User user = getUser(id);
         if (user == null) {
             return false;

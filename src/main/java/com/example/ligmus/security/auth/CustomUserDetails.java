@@ -6,6 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 
@@ -43,7 +44,13 @@ public class CustomUserDetails implements UserDetails {
 
     public String getFirstName() { return this.user.getFirstName(); }
 
+    public String getLastName() { return this.user.getLastName(); }
+
     public int getId() { return this.user.getId(); }
 
     public List<Subject> getSubjects() {return this.user.getSubjects();}
+
+    public LocalDate getDateOfBirth() { return this.user.getDateOfBirth(); }
+
+    public User getUser() { return this.user; }
 }

@@ -8,7 +8,13 @@
   <title>Student</title>
 </head>
 <body>
-<a th:href="@{grades}" th:text="'Zobacz oceny'" class="btn btn-secondary"/>
-<div th:replace="index::logout"></div>
+<div th:replace="index::header"></div>
+<nav class="vertical-menu">
+  <ul class="vertical-menu">
+    <li><a th:href="@{grades}" th:text="'Zobacz oceny'" class="btn btn-secondary"/></li>
+    <li><a th:href="@{/user/}" th:text="'Dane Konta'" class="btn btn-secondary" /></li>
+    <li><div th:replace="index::logout"></div></li>
+  </ul>
+</nav>
 </body>
 </html>

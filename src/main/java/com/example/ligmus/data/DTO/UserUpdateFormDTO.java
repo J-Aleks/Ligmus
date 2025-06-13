@@ -1,4 +1,4 @@
-package com.example.ligmus.data.users;
+package com.example.ligmus.data.DTO;
 
 import com.example.ligmus.data.subjects.Subject;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -14,7 +14,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Data
-public class UserUpdateForm {
+public class UserUpdateFormDTO {
 
     @NotNull(groups = OnCreate.class, message = "Nazwa użytkownika jest wymagana")
     private String username;
