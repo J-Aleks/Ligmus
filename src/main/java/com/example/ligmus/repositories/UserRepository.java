@@ -1,8 +1,10 @@
 package com.example.ligmus.repositories;
 
 import com.example.ligmus.data.DTO.UserUpdateFormDTO;
+import com.example.ligmus.data.Entities.SubjectEntity;
 import com.example.ligmus.data.users.*;
 import com.example.ligmus.data.subjects.Subject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -13,28 +15,31 @@ import java.util.stream.Collectors;
 public class UserRepository {
     private List<User> users;
 
-    final
+    @Autowired
     SubjectRepository SubjectRepository;
 
     UserRepository(SubjectRepository SubjectRepository){
         this.SubjectRepository = SubjectRepository;
         users = new LinkedList<>();
-        List<Subject> subjects = new LinkedList<>();
-        subjects.add(this.SubjectRepository.getSubject(1));
+        List<SubjectEntity> subjects = new LinkedList<>();
+        Optional<SubjectEntity> optSubjectEntity = this.SubjectRepository.findById(1);
         LocalDate localDate = LocalDate.of(1998, 4, 21);
+        if (optSubjectEntity.isPresent()){
+            subjects.add(optSubjectEntity.get());
+            users.add(new User(4, UserType.TEACHER, "teach1", "teacher1", "teach", localDate, "{noop}teach",
+                    subjects));
+        }
         users.add(new User(0, UserType.STUDENT,"test1", "Test1", "Tere1", localDate,  "{noop}password1"));
         localDate = LocalDate.of(2005, 5, 7);
         users.add(new User(1,UserType.STUDENT, "test2", "Test2", "Tenko2", localDate,  "{noop}password2"));
         localDate = LocalDate.of(2006, 5, 7);
         users.add(new User(2, UserType.ADMIN, "admin", "admin1", "admin1", localDate,"{noop}admin"));
         users.add(new User(3,"test","{noop}test", UserType.STUDENT));
-        users.add(new User(4, UserType.TEACHER, "teach1", "teacher1", "teach", localDate, "{noop}teach",
-              subjects));
-//        subjects = new LinkedList<>();
-        subjects.add(this.SubjectRepository.getSubject(2));
-        users.add(new User(5, UserType.TEACHER, "teach2", "teacher2", "teach", localDate, "{noop}teach",
-                subjects));
-
+        if (optSubjectEntity.isPresent()){
+            subjects.add(optSubjectEntity.get());
+            users.add(new User(5, UserType.TEACHER, "teach2", "teacher2", "teach", localDate, "{noop}teach",
+                    subjects));
+        }
     }
 
     public List<User> getUsers() {
@@ -44,7 +49,7 @@ public class UserRepository {
     public User getUser(String username) {
         for (User user : users) {
             if (user.getUsername().equals(username)) {
-             return user;
+                return user;
             }
         }
         return null;
@@ -183,12 +188,12 @@ public class UserRepository {
 //        return this.users.add(student);
 //    }
 
-    public List<Subject> getTeacherSubjects(int teacherId) {
-        List<Subject> subjects = null;
+    public List<SubjectEntity> getTeacherSubjects(int teacherId) {
+        List<SubjectEntity> subjects = null;
         for (User user : users) {
             if (user.getUserType() == UserType.TEACHER) {
                 if(teacherId == user.getId()) {
-                    subjects = new ArrayList<>(user.getSubjects());
+                    subjects = new ArrayList<SubjectEntity>(user.getSubjects());
                 }
             }
         }

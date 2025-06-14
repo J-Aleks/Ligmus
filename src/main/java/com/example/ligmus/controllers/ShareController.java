@@ -3,6 +3,7 @@ package com.example.ligmus.controllers;
 
 import com.example.ligmus.data.DTO.ShareLinkDTO;
 import com.example.ligmus.data.DTO.StudentsDTO;
+import com.example.ligmus.data.Entities.SubjectEntity;
 import com.example.ligmus.data.subjects.Subject;
 import com.example.ligmus.data.users.User;
 import com.example.ligmus.exception.InvalidTokenException;
@@ -66,7 +67,7 @@ public class ShareController {
         int userId = user.getId();
         System.out.println("userId = " + userId);
         List<User> otherTeachers = this.ligmusService.getOtherTeachers(userId);
-        List<Subject> assignedSubjects = this.ligmusService.getTeacherSubjects(userId);
+        List<SubjectEntity> assignedSubjects = this.ligmusService.getTeacherSubjects(userId);
         model.addAttribute("otherTeachers", otherTeachers);
         model.addAttribute("subjects", assignedSubjects);
         model.addAttribute("shareForm", new ShareLinkDTO());

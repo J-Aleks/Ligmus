@@ -2,6 +2,7 @@ package com.example.ligmus.services;
 
 
 import com.example.ligmus.data.DTO.ShareLinkDTO;
+import com.example.ligmus.data.Entities.SubjectEntity;
 import com.example.ligmus.data.subjects.Subject;
 import com.example.ligmus.repositories.AccessSharedRepository;
 import com.example.ligmus.data.shared.AccessSharedToken;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -32,21 +34,27 @@ public class SharedAccessService {
 
     public String generateAccessLink(ShareLinkDTO linkDTO, int teacherId) {
 
-        Subject subject = this.subjectRepository.getSubject(linkDTO.getSubjectName());
-        AccessSharedToken token = new AccessSharedToken();
-        token.setToken(UUID.randomUUID().toString());
-        token.setSharedSubject(subject);
-        token.setGrantedByTeacherId(teacherId);
-        token.setGrantedToTeacherId(linkDTO.getGrantedToTeacherId());
-        if(linkDTO.getExpiresAt() == null) {
-            token.setExpiresAt(LocalDate.now().plusDays(2));
+        //tymaczoswo na id
+        Optional<SubjectEntity> optSubjectEntity = this.subjectRepository.findById(1);
+        SubjectEntity subjectEntity;
+        if (optSubjectEntity.isPresent()){
+            subjectEntity = optSubjectEntity.get();
+            AccessSharedToken token = new AccessSharedToken();
+            token.setToken(UUID.randomUUID().toString());
+            token.setSharedSubject(subjectEntity);
+            token.setGrantedByTeacherId(teacherId);
+            token.setGrantedToTeacherId(linkDTO.getGrantedToTeacherId());
+            if(linkDTO.getExpiresAt() == null) {
+                token.setExpiresAt(LocalDate.now().plusDays(2));
+            }
+            else
+                token.setExpiresAt(linkDTO.getExpiresAt());
+
+            accessSharedRepository.save(token);
+
+            return "https://twojadomena.pl/shared-access/" + token.getToken();
         }
-        else
-            token.setExpiresAt(linkDTO.getExpiresAt());
-
-        accessSharedRepository.save(token);
-
-        return "https://twojadomena.pl/shared-access/" + token.getToken();
+        return null;
     }
 
     public List<AccessSharedToken> getAccessSharedTokensToTeacher(int teacherId) {

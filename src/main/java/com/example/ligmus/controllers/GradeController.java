@@ -1,6 +1,7 @@
 package com.example.ligmus.controllers;
 
 import com.example.ligmus.data.DTO.GradeDTO;
+import com.example.ligmus.data.Entities.SubjectEntity;
 import com.example.ligmus.data.grades.Grade;
 import com.example.ligmus.data.subjects.Subject;
 import com.example.ligmus.data.users.*;
@@ -63,8 +64,8 @@ public class GradeController {
         List<GradeDTO> gradeDTO = new ArrayList<>();
         int teacherId = user.getId();
         Map<Integer, String> SubjectDescriptions = this.ligmusService.getSubjectNamesForId();
-        List<Subject> TeacherSubjectList = this.ligmusService.getTeacherSubjects(teacherId);
-        for (Subject subject : TeacherSubjectList) {
+        List<SubjectEntity> TeacherSubjectList = this.ligmusService.getTeacherSubjects(teacherId);
+        for (SubjectEntity subject : TeacherSubjectList) {
             gradeDTO.addAll(this.ligmusService.getStudentGradesFromSubjectDTO(studentId, subject.getId()));
             System.out.println(gradeDTO);
         }

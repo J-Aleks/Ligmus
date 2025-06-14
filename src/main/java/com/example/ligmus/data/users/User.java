@@ -1,5 +1,6 @@
 package com.example.ligmus.data.users;
 
+import com.example.ligmus.data.Entities.SubjectEntity;
 import com.example.ligmus.data.subjects.Subject;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
@@ -17,7 +18,7 @@ public class User {
     private String lastName;
     private LocalDate dateOfBirth;
     private UserType userType;
-    private List<Subject> subjects;
+    private List<SubjectEntity> subjects;
 
     public User(){
         this.id = 0;
@@ -40,7 +41,7 @@ public class User {
         this.dateOfBirth = dateOfBirth;
         this.userType = userType;
     }
-    public User(int id, UserType userType, String username, String firstName, String lastName, LocalDate dateOfBirth, String password, List<Subject> subjects) {
+    public User(int id, UserType userType, String username, String firstName, String lastName, LocalDate dateOfBirth, String password, List<SubjectEntity> subjects) {
         this.id = id;
         this.username = username;
         this.password = password;
