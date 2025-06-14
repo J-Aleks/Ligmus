@@ -1,20 +1,25 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-                xmlns:sec="https:www//thymeleaf.org/thymeleaf-extras-spring security3">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <link rel="stylesheet" th:href="@{/css/input.css}">
+  <link rel="stylesheet" th:href="@{/css/button.css}">
+
   <meta charset="UTF-8">
   <title>Title</title>
 </head>
 <body>
-<div>
-  <h1 th:text="|Login|"></h1>
+<header>
+  <h1 th:text="|Zaloguj się|"></h1>
+</header>
+<div id="formDiv">
   <form th:action="@{/login}" method="post">
-    <div><label> User Name: <input type="text" name="username"/></label></div>
-    <div><label> password: <input type="password" name="password"/></label></div>
+    <div><label> Nazwa Użytkownika: <input type="text" name="username"/></label></div>
+    <div><label> Hasło: <input type="password" name="password"/></label></div>
     <div th:if="${param.error}">
       <p style="color:red;">Błędny login lub hasło</p>
     </div>
-    <div> <input type="submit" value="Sign In"></div>
+    <button class="btn-secondary" type="submit">Zaloguj</button>
   </form>
 </div>
 </body>

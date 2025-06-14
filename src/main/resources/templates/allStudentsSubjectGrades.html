@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" th:href="@{/css/table.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <meta charset="UTF-8">
+    <title>Udostępnione oceny uczniów</title>
+</head>
+<body>
+<header>
+    <h1 th:text="|Oceny uczniów z przedmiotu: ${studentsDTO.subject} |"></h1>
+</header>
+<div>
+    <table>
+        <thead>
+        <tr>
+            <th>Uczeń</th>
+            <th>Oceny</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="student : ${studentsDTO.studentsList}">
+            <td th:text="${student.firstName + ' ' + student.lastName}">Jan Kowalski</td>
+            <td>
+                <span class="grade-box" th:each="grade : ${student.grades}">
+                    <span th:text="${grade.grade}"
+                          th:title="|Waga: ${grade.weight}&#10;Opis: ${grade.description}|">
+                        5
+                    </span>
+                </span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

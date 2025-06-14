@@ -1,16 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/button.css}">
+    <link rel="stylesheet" th:href="@{/css/a.css}">
     <meta charset="UTF-8">
     <title>Title Page</title>
 </head>
 <body>
-<h1>Strona główna</h1>
-<a th:href="@{/login}" th:text="'Zaloguj się'"></a>
-<a th:href="@{/student/}" th:text="'Lista studentów'"/>
+<header th:fragment="header">
+    <h1>Ligmus</h1>
 
-<form th:action="@{/logout}" method="post" th:fragment="logout">
-    <button type="submit">Wyloguj</button>
-</form>
+    <form th:action="@{/logout}" method="post" th:fragment="logout">
+        <button class=" btn btn-primary" type="submit">Wyloguj</button>
+    </form>
+</header>
+<nav class="vertical-menu">
+    <ul class="vertical-menu">
+
+        <li><a th:href="@{/login}" th:text="'Zaloguj się'" class="btn btn-secondary"></a></li>
+    </ul>
+</nav>
 </body>
 </html>

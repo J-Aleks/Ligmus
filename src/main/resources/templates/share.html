@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <link rel="stylesheet" th:href="@{/css/table.css}">
+  <link rel="stylesheet" th:href="@{/css/a.css}">
+  <link rel="stylesheet" th:href="@{/css/button.css}">
+  <meta charset="UTF-8">
+  <title>Udostępnione linki</title>
+</head>
+<body>
+<header>
+  <h1 th:text="|Udostępnianie ocen innym nauczycielom|"></h1>
+</header>
+<h2>Linki udostępnione innym nauczycielom</h2>
+
+<table border="1">
+  <thead>
+  <tr>
+    <th>Przedmiot</th>
+    <th>Udostępnione dla</th>
+    <th>Ważny do</th>
+    <th>Link</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="token : ${outgoingTokens}">
+    <td th:text="${token.sharedSubject.name}">Matematyka</td>
+    <td th:text="${teachersMap[token.grantedToTeacherId]}">Anna Nowak</td>
+    <td th:text="${#temporals.format(token.expiresAt, 'dd-MM-yyyy')}">2025-06-12 12:00</td>
+    <td>
+      <a th:href="@{'/teacher/share/' + ${token.token}}"
+         th:text="@{'/teacher/share/' + ${token.token}}"
+         target="_blank"
+         rel="noopener noreferrer">
+      </a>
+    </td>
+  </tr>
+  <tr th:if="${#lists.isEmpty(outgoingTokens)}">
+    <td colspan="4">Brak udostępnionych linków.</td>
+  </tr>
+  </tbody>
+</table>
+
+
+<h2>Linki otrzymane od innych nauczycieli</h2>
+
+<table border="1">
+  <thead>
+  <tr>
+    <th>Przedmiot</th>
+    <th>Udostępnione przez</th>
+    <th>Ważny do</th>
+    <th>Link</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="token : ${incomingTokens}">
+    <td th:text="${token.sharedSubject.name}">Biologia</td>
+    <td th:text="${teachersMap[token.grantedToTeacherId]}">Jan Kowalski</td>
+    <td th:text="${#temporals.format(token.expiresAt, 'dd-MM-yyyy')}">2025-06-20 08:00</td>
+    <td>
+      <a th:href="@{'/teacher/share/' + ${token.token}}"
+         th:text="@{'/teacher/share/' + ${token.token}}"
+         target="_blank"
+         rel="noopener noreferrer">
+      </a>
+    </td>
+  </tr>
+  <tr th:if="${#lists.isEmpty(incomingTokens)}">
+    <td colspan="4">Brak otrzymanych linków.</td>
+  </tr>
+  </tbody>
+</table>
+<div>
+  <a th:href="@{generate}" th:text="'Stwórz nowy link'" class="btn btn-secondary"></a>
+  <a th:href="@{../}" th:text="'Powrót'" class="btn btn-secondary"></a>
+  <div th:replace="index::logout"></div>
+</div>
+</body>
+</html>

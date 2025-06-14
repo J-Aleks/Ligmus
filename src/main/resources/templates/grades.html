@@ -1,34 +1,55 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/a.css}">
+    <link rel="stylesheet" th:href="@{/css/input.css}">
+    <link rel="stylesheet" th:href="@{/css/textarea.css}">
+    <link rel="stylesheet" th:href="@{/css/button.css}">
+    <link rel="stylesheet" th:href="@{/css/table.css}">
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
-<div>
-    <h1 th:text="|Student ${studentId} Grades|"></h1>
-    <h3 th:if="${grades.size()==0}"
-        th:text="|There are no grades for student id = ${studentId}|"></h3>
-    <ol>
-        <li th:each="grade:${grades}">
-            <ul>
-                <li th:text="|indeks oceny: ${grade.gradeId}|"></li>
-                <li th:text="|Przedmiot: ${grade.subject}|"></li>
-                <li th:text="|Ocena: ${grade.grade}|"></li>
-                <li th:text="|Waga: ${grade.weight} |"></li>
-                <li th:text="|Opis: ${grade.description} |"></li>
-            </ul>
-            <div th:if="${isTeacher}">
-            <a th:href="@{{id}/update(id=${grade.gradeId})}" th:text="'Edytuj'"/>
-            </div>
-        </li>
+<header>
+    <h1 th:text="|Oceny studenta ${studentFullName}|"></h1>
 
-    </ol>
+    <form th:action="@{/logout}" method="post" th:fragment="logout">
+        <button class=" btn btn-secondary" type="submit">Wyloguj</button>
+    </form>
+</header>
+
+<div>
+    <h3 th:if="${grades.size()==0}"
+        th:text="'Student nie ma żadnych ocen'"></h3>
+    <table>
+        <thead>
+        <tr>
+            <th>Indeks oceny</th>
+            <th>Przedmiot</th>
+            <th>Ocena</th>
+            <th>Waga</th>
+            <th>Opis</th>
+            <th th:if="${isTeacher}">Akcje</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="grade : ${grades}">
+            <td th:text="${grade.gradeId}">1</td>
+            <td th:text="${subjectMap[grade.subject]}">Matematyka</td>
+            <td th:text="${grade.grade}">5</td>
+            <td th:text="${grade.weight}">2</td>
+            <td th:text="${grade.description}">Za aktywność</td>
+            <td th:if="${isTeacher}">
+                <a th:href="@{./{id}/update(id=${grade.gradeId})}">Edytuj</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
     <div th:if="${isTeacher}">
-    <a th:href="@{'add'}" th:text="'Dodaj nową ocenę'"/><br/>
+    <a th:href="@{'add'}" th:text="'Dodaj nową ocenę'" class="btn btn-secondary" style="float: right"/>
     </div>
-    <a th:href="@{../}" th:text="'Powrót'"/>
-    <div th:replace="index::logout"></div>
+    <a th:href="@{${isTeacher ? '../../' : './'}}" th:text="'Powrót'" class="btn btn-secondary" />
 </div>
 </body>
 </html>

@@ -1,20 +1,27 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
+  <link rel="stylesheet" th:href="@{/css/a.css}">
+  <link rel="stylesheet" th:href="@{/css/button.css}">
+  <link rel="stylesheet" th:href="@{/css/style.css}">
   <meta charset="UTF-8">
   <title>Title</title>
 </head>
 <body>
+<div th:replace="index::header"></div>
 <div>
-  <h1 th:text="|Użytkownik ${user.username}|"></h1>
+  <h1 th:text="|${user.userType} ${user.username}|"></h1>
   <p th:text="|Identyfikator Użytkownika ${user.id}|"></p>
   <p th:text="|Imie ${user.firstName} |"></p>
-  <p th:text="|Nazwisko ${user.id}|"></p>
+  <p th:text="|Nazwisko ${user.lastName}|"></p>
   <p th:text="|Data urodzenia ${user.dateOfBirth} |"></p>
-  <p th:text="|Typ Użytkownika ${user.userType}|"></p>
-<!--  <a th:href="@{'/user/'+${user.id}+ '/grades'}" th:text="'Zobacz oceny'"/><br>-->
+  <p th:if="${user.userType.name() == 'TEACHER'}">Lista uczonych przedmiotów:</p>
+  <ol th:if="${user.userType.name() == 'TEACHER'}">
+    <li th:each="subject: ${user.subjects}"  th:text="|${subject.name}|"></li>
+  </ol>
+  <a th:href="@{'update'}" th:text="'Uaktualnij'" th:class="'btn btn-secondary'" /><br>
 
-  <a th:href="@{../}" th:text="'Powrót'"/>
+  <a th:href="@{${backUrl}}" th:text="'Powrót'" th:class="'btn btn-secondary back'" />
 </div>
 </body>
 </html>

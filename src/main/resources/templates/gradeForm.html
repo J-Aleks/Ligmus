@@ -1,27 +1,77 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/a.css}">
+    <link rel="stylesheet" th:href="@{/css/input.css}">
+    <link rel="stylesheet" th:href="@{/css/textarea.css}">
+    <link rel="stylesheet" th:href="@{/css/button.css}">
+    <link rel="stylesheet" th:href="@{/css/select.css}">
+    <link rel="stylesheet" th:href="@{/css/table.css}">
     <meta charset="UTF-8">
     <title>Dodawanie ocen ucznia</title>
 </head>
 <body>
-    <h2 th:text="${'Dodaj ocene dla ucznia '+ student.firstName+' '+student.lastName}"></h2>
+<header>
+    <h1 th:text="${'Dodaj ocene dla ucznia '+ student.firstName+' '+student.lastName}"></h1>
+</header>
+<div id="formDiv" >
     <form th:object="${grade}" th:action="@{${isUpdate ? 'update' : 'add'}}" th:method="post">
+        <label for="grade">Ocena</label>
+        <input type="number"
+               id="grade"
+               min="1" max="5"
+               th:field="*{grade}"
+               th:classappend="${#fields.hasErrors('grade')} ? 'is-invalid' : ''"/>
 
+        <p class="invalid-feedback"
+           th:if="${#fields.hasErrors('grade')}"
+           th:errors="*{grade}">
+        </p><br>
+            
+                
+        <label for="weight">Waga oceny</label>
+        <input type="number" id="weight"
+               th:field="*{weight}"
+               th:classappend="${#fields.hasErrors('weight')} ? 'is-invalid' : ''"
+               min="1" max="5">
 
-        <input type="number" name="grade" min="1" max="5" value="1" th:field="*{grade}" >
-        <input type="number" name="weight" min="1" max="5" value="1" th:field="*{weight}" >
-        <select name="subject" th:field="*{subject}" >
-            <option th:value="-1"
-                    th:text="|Wybierz odpowiedni przedmiot|"></option>
-            <option th:each="subject:${subjects}"
+        <p class="invalid-feedback"
+           th:if="${#fields.hasErrors('weight')}"
+           th:errors="*{weight}"> Komunikat błędu
+        </p><br>
+        <input type="hidden" th:field="*{teacherId}">
+                
+<!--        <div th:if="${#fields.hasErrors('weight')}"-->
+<!--             th:errors="*{weight}">Błąd</div>-->
+    
+        <label for="subject">Wybierz przedmiot</label>
+
+        <select id="subject" th:field="*{subject}"
+                th:classappend="${#fields.hasErrors('subject')} ? 'is-invalid' : ''" class="form-select">
+            <option value="">-- Wybierz przedmiot --</option>
+            <option th:each="subject : ${subjects}"
                     th:value="${subject.id}"
                     th:text="${subject.name}">
-            </option><br/>
-        </select></br>
-        <textarea th:field="*{description}"></textarea><br/>
-        <input type="submit" value="Zapisz">
+            </option>
+        </select>
+    <p class="invalid-feedback" th:if="${#fields.hasErrors('subject')}"
+       th:errors="*{subject}">
+        Komunikat błędu
+    </p><br>
+    
+                
+        <label for="description">Opis</label>
+        <textarea id="description" rows="4" cols="50" name="text" placeholder="Opis Oceny"
+                  th:classappend="${#fields.hasErrors('description')} ? 'is-invalid' : ''"
+                  th:field="*{description}">Opis</textarea>
+
+        <button type="submit" class=" btn btn-secondary">Zapisz</button>
+        <a th:href="@{${isUpdate ? '../../' : './'}}" th:text="'Anuluj'" class="btn back btn-secondary ">Przejdź dalej</a>
+
     </form>
-    <a th:href="@{${isUpdate ? '../' : './'}}" th:text="'Anuluj'"/>
+
+</div>
+
 </body>
 </html>

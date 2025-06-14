@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <link rel="stylesheet" th:href="@{/css/a.css}">
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <link rel="stylesheet" th:href="@{/css/button.css}">
+  <meta charset="UTF-8">
+  <title>Student</title>
+</head>
+<body>
+<div th:replace="index::header"></div>
+<nav class="vertical-menu">
+  <ul class="vertical-menu">
+    <li><a th:href="@{grades}" th:text="'Zobacz oceny'" class="btn btn-secondary"/></li>
+    <li><a th:href="@{/user/}" th:text="'Dane Konta'" class="btn btn-secondary" /></li>
+    <li><div th:replace="index::logout"></div></li>
+  </ul>
+</nav>
+</body>
+</html>
