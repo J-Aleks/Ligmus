@@ -35,6 +35,7 @@ public class UserRepository {
         localDate = LocalDate.of(2006, 5, 7);
         users.add(new User(2, UserType.ADMIN, "admin", "admin1", "admin1", localDate,"{noop}admin"));
         users.add(new User(3,"test","{noop}test", UserType.STUDENT));
+        optSubjectEntity = this.SubjectRepository.findById(2);
         if (optSubjectEntity.isPresent()){
             subjects.add(optSubjectEntity.get());
             users.add(new User(5, UserType.TEACHER, "teach2", "teacher2", "teach", localDate, "{noop}teach",

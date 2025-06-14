@@ -34,8 +34,7 @@ public class SharedAccessService {
 
     public String generateAccessLink(ShareLinkDTO linkDTO, int teacherId) {
 
-        //tymaczoswo na id
-        Optional<SubjectEntity> optSubjectEntity = this.subjectRepository.findById(1);
+        Optional<SubjectEntity> optSubjectEntity = this.subjectRepository.findById(linkDTO.getSubjectName());
         SubjectEntity subjectEntity;
         if (optSubjectEntity.isPresent()){
             subjectEntity = optSubjectEntity.get();
@@ -56,6 +55,7 @@ public class SharedAccessService {
         }
         return null;
     }
+
 
     public List<AccessSharedToken> getAccessSharedTokensToTeacher(int teacherId) {
         return this.accessSharedRepository.getAccessSharedtokensByTeacherId(teacherId);
