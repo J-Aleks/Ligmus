@@ -31,19 +31,19 @@ public class DataInit {
             if (userRepository.count() == 0) {
                 LocalDate birthDate = LocalDate.of(1998, 4, 21);
 
-                UserEntity teacher1 = new UserEntity("teach1", "{noop}teach", "Teacher1", "Teach", birthDate, UserType.TEACHER);
+                UserEntity teacher1 = new UserEntity("teach1", "$2b$12$jbEBuKE5md4rrxiAXGEeQeh2kUhghX2AfIvNaN", "Teacher1", "Teach", birthDate, UserType.TEACHER);
                 userRepository.save(teacher1);
 
-                UserEntity student1 = new UserEntity("test1", "{noop}password1", "Test1", "Tere1", LocalDate.of(1998, 4, 21), UserType.STUDENT);
+                UserEntity student1 = new UserEntity("test1", "$2b$12$fN5Z8qf7ALJE3u9vEXGrTu.qoUCQSBWeutRcwGqGP6DuGGXdUIzjO", "Test1", "Tere1", LocalDate.of(1998, 4, 21), UserType.STUDENT);
                 userRepository.save(student1);
 
-                UserEntity student2 = new UserEntity("test2", "{noop}password2", "Test2", "Tenko2", LocalDate.of(2005, 5, 7), UserType.STUDENT);
+                UserEntity student2 = new UserEntity("test2", "$2b$12$fN5Z8qf7ALJE3u9vEXGrTu.qoUCQSBWeutRcwGqGP6DuGGXdUIzjO", "Test2", "Tenko2", LocalDate.of(2005, 5, 7), UserType.STUDENT);
                 userRepository.save(student2);
 
-                UserEntity admin = new UserEntity("admin", "{noop}admin", "Admin1", "Admin1", LocalDate.of(2006, 5, 7), UserType.ADMIN);
+                UserEntity admin = new UserEntity("admin", "$2b$12$40AfIiFG63mMz6Y2/3hC6OvVaKJks4YgbiK2sqQsN3MMv/SOEhfwq", "Admin1", "Admin1", LocalDate.of(2006, 5, 7), UserType.ADMIN);
                 userRepository.save(admin);
 
-                UserEntity teacher2 = new UserEntity("teach2", "{noop}teach", "Teacher2", "Teach", birthDate, UserType.TEACHER);
+                UserEntity teacher2 = new UserEntity("teach2", "$2b$12$jbEBuKE5md4rrxiAXGEeQeh2kUhghX2AfIvNaN", "Teacher2", "Teach", birthDate, UserType.TEACHER);
                 userRepository.save(teacher2);
 
                 userSubjectRepository.save(new UserSubjectEntity(teacher1, math));
