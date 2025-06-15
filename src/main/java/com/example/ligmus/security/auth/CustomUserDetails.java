@@ -1,5 +1,6 @@
 package com.example.ligmus.security.auth;
 
+import com.example.ligmus.data.Entities.SubjectEntity;
 import com.example.ligmus.data.subjects.Subject;
 import com.example.ligmus.data.users.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -48,7 +49,7 @@ public class CustomUserDetails implements UserDetails {
 
     public int getId() { return this.user.getId(); }
 
-    public List<Subject> getSubjects() {return this.user.getSubjects();}
+    public List<SubjectEntity> getSubjects() {return this.user.getSubjects();}
 
     public LocalDate getDateOfBirth() { return this.user.getDateOfBirth(); }
 

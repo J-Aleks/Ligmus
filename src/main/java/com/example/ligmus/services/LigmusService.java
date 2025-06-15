@@ -2,6 +2,7 @@ package com.example.ligmus.services;
 
 import com.example.ligmus.data.DTO.*;
 
+import com.example.ligmus.data.Entities.SubjectEntity;
 import com.example.ligmus.data.grades.Grade;
 import com.example.ligmus.data.subjects.Subject;
 import com.example.ligmus.data.users.*;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class LigmusService {
@@ -116,7 +119,7 @@ public class LigmusService {
 
     public User getStudent(int id){return this.userRepository.getStudent(id);}
 
-    public List<Subject> getSubjects(){ return this.subjectRepository.getSubjects();}
+    public List<SubjectEntity> getSubjects(){ return this.subjectRepository.findAll();}
 
     public Subject getSubject(int id){return this.subjectRepository.getSubject(id);}
 
@@ -151,18 +154,21 @@ public class LigmusService {
         return this.userRepository.sortUsers(users, sortMethod);
     }
 
-    public List<Subject> getTeacherSubjects(int teacherId) {return this.userRepository.getTeacherSubjects(teacherId);}
+    public List<SubjectEntity> getTeacherSubjects(int teacherId) {return this.userRepository.getTeacherSubjects(teacherId);}
 
     public List<Grade> getStudentGradesFromSubject(int studentId, int subjectId) {
         return this.gradeRepository.getGradesFromSubject(studentId, subjectId);
     }
 
-    public int getIdSubject(String subjectName) { return this.subjectRepository.getSubjectId(subjectName);}
+    public int getIdSubject(String subjectName) { return this.subjectRepository.findByName(subjectName);}
 
 
     public String getSubjectName(int subjectId){
-        return this.subjectRepository.getSubjectName(subjectId);
-
+        Optional<SubjectEntity> subject = this.subjectRepository.findById(subjectId);
+        if (subject.isPresent()){
+            return subject.get().getName();
+        }
+        return null;
     }
 
     public List<User> getOtherTeachers(int teacherId) {
@@ -199,8 +205,13 @@ public class LigmusService {
         }
         return teachersNamesId;
     }
-    public HashMap<Integer, String> getSubjectNamesForId(){
-        return this.subjectRepository.getSubjectNamesForId();
+    public HashMap<Integer, String> getSubjectNamesForId() {
+        return (HashMap<Integer, String>) subjectRepository.findAll()
+                .stream()
+                .collect(Collectors.toMap(
+                        SubjectEntity::getId,
+                        SubjectEntity::getName
+                ));
     }
     public String getUserFullName(int userId){
         return this.userRepository.getUserFullName(userId);
