@@ -55,11 +55,19 @@ public class LigmusService {
     }
 
     public GradeDTO getGradeDTOById(int gradeId) {
-
-        Grade grade = this.gradeRepository.getGradeById(gradeId);
-        if (grade == null) {
+        Optional<GradeEntity> optGradeEntity = this.dbGradeRepository.findById(gradeId);
+        if (optGradeEntity.isEmpty()) {
             return null;
         }
+        GradeEntity gradeEntity = optGradeEntity.get();
+        Grade grade = new Grade(
+                gradeEntity.getId(),
+                gradeEntity.getStudent().getId(),
+                gradeEntity.getTeacher().getId(),
+                gradeEntity.getGrade(),
+                gradeEntity.getWeight(),
+                gradeEntity.getSubject().getId(),
+                gradeEntity.getDescription());
         return convertGradeToGradeDto(grade);
     }
 
@@ -116,9 +124,15 @@ public class LigmusService {
     public void updateGradeById(int gradeId, Grade newGrade) { this.gradeRepository.updateGradeById(gradeId, newGrade);}
 
     public void updateGradeById(int gradeId, GradeDTO newGrade) {
+        GradeEntity gradeEntity = dbGradeRepository.findById(gradeId).get();
+        gradeEntity.setGrade(newGrade.getGrade());
+        gradeEntity.setWeight(newGrade.getWeight());
+        gradeEntity.setDescription(newGrade.getDescription());
+        gradeEntity.setSubject(subjectRepository.findById(newGrade.getSubject()).get());
+        gradeEntity.setTeacher(dbUserRepository.findById(newGrade.getTeacherId()).get());
+        gradeEntity.setStudent(dbUserRepository.findById(newGrade.getStudentId()).get());
+        dbGradeRepository.save(gradeEntity);
 
-        Grade gradeToUpdate = convertGradeDtoToGrade(newGrade);
-        this.gradeRepository.updateGradeById(gradeId, gradeToUpdate);
     }
 
     private Grade convertGradeDtoToGrade(GradeDTO newGrade) {
