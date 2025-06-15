@@ -294,34 +294,11 @@ public class UserRepository {
         return otherTeachers;
     }
 
-    public String getStudentFullName(int studentId){
-        User student = this.getStudent(studentId);
-        if (student == null) {
+    public String getUserFullName(int userId){
+        User user = this.getStudent(userId);
+        if (user == null) {
             return null;
         }
-        return student.getFirstName() +' '+ student.getLastName();
+        return user.getFirstName() +' '+ user.getLastName();
     }
-
-//    public boolean addUser(User newUser){
-//        UserType userType = newUser.getUserType();
-//        User user;
-//        int nextUserId = getNextUserId();
-//        switch(userType){
-//            case STUDENT:
-//                user = new User(nextUserId, UserType.STUDENT);
-//                break;
-//            case ADMIN:
-//                user = new User(nextUserId, UserType.ADMIN);
-//                break;
-//            case TEACHER:
-//                user = new User(nextUserId, UserType.TEACHER);
-//                break;
-//            default:
-//                throw new ResourceNotFoundException("User Type is invalid");
-//        }
-//        user.setUsername(newUser.getUsername());
-//        user.setPassword(newUser.getPassword());
-//        this.users.add(user);
-//        return true;
-//    }
 }

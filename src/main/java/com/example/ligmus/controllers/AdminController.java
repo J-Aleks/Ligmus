@@ -1,8 +1,13 @@
 package com.example.ligmus.controllers;
 
 
+import com.example.ligmus.data.DTO.GradeDTO;
+import com.example.ligmus.data.DTO.SubjectDTO;
 import com.example.ligmus.data.DTO.UserUpdateFormDTO;
+import com.example.ligmus.data.subjects.Subject;
 import com.example.ligmus.data.users.*;
+import com.example.ligmus.exception.ResourceNotFoundException;
+import com.example.ligmus.security.auth.CustomUserDetails;
 import com.example.ligmus.services.LigmusService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -10,6 +15,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -104,7 +110,8 @@ public class AdminController {
     }
 
     @PostMapping("/users/{id}/update")
-    public String updateUser(@PathVariable int id, @ModelAttribute("newUser") UserUpdateFormDTO updateUser) throws JsonProcessingException {
+    public String updateUser(@PathVariable int id,
+                             @ModelAttribute("newUser") UserUpdateFormDTO updateUser) throws JsonProcessingException {
         System.out.println("AdminContr update user");
         ObjectMapper mapper = new ObjectMapper()
                 .registerModule(new JavaTimeModule())
@@ -120,18 +127,83 @@ public class AdminController {
         return "redirect:/admin-dev/users/"+id;
     }
 
-    @GetMapping("subjects")
-    public String adminSubjects(){
+    @GetMapping("/subjects")
+    public String adminSubjects(Model model){
+
+        List<Subject> subjects = ligmusService.getSubjects();
+        model.addAttribute("subjects", subjects);
         return "admin-subjects";
     }
 
+    @GetMapping("/subjects/{id}")
+    public String showSubject(@PathVariable int id, Model model){
+        SubjectDTO subject = this.ligmusService.getSubjectDTO(id);
+        if(subject == null){
+            throw new ResourceNotFoundException("Subject not found");
+        }
+        model.addAttribute("subject", subject);
+        return "admin-subject";
+    }
+
+    @GetMapping("/subjects/{id}/delete")
+    public String deleteSubject(@PathVariable int id){
+        this.ligmusService.deleteSubject(id);
+        return "redirect:/admin-dev/subjects";
+    }
+
+    @GetMapping("/subjects/addSubject")
+    public String addSubject(Model model){
+        model.addAttribute("isUpdate", false);
+        model.addAttribute("subject", new SubjectDTO());
+        return "subjectForm";
+    }
+
+    @PostMapping("/subjects/addSubject")
+    public String saveSubject(@ModelAttribute("subject") SubjectDTO subjectDTO) {
+        this.ligmusService.addSubject(subjectDTO);
+        return "redirect:/admin-dev/subjects";
+    }
+
+    @GetMapping("/subjects/{id}/update")
+    public String updateSubject(@PathVariable int id, Model model){
+
+        SubjectDTO subject = this.ligmusService.getSubjectDTO(id);
+        model.addAttribute("subject", subject);
+        model.addAttribute("isUpdate", true);
+        return "subjectForm";
+    }
+
+    @PostMapping("/subjects/{id}/update")
+    public String updateSubject(@PathVariable int id, @ModelAttribute("subject") SubjectDTO subjectDTO){
+        this.ligmusService.updateSubject(id, subjectDTO);
+        return "redirect:/admin-dev/subjects";
+    }
+
     @GetMapping("grades")
-    public String adminGrades(){
+    public String adminGrades(Model model){
+        model.addAttribute("grades", this.ligmusService.getGradesId());
         return "admin-grades";
     }
 
+    @GetMapping("/grades/{id}")
+    public String showGrade(@PathVariable int id, Model model){
+        GradeDTO grade = this.ligmusService.getGradeDTOById(id);
+        if(grade == null){
+            throw new ResourceNotFoundException("Subject not found");
+        }
+        model.addAttribute("teacherFullName", this.ligmusService.getUserFullName(grade.getTeacherId()));
+        model.addAttribute("studentFullName", this.ligmusService.getUserFullName(grade.getStudentId()));
+        model.addAttribute("grade", grade);
+        return "admin-grade";
+    }
+
+
     @GetMapping("/users/{id}/delete")
-    public String deleteUser(@PathVariable int id){
+    public String deleteUser(@PathVariable int id, @AuthenticationPrincipal CustomUserDetails userDetails){
+        if(id == userDetails.getId()){
+            System.out.println("You can't delete your own user");
+            return "redirect:/admin-dev/users";
+        }
         System.out.println("AdminContr delete user");
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<String> entity = new HttpEntity<>(headers);
@@ -140,12 +212,5 @@ public class AdminController {
         System.out.println(response.getBody());
         return "redirect:/admin-dev/users";
     }
-
-//    @GetMapping("subjects")
-//    public String adminStudentList (Model model) {
-//        System.out.println("Students List"+this.ligmusService.getStudents());
-//        model.addAttribute("students",this.ligmusService.getStudents());
-//        return "students";
-//    }
 
 }

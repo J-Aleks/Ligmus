@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/a.css}">
+    <meta charset="UTF-8">
+    <title>Informacje o Ocenie</title>
+</head>
+<body>
+
+<div>
+    <h3 th:text="|Indeks Oceny ${grade.gradeId}|"></h3>
+    <h3 th:text="|Imie Nauczyciela ${teacherFullName}|"></h3>
+    <h3 th:text="|Imie Studenta ${studentFullName}|"></h3>
+    <h3 th:text="|Przedmiot ${grade.subject}|"></h3>
+    <h3 th:text="|Ocena ${grade.grade}|"></h3>
+    <h3 th:text="|Waga Oceny ${grade.weight}|"></h3>
+    <h3 th:text="|Opis oceny ${grade.description}|"></h3>
+</div>
+
+<a th:href="@{'../grades'}" th:text="Wróć"/>
+</body>
+</html>

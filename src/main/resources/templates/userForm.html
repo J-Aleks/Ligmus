@@ -9,7 +9,8 @@
     <link rel="stylesheet" th:href="@{/css/select.css}">
     <link rel="stylesheet" th:href="@{/css/table.css}">
     <meta charset="UTF-8">
-    <title>Dodawanie użytkowników</title>
+    <title th:if="${isUpdate}" th:text="|Dodawanie użytkowników|"></title>
+    <title th:if="${!isUpdate}" th:text="|Modyfikacja użytkowników|"></title>
 </head>
 <body>
 <header>
@@ -46,6 +47,9 @@
         <label for="bithDay">Data Urodzenia</label>
         <input type="date" id="bithDay" th:field="*{dateOfBirth}" ><br>
     </div>
+
+<!--    <div th:if="${isAdmin}"></div>-->
+
     <button type="submit" class="btn btn-secondary btn">Zapisz</button>
 </form>
 

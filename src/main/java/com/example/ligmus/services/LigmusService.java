@@ -94,14 +94,6 @@ public class LigmusService {
 
     public List<User> getTeachers() {return this.userRepository.getTeachers(); }
 
-//    public void addStudent(Student student) { this.userRepository.addStudent(student);}
-
-//    public void addAdmin(Admin admin) {this.userRepository.addAdmin(admin);}
-
-//    public void addTeacher(Teacher teacher) {this.userRepository.addTeacher(teacher);}
-
-    public int getNextUserId() {return this.userRepository.getNextUserId();}
-
     public void addUser(UserAddForm newUser) {
         this.userRepository.addUser(newUser);
     }
@@ -126,7 +118,34 @@ public class LigmusService {
 
     public List<Subject> getSubjects(){ return this.subjectRepository.getSubjects();}
 
+    public Subject getSubject(int id){return this.subjectRepository.getSubject(id);}
+
+    public SubjectDTO getSubjectDTO(int id) {
+        Subject subject = this.subjectRepository.getSubject(id);
+        if (subject == null)
+            return null;
+        SubjectDTO subjectDTO = new SubjectDTO();
+        subjectDTO.setId(subject.getId());
+        subjectDTO.setName(subject.getName());
+        return subjectDTO;
+    }
+
+    public boolean deleteSubject(int id){return this.subjectRepository.deleteSubjectById(id);}
+
     public boolean deleteUser(int id) { return this.userRepository.userDelete(id);}
+
+    public boolean addSubject(SubjectDTO subjectDTO){
+        int id = this.subjectRepository.getNextSubjectId();
+        String name = subjectDTO.getName();
+        Subject subject = new Subject(id, name);
+        return this.subjectRepository.addSubject(subject);
+    }
+
+    public void updateSubject(int id, SubjectDTO subjectDTO) {
+        Subject subject = new Subject(id, subjectDTO.getName());
+        this.subjectRepository.updateSubject(subject);
+    }
+
 
     public List<User> sortUsers(List <User> users, String sortMethod) {
         return this.userRepository.sortUsers(users, sortMethod);
@@ -183,8 +202,17 @@ public class LigmusService {
     public HashMap<Integer, String> getSubjectNamesForId(){
         return this.subjectRepository.getSubjectNamesForId();
     }
-    public String getStudentFullName(int studentId){
-        return this.userRepository.getStudentFullName(studentId);
+    public String getUserFullName(int userId){
+        return this.userRepository.getUserFullName(userId);
+    }
+
+    public List<Integer> getGradesId(){
+        List<Integer> gradesIdList = new ArrayList<>();
+        List<Grade> gradeList = this.gradeRepository.getGrades();
+        for (Grade grade : gradeList) {
+            gradesIdList.add(grade.getGradeId());
+        }
+        return gradesIdList;
     }
 
 

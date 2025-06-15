@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/a.css}">
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div>
+    <h1 th:text="|Lista Ocen|"></h1>
+    <h3 th:if="${grades.size()==0}"
+        th:text="|Brak ocen|">
+    </h3><br/>
+    <div th:each="id:${grades}">
+        <a th:href="@{/admin-dev/grades/{id}(id=${id})}" th:text="|Informacje o Ocenie o id: ${id}|">
+        </a>
+    </div>
+    <a th:href="@{./}" th:text="'Powrót'"/>
+</div>
+</body>
+</html>

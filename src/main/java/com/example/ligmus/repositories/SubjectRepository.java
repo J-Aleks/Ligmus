@@ -74,4 +74,23 @@ public class SubjectRepository {
         }
         return subjectsNamesId;
     }
+
+    public boolean deleteSubjectById(int id) {
+        for (Subject subject : subjects) {
+            if (subject.getId() == id) {
+                this.subjects.remove(subject);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean addSubject(Subject subject) {
+        return this.subjects.add(subject);
+    }
+
+    public void updateSubject(Subject subject) {
+        Subject updatedSubject = this.getSubject(subject.getId());
+        updatedSubject.setName(subject.getName());
+    }
 }

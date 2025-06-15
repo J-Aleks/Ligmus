@@ -1,14 +1,11 @@
 package com.example.ligmus.controllers;
 
 import com.example.ligmus.data.DTO.GradeDTO;
-import com.example.ligmus.data.grades.Grade;
 import com.example.ligmus.data.subjects.Subject;
 import com.example.ligmus.data.users.*;
 import com.example.ligmus.exception.ResourceNotFoundException;
 import com.example.ligmus.security.auth.CustomUserDetails;
 import com.example.ligmus.services.LigmusService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -69,7 +66,7 @@ public class GradeController {
             System.out.println(gradeDTO);
         }
 
-        String studentFullName = this.ligmusService.getStudentFullName(studentId);
+        String studentFullName = this.ligmusService.getUserFullName(studentId);
         model.addAttribute("isTeacher",true);
         model.addAttribute("studentFullName", studentFullName);
         model.addAttribute("grades",gradeDTO);

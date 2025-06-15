@@ -8,9 +8,9 @@
 </head>
 <body>
 <div>
-    <h1 th:text="|List of Users|"></h1>
+    <h1 th:text="|Lista Użytkowników|"></h1>
     <h3 th:if="${users.size()==0}"
-        th:text="|There are no users|">
+        th:text="|Brak użytkowników|">
     </h3><br/>
     <div>
         <a th:href="@{/admin-dev/users/addUser}" th:text="|Dodaj nowego użytkownika|"></a>

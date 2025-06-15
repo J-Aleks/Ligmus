@@ -23,6 +23,10 @@ public class GradeRepository {
         grades.add(new Grade(3,0, 1, 2, 2));
     }
 
+    public List<Grade> getGrades() {
+        return grades;
+    }
+
     public List<Grade> getGradesByUserId(int userId) {
         List<Grade> tempGrade = new LinkedList<>();
         for (Grade grade : grades) {
@@ -70,6 +74,17 @@ public class GradeRepository {
         return tempGrade;
     }
 
+    public boolean deleteGradeById(int gradeId) {
+        for (Grade grade : grades) {
+            if (grade.getGradeId() == gradeId) {
+                grades.remove(grade);
+                return true;
+            }
+        }
+        return false;
+    }
+
+//    public boolean updateGrade(GradeDTO gradeDTO) {}
 
 
 }
