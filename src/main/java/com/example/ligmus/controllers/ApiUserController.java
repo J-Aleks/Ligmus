@@ -2,6 +2,7 @@ package com.example.ligmus.controllers;
 
 
 
+import com.example.ligmus.data.DTO.UserUpdateFormDTO;
 import com.example.ligmus.data.users.*;
 import com.example.ligmus.services.LigmusService;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +33,7 @@ public class ApiUserController {
         return ResponseEntity.ok("User " + newUser.getUsername() + " added");
     }
     @PostMapping("/{id}/update")
-    public ResponseEntity<String> updateUser(@PathVariable int id, @RequestBody  UserUpdateForm updateUser){
+    public ResponseEntity<String> updateUser(@PathVariable int id, @RequestBody UserUpdateFormDTO updateUser){
         System.out.println("Odebrano dane JSON: " + updateUser.toString());
 
         if(!this.ligmusService.updateUser(id, updateUser)){

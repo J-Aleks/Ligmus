@@ -1,17 +1,30 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/a.css}">
+    <link rel="stylesheet" th:href="@{/css/input.css}">
+    <link rel="stylesheet" th:href="@{/css/textarea.css}">
+    <link rel="stylesheet" th:href="@{/css/button.css}">
+    <link rel="stylesheet" th:href="@{/css/select.css}">
+    <link rel="stylesheet" th:href="@{/css/table.css}">
     <meta charset="UTF-8">
     <title>Dodawanie użytkowników</title>
 </head>
 <body>
-<h2 th:text="${'Dodaj Użytkownika'}"></h2>
+<header>
+    <h1 th:if="${isUpdate}" th:text="|Zmień swoje dane|"></h1>
+    <h1 th:if="${!isUpdate}" th:text="|Dodaj Użytkownika|"></h1>
+</header>
+<div id="formDiv">
 <form th:object="${newUser}" th:action="@{${isUpdate ? 'update' : 'addUser'}}" th:method="post">
 
-
-    <input type="text" name="username" th:field="*{username}" >
-    <input type="password" name="password" th:field="*{password}" >
-    <select name="userType" th:field="*{userType}" >
+    <label for="username">Nazwa użytkownika</label>
+    <input type="text" id="username" name="username" th:field="*{username}" ><br>
+    <label for="password">Hasło</label>
+    <input type="password" id="password" name="password" th:field="*{password}" ><br>
+    <label for="userType">Typ Użytkownika</label>
+    <select id="userType" name="userType" th:field="*{userType}" >
         <option
                 th:value="student"
                 th:text="Student">
@@ -23,15 +36,20 @@
         <option
                 th:value="admin"
                 th:text="Admin">
-        </option><br/>
-    </select></br>
+        </option>
+    </select><br>
     <div th:if="${isUpdate}">
-        <input type="text" name="name" th:field="*{firstName}" >
-        <input type="text" name="lastname" th:field="*{lastName}" >
-        <input type="date" name="username" th:field="*{dateOfBirth}" >
+        <label for="name">Imię</label>
+        <input type="text" id="name" name="name" th:field="*{firstName}" ><br>
+        <label for="lastName">Nazwisko</label>
+        <input type="text" id="lastName" name="lastName" th:field="*{lastName}" ><br>
+        <label for="bithDay">Data Urodzenia</label>
+        <input type="date" id="bithDay" th:field="*{dateOfBirth}" ><br>
     </div>
-    <input type="submit" value="Zapisz">
+    <button type="submit" class="btn btn-secondary btn">Zapisz</button>
 </form>
-<a th:href="@{${isUpdate ? '../../users' : './users'}}" th:text="'Anuluj'"/>
+
+<a th:href="@{${isUpdate ? '../../users' : '../users'}}" th:text="'Anuluj'" class="back btn btn-secondary"/>
+</div>
 </body>
 </html>

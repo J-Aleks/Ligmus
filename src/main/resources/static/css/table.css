@@ -1,0 +1,57 @@
+/* Podstawowa struktura */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #1b1b1b; /* ciemny tekst – wysoki kontrast */
+    background-color: #fff;
+}
+
+/* Nagłówki tabeli */
+th {
+    background-color: #e6e6e6; /* jasny szary, bezpieczny kontrast */
+    color: #000;
+    text-align: left;
+    font-weight: bold;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+}
+
+/* Komórki tabeli */
+td {
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    vertical-align: top;
+}
+
+/* Wiersze naprzemienne (lepsza czytelność) */
+tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* Zaznaczenie wiersza (np. przy focusie z klawiatury) */
+tr:focus-within {
+    outline: 2px solid #0052a5; /* mocny kontrast */
+    background-color: #e0f0ff;
+}
+
+/* Tooltipy z opisami ocen (jeśli używasz title lub własnego stylu) */
+.grade-tooltip {
+    cursor: help;
+    border-bottom: 1px dotted #000;
+}
+
+/* Dodatkowe klasy wspierające dostępność */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    white-space: nowrap;
+    border: 0;
+}

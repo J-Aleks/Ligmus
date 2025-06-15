@@ -1,0 +1,87 @@
+.grade-box {
+    display: inline-block;
+    min-width: 2.5rem;
+    padding: 0.25rem 0.5rem;
+    margin-right: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    text-align: center;
+    line-height: 1.2;
+    font-weight: bold;
+    background-color: #f9f9f9;
+    cursor: help;
+}
+
+.hint i::before {
+    font-family: "gov-icons", sans-serif;
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    content: "";
+    font-size: 1.1rem;
+}
+
+p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #1b1b1b; /* dobra czytelność – wysoki kontrast */
+    margin: 0 0 1rem 0;
+}
+
+ol {
+    padding-left: 1.5rem;
+    margin-bottom: 1rem;
+    list-style-type: decimal;
+    color: #1b1b1b;
+}
+
+li {
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 0.5rem;
+    color: #1b1b1b;
+}
+
+nav{
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, 0%);
+    display: flex;
+    background-color: #efefef;
+    justify-content: center;  /* wyśrodkowanie poziome */
+    align-items: center;      /* wyśrodkowanie pionowe (jeśli potrzeba) */
+    height: 80vh;            /* pełna wysokość ekranu */
+    width: 40%;
+}
+
+.vertical-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+header{
+    display: flex;
+    justify-content: space-between;   /* logo z lewej, menu z prawej */
+    align-items: center;
+    background-color: #0052a5;        /* ciemnoniebieskie tło */
+    color: #ffffff;
+    padding: 1rem 2rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+#formDiv {
+    width: 20%;
+    align-items: center;
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, 0%);
+}

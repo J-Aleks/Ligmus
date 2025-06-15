@@ -1,0 +1,38 @@
+
+/* start of Odnośnik (link tekstowy) component */
+
+a {
+    text-decoration: none;
+    color: #0052a5;
+}
+a:hover {
+    color: #006cd7;
+    text-decoration: underline;
+}
+a:focus {
+    outline: 2px solid #1b1b1b;
+}
+a[target=_blank]::after {
+    display: inline-block;
+    font-family: "gov-icons", sans-serif;
+    content: "";
+    font-size: 1.4rem;
+    vertical-align: top;
+    line-height: 1rem;
+}
+
+a.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+
+a.back {
+    margin-top: 1rem;
+}
+
+
+/* end of Odnośnik (link tekstowy) component */
+
+/* wygenerowane przez Design System Gov.pl */

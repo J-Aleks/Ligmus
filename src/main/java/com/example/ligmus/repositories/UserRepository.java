@@ -1,8 +1,9 @@
 package com.example.ligmus.repositories;
 
+import com.example.ligmus.data.DTO.UserUpdateFormDTO;
+import com.example.ligmus.data.Entities.SubjectEntity;
 import com.example.ligmus.data.users.*;
 import com.example.ligmus.data.subjects.Subject;
-import com.example.ligmus.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -14,24 +15,7 @@ import java.util.stream.Collectors;
 public class UserRepository {
     private List<User> users;
 
-    final
-    SubjectRepository SubjectRepository;
-
-    UserRepository(SubjectRepository SubjectRepository){
-        this.SubjectRepository = SubjectRepository;
-        users = new LinkedList<>();
-        List<Subject> subjects = new LinkedList<>();
-        subjects.add(this.SubjectRepository.getSubject(1));
-        LocalDate localDate = LocalDate.of(1998, 4, 21);
-        users.add(new User(0, UserType.STUDENT,"test1", "Test1", "Tere1", localDate,  "{noop}password1"));
-        localDate = LocalDate.of(2005, 5, 7);
-        users.add(new User(1,UserType.STUDENT, "test2", "Test2", "Tenko2", localDate,  "{noop}password2"));
-        localDate = LocalDate.of(2006, 5, 7);
-        users.add(new User(2, UserType.ADMIN, "admin", "admin1", "admin1", localDate,"{noop}admin"));
-//        users.add(new User(3,"test","{noop}test", UserType.STUDENT));
-        users.add(new User(3, UserType.TEACHER, "teach1", "teacher1", "teach", localDate, "{noop}teach",
-              subjects));
-
+    UserRepository(){
     }
 
     public List<User> getUsers() {
@@ -41,7 +25,7 @@ public class UserRepository {
     public User getUser(String username) {
         for (User user : users) {
             if (user.getUsername().equals(username)) {
-             return user;
+                return user;
             }
         }
         return null;
@@ -70,7 +54,9 @@ public class UserRepository {
         List<User> students = new LinkedList<>();
         for (User user : users) {
             if ( user.getUserType() == UserType.STUDENT ) {
-                students.add(user);
+                if(user.getFirstName() != null && user.getLastName() != null) {
+                    students.add(user);
+                }
             }
         }
         return students;
@@ -103,7 +89,7 @@ public class UserRepository {
         return null;
     }
 
-    public boolean updateUser(int id, UserUpdateForm newData){
+    public boolean updateUser(int id, UserUpdateFormDTO newData){
         User user = getUser(id);
         if (user == null) {
             return false;
@@ -178,12 +164,12 @@ public class UserRepository {
 //        return this.users.add(student);
 //    }
 
-    public List<Subject> getTeacherSubjects(int teacherId) {
-        List<Subject> subjects = null;
+    public List<SubjectEntity> getTeacherSubjects(int teacherId) {
+        List<SubjectEntity> subjects = null;
         for (User user : users) {
             if (user.getUserType() == UserType.TEACHER) {
                 if(teacherId == user.getId()) {
-                    subjects = new ArrayList<>(user.getSubjects());
+                    subjects = new ArrayList<SubjectEntity>(user.getSubjects());
                 }
             }
         }
@@ -243,23 +229,17 @@ public class UserRepository {
     public boolean userDelete(int id){
         return this.users.remove(getUser(id));
     }
+
     public boolean addUser(UserAddForm newUser){
         String userType = newUser.getUserType();
         User user;
         int nextUserId = getNextUserId();
-        switch(userType){
-            case "student":
-                user = new User(nextUserId, UserType.STUDENT);
-                break;
-            case "admin":
-                user = new User(nextUserId, UserType.ADMIN);
-                break;
-            case "teacher":
-                user = new User(nextUserId, UserType.TEACHER);
-                break;
-            default:
-                throw new IllegalStateException("Unexpected value: " + userType);
-        }
+        user = switch (userType) {
+            case "student" -> new User(nextUserId, UserType.STUDENT);
+            case "admin" -> new User(nextUserId, UserType.ADMIN);
+            case "teacher" -> new User(nextUserId, UserType.TEACHER);
+            default -> throw new IllegalStateException("Unexpected value: " + userType);
+        };
         user.setUsername(newUser.getUsername());
         user.setPassword(newUser.getPassword());
         this.users.add(user);
@@ -278,6 +258,29 @@ public class UserRepository {
             default -> Comparator.comparing(User::getId);
         };
     return users.stream().sorted(comparator).collect(Collectors.toList());
+    }
+
+
+    public List<User> getOtherTeachers(int loggedUserId){
+        List<User> otherTeachers = new LinkedList<>();
+        for (User user : users) {
+            if (user.getUserType() == UserType.TEACHER) {
+                if(loggedUserId == user.getId()) {
+                    continue;
+                }
+                otherTeachers.add(user);
+            }
+        }
+        System.out.println("otherTeachers: " + otherTeachers);
+        return otherTeachers;
+    }
+
+    public String getStudentFullName(int studentId){
+        User student = this.getStudent(studentId);
+        if (student == null) {
+            return null;
+        }
+        return student.getFirstName() +' '+ student.getLastName();
     }
 
 //    public boolean addUser(User newUser){

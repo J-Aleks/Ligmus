@@ -1,0 +1,88 @@
+label {
+    font-size: 0.875rem;
+    margin-bottom: 0.25rem;
+    color: #1b1b1b;
+}
+legend {
+    font-size: 0.875rem;
+    color: #1b1b1b;
+    line-height: normal;
+}
+.invalid-feedback {
+    display: none;
+    font-size: 0.875rem;
+    color: #d5233f;
+}
+.invalid-feedback ~ .counter {
+    display: inline-block;
+}
+.hint {
+    color: #767676;
+}
+.counter {
+    color: #1b1b1b;
+    font-size: 0.875rem;
+    text-align: right;
+}
+textarea {
+    border-radius: 0.25rem;
+    font-size: 1rem;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding: 0.5rem 0.75rem;
+    display: block;
+    width: 90%;
+    border: 1px solid #b7b7b7;
+    line-height: 1.5;
+    color: #1b1b1b;
+    background-color: #fff;
+}
+textarea.is-invalid {
+    border-bottom-width: 3px;
+    border-bottom-color: #d5233f;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+textarea.is-invalid:focus {
+    box-shadow: 0 0 3px 0.2rem rgba(213, 35, 63, 0.5);
+}
+textarea.is-invalid ~ .invalid-feedback {
+    display: inline-block;
+}
+textarea.is-invalid ~ .under-textarea .invalid-feedback {
+    display: block;
+}
+textarea ~ .textarea-counter {
+    float: right;
+    font-size: 0.875rem;
+    margin-top: 3px;
+}
+textarea:disabled, textarea[readonly] {
+    background-color: #f1f1f1;
+    opacity: 1;
+    cursor: not-allowed;
+}
+textarea:focus, textarea[state-focus] {
+    box-shadow: 0 0 3px 0.2rem rgba(0, 82, 165, 0.5);
+}
+textarea:active, textarea[state-active] {
+    border-bottom-width: 3px;
+    border-bottom-color: #0052a5;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+textarea::placeholder {
+    color: #767676;
+    opacity: 1;
+}
+.under-textarea {
+    display: flex;
+    justify-content: flex-end;
+}
+.under-textarea .invalid-feedback {
+    flex: 1 1 auto;
+}
+.under-textarea .counter {
+    flex: 0 0 auto;
+}

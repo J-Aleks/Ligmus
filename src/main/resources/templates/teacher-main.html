@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/a.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/button.css}">
+    <title>Teacher</title>
+</head>
+<body>
+<div th:replace="index::header"></div>
+
+<nav class="vertical-menu">
+    <ul class="vertical-menu">
+        <li><a th:href="@{students/}" th:text="'Lista uczonych Studentów'" class="btn btn-secondary"/></li>
+        <li><a th:href="@{share/}" th:text="'Udostępnij oceny z przedmiotu innym nauczycielom'" class="btn btn-secondary"/></li>
+        <li><a th:href="@{GradesSerialForm}" th:text="'Dodaj oceny seryjnie'" class="btn btn-secondary"/></li>
+        <li><a th:href="@{/user/}" th:text="'Dane Konta'" class="btn btn-secondary"/></li>
+    </ul>
+</nav>
+</body>
+</html>
