@@ -1,5 +1,6 @@
 package com.example.ligmus.data.shared;
 
+import com.example.ligmus.data.Entities.SubjectEntity;
 import com.example.ligmus.data.subjects.Subject;
 import lombok.Data;
 
@@ -12,7 +13,7 @@ public class AccessSharedToken {
     private int id;
     private String token;
 
-    private Subject sharedSubject;
+    private SubjectEntity sharedSubject;
 
     private int grantedByTeacherId;
 
