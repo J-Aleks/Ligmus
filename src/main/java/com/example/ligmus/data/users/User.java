@@ -17,7 +17,7 @@ public class User {
     private String lastName;
     private LocalDate dateOfBirth;
     private UserType userType;
-    private List<Subject> subjects;
+    private List<Integer> subjects;
 
     public User(){
         this.id = 0;
@@ -40,7 +40,7 @@ public class User {
         this.dateOfBirth = dateOfBirth;
         this.userType = userType;
     }
-    public User(int id, UserType userType, String username, String firstName, String lastName, LocalDate dateOfBirth, String password, List<Subject> subjects) {
+    public User(int id, UserType userType, String username, String firstName, String lastName, LocalDate dateOfBirth, String password, List<Integer> subjects) {
         this.id = id;
         this.username = username;
         this.password = password;

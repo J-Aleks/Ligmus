@@ -62,6 +62,8 @@ public class AdminController {
     @GetMapping("/users/addUser")
     public String addUser(Model model){
 
+        model.addAttribute("subjects", "");
+        model.addAttribute("allSubjects", this.ligmusService.getSubjects());
         model.addAttribute("isUpdate", false);
         model.addAttribute("newUser", new UserAddForm());
 
@@ -92,6 +94,14 @@ public class AdminController {
         if(user == null){
             throw new RuntimeException("User not found");
         }
+        if(user.getUserType() == UserType.TEACHER){
+            System.out.println("AdminContr show Teacher");
+            model.addAttribute("isTeacher", true);
+            model.addAttribute("subjects", this.ligmusService.getTeacherSubjects(user.getId()));
+        }
+        else{
+            model.addAttribute("isTeacher", false);
+        }
         model.addAttribute("user", user);
         model.addAttribute("id", id);
         return "admin-user";
@@ -102,10 +112,13 @@ public class AdminController {
     public String updateUser(@PathVariable int id, Model model){
 
         User user = this.ligmusService.getUser(id);
-
+        if(user.getUserType() == UserType.TEACHER){
+            model.addAttribute("isTeacher", true);
+            model.addAttribute("subjects", this.ligmusService.getTeacherSubjects(user.getId()));
+            model.addAttribute("allSubjects", this.ligmusService.getSubjects());
+        }
         model.addAttribute("newUser", user);
         model.addAttribute("isUpdate", true);
-
         return "userForm";
     }
 

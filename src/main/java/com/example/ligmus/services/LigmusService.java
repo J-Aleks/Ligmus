@@ -151,7 +151,16 @@ public class LigmusService {
         return this.userRepository.sortUsers(users, sortMethod);
     }
 
-    public List<Subject> getTeacherSubjects(int teacherId) {return this.userRepository.getTeacherSubjects(teacherId);}
+    public List<Subject> getTeacherSubjects(int teacherId) {
+        List<Subject> subjects = new ArrayList<>();
+        List<Integer> teacherSubjects = this.userRepository.getTeacherSubjectsId(teacherId);
+        for (Subject subject : this.subjectRepository.getSubjects()) {
+            if (teacherSubjects.contains(subject.getId())) {
+                subjects.add(subject);
+            }
+        }
+        return subjects;
+    }
 
     public List<Grade> getStudentGradesFromSubject(int studentId, int subjectId) {
         return this.gradeRepository.getGradesFromSubject(studentId, subjectId);

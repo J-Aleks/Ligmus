@@ -4,10 +4,7 @@ import com.example.ligmus.data.subjects.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 @Repository
 public class SubjectRepository {
@@ -40,6 +37,15 @@ public class SubjectRepository {
             }
         }
         return null;
+    }
+
+    public Optional<Subject> getSubjectById(int subjectId) {
+        for (Subject subject : subjects) {
+            if (subject.getId() == subjectId) {
+                return Optional.of(subject);
+            }
+        }
+        return Optional.empty();
     }
 
     public int getNextSubjectId() {

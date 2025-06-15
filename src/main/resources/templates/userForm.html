@@ -27,15 +27,15 @@
     <label for="userType">Typ Użytkownika</label>
     <select id="userType" name="userType" th:field="*{userType}" >
         <option
-                th:value="student"
+                th:value="STUDENT"
                 th:text="Student">
         </option>
         <option
-                th:value="teacher"
+                th:value="TEACHER"
                 th:text="Nauczyciel">
         </option>
         <option
-                th:value="admin"
+                th:value="ADMIN"
                 th:text="Admin">
         </option>
     </select><br>
@@ -48,7 +48,20 @@
         <input type="date" id="bithDay" th:field="*{dateOfBirth}" ><br>
     </div>
 
-<!--    <div th:if="${isAdmin}"></div>-->
+        <fieldset th:if="${isTeacher}">
+            <legend>Przedmioty prowadzone przez nauczyciela</legend>
+
+            <div th:each="subject : ${allSubjects}">
+                <label>
+                    <input type="checkbox"
+                           name="subjects"
+                           th:value="${subject.id}"
+                           th:checked="${#lists.contains(newUser.subjects, subject.id)}"/>
+                    <span th:text="${subject.name}">Matematyka</span>
+                </label>
+            </div>
+
+        </fieldset>
 
     <button type="submit" class="btn btn-secondary btn">Zapisz</button>
 </form>

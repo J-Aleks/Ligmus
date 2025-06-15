@@ -48,7 +48,7 @@ public class CustomUserDetails implements UserDetails {
 
     public int getId() { return this.user.getId(); }
 
-    public List<Subject> getSubjects() {return this.user.getSubjects();}
+    public List<Integer> getSubjects() {return this.user.getSubjects();}
 
     public LocalDate getDateOfBirth() { return this.user.getDateOfBirth(); }
 

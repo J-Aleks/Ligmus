@@ -15,6 +15,9 @@
     <h3 th:text="|Imie Użytkownika ${user.firstName}|"></h3>
     <h3 th:text="|Nazwisko Użytkownika ${user.lastName}|"></h3>
     <h3 th:text="|Data urodzenia Użytkownika ${user.dateOfBirth}|"></h3>
+    <ol th:if="${isTeacher}" th:each="subject : ${subjects}">
+        <li th:text="${subject.name}"></li>
+    </ol>
 </div>
 
 <a th:href="@{{id}/update(id=${id})}" th:text="|Modyfikuj uzytkownika|"/>

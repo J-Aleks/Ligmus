@@ -3,6 +3,7 @@ package com.example.ligmus.repositories;
 import com.example.ligmus.data.DTO.UserUpdateFormDTO;
 import com.example.ligmus.data.users.*;
 import com.example.ligmus.data.subjects.Subject;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -19,8 +20,8 @@ public class UserRepository {
     UserRepository(SubjectRepository SubjectRepository){
         this.SubjectRepository = SubjectRepository;
         users = new LinkedList<>();
-        List<Subject> subjects = new LinkedList<>();
-        subjects.add(this.SubjectRepository.getSubject(1));
+        List<Integer> subjects = new LinkedList<>();
+        subjects.add(1);
         LocalDate localDate = LocalDate.of(1998, 4, 21);
         users.add(new User(0, UserType.STUDENT,"test1", "Test1", "Tere1", localDate,  "{noop}password1"));
         localDate = LocalDate.of(2005, 5, 7);
@@ -31,7 +32,7 @@ public class UserRepository {
         users.add(new User(4, UserType.TEACHER, "teach1", "teacher1", "teach", localDate, "{noop}teach",
               subjects));
 //        subjects = new LinkedList<>();
-        subjects.add(this.SubjectRepository.getSubject(2));
+        subjects.add(2);
         users.add(new User(5, UserType.TEACHER, "teach2", "teacher2", "teach", localDate, "{noop}teach",
                 subjects));
 
@@ -116,19 +117,20 @@ public class UserRepository {
         if(newData.getUserType() != null) {
             String newUserType = newData.getUserType();
             if (user.getUserType() == UserType.STUDENT) {
-                if (!newUserType.equals("student")) {
+                if (!newUserType.equals("STUDENT")) {
                     changeUserType(id, newUserType);
                     return true;
                 }
             }
             if (user.getUserType() == UserType.TEACHER) {
-                if (!newUserType.equals("teacher")) {
+                if (!newUserType.equals("TEACHER")) {
                     changeUserType(id, newUserType);
                     return true;
                 }
+                user.setSubjects(newData.getSubjects());
             }
             if (user.getUserType() == UserType.ADMIN) {
-                if (!newUserType.equals("admin")) {
+                if (!newUserType.equals("ADMIN")) {
                     changeUserType(id, newUserType);
                     return true;
                 }
@@ -183,12 +185,13 @@ public class UserRepository {
 //        return this.users.add(student);
 //    }
 
-    public List<Subject> getTeacherSubjects(int teacherId) {
-        List<Subject> subjects = null;
+    public List<Integer> getTeacherSubjectsId(int teacherId) {
+        List<Integer> subjects = null;
         for (User user : users) {
             if (user.getUserType() == UserType.TEACHER) {
                 if(teacherId == user.getId()) {
                     subjects = new ArrayList<>(user.getSubjects());
+                    break;
                 }
             }
         }
@@ -229,13 +232,13 @@ public class UserRepository {
             return null;
         }
         switch (type) {
-            case "student":
+            case "STUDENT":
                 user.setUserType(UserType.STUDENT);
                 break;
-            case "teacher":
+            case "TEACHER":
                 user.setUserType(UserType.TEACHER);
                 break;
-            case "admin":
+            case "ADMIN":
                 user.setUserType(UserType.ADMIN);
                 break;
             default:
