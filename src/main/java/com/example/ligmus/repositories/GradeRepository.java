@@ -17,10 +17,10 @@ public class GradeRepository {
     GradeRepository(){
         System.out.println("GradeRepos constructor");
         grades = new LinkedList<>();
-        grades.add(new Grade(0,0, 10, 2, 1));
-        grades.add(new Grade(1,1, 10, 3,2));
-        grades.add(new Grade(2,0, 1, 2, 1));
-        grades.add(new Grade(3,0, 1, 2, 2));
+        grades.add(new Grade(0,2, 10, 2, 1));
+        grades.add(new Grade(1,3, 10, 3,2));
+        grades.add(new Grade(2,2, 1, 2, 1));
+        grades.add(new Grade(3,2, 1, 2, 2));
     }
 
     public List<Grade> getGradesByUserId(int userId) {

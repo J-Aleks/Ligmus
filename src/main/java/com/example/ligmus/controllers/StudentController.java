@@ -2,21 +2,14 @@ package com.example.ligmus.controllers;
 
 
 import com.example.ligmus.data.grades.Grade;
-import com.example.ligmus.data.subjects.Subject;
-import com.example.ligmus.data.users.User;
-import com.example.ligmus.exception.ResourceNotFoundException;
 import com.example.ligmus.security.auth.CustomUserDetails;
 import com.example.ligmus.services.LigmusService;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 

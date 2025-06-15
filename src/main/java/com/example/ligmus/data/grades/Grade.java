@@ -30,6 +30,13 @@ public class Grade {
         this.weight = weight;
         this.subject = subject;
         this.description = description;
-
+    }
+    public Grade(int gradeId ,int studentId, int grade, int weight, int subject, String description) {
+        this.gradeId = gradeId;
+        this.studentId = studentId;
+        this.grade = grade;
+        this.weight = weight;
+        this.subject = subject;
+        this.description = description;
     }
 }

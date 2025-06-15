@@ -1,6 +1,5 @@
 package com.example.ligmus.data.Entities;
 
-import com.example.ligmus.data.entities.*;
 import com.example.ligmus.data.users.UserType;
 import com.example.ligmus.repositories.*;
 import jakarta.annotation.PostConstruct;

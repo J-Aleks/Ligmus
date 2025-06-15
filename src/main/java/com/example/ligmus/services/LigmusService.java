@@ -2,6 +2,7 @@ package com.example.ligmus.services;
 
 import com.example.ligmus.data.DTO.*;
 
+import com.example.ligmus.data.Entities.GradeEntity;
 import com.example.ligmus.data.Entities.SubjectEntity;
 import com.example.ligmus.data.grades.Grade;
 import com.example.ligmus.data.subjects.Subject;
@@ -10,6 +11,7 @@ import com.example.ligmus.exception.ResourceNotFoundException;
 import com.example.ligmus.repositories.GradeRepository;
 import com.example.ligmus.repositories.SubjectRepository;
 import com.example.ligmus.repositories.UserRepository;
+import com.example.ligmus.repositories.dbGradeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,16 +26,34 @@ public class LigmusService {
 
     @Autowired
     GradeRepository gradeRepository;
-
+    @Autowired
+    dbGradeRepository dbGradeRepository;
     @Autowired
     UserRepository userRepository;
 
     @Autowired
     SubjectRepository subjectRepository;
 
-    public List<Grade> getGradesByUserId(int userId) {return this.gradeRepository.getGradesByUserId(userId);}
-
-    public Grade getGradeById(int gradeId) {return gradeRepository.getGradeById(gradeId);}
+//    public List<Grade> getGradesByUserId(int userId) {return this.gradeRepository.getGradesByUserId(userId);}
+    public List<Grade> getGradesByUserId(int userId) {
+        List<GradeEntity> gradeEntities = this.dbGradeRepository.findAllByStudent_Id(userId);
+        return gradeEntities.stream().map(gradeEntity -> new Grade(
+                gradeEntity.getId(),
+                gradeEntity.getStudent().getId(),
+                gradeEntity.getGrade(),
+                gradeEntity.getWeight(),
+                gradeEntity.getSubject().getId(),
+                gradeEntity.getDescription()
+        )).toList();
+    }
+//    public Grade getGradeById(int gradeId) {return gradeRepository.getGradeById(gradeId);}
+    public GradeEntity getGradeById(int gradeId){
+        Optional<GradeEntity> opt = dbGradeRepository.findById(gradeId);
+        if (opt.isPresent()){
+            return opt.get();
+        }
+        return null;
+    }
 
     public GradeDTO getGradeDTOById(int gradeId) {
 
