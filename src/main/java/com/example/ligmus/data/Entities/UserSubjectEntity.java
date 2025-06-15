@@ -3,7 +3,7 @@ package com.example.ligmus.data.Entities;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "UserSubjects")
+@Table(name = "User_Subjects")
 public class UserSubjectEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

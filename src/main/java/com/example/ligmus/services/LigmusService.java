@@ -82,8 +82,17 @@ public class LigmusService {
         return gradeDTO;
     }
 
-    public void addGrade(Grade grade) { this.gradeRepository.addGrade(grade);}
-
+//    public void addGrade(Grade grade) { this.gradeRepository.addGrade(grade);}
+    public void addGrade(Grade grade) {
+        this.dbGradeRepository.save(new GradeEntity(
+                dbUserRepository.findById(grade.getStudentId()).get(),
+                dbUserRepository.findById(grade.getTeacherId()).get(),
+                grade.getGrade(),
+                grade.getWeight(),
+                subjectRepository.findById(grade.getSubject()).get(),
+                grade.getDescription()
+        ));
+    }
 //    public void addGrade(GradeDTO grade) {
 //
 //        Grade gradeToAdd = convertGradeDtoToGrade(grade);
