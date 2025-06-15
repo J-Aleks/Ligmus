@@ -9,7 +9,8 @@
     <link rel="stylesheet" th:href="@{/css/select.css}">
     <link rel="stylesheet" th:href="@{/css/table.css}">
     <meta charset="UTF-8">
-    <title>Dodawanie użytkowników</title>
+    <title th:if="${isUpdate}" th:text="|Dodawanie użytkowników|"></title>
+    <title th:if="${!isUpdate}" th:text="|Modyfikacja użytkowników|"></title>
 </head>
 <body>
 <header>
@@ -26,15 +27,15 @@
     <label for="userType">Typ Użytkownika</label>
     <select id="userType" name="userType" th:field="*{userType}" >
         <option
-                th:value="student"
+                th:value="STUDENT"
                 th:text="Student">
         </option>
         <option
-                th:value="teacher"
+                th:value="TEACHER"
                 th:text="Nauczyciel">
         </option>
         <option
-                th:value="admin"
+                th:value="ADMIN"
                 th:text="Admin">
         </option>
     </select><br>
@@ -46,6 +47,22 @@
         <label for="bithDay">Data Urodzenia</label>
         <input type="date" id="bithDay" th:field="*{dateOfBirth}" ><br>
     </div>
+
+        <fieldset th:if="${isTeacher}">
+            <legend>Przedmioty prowadzone przez nauczyciela</legend>
+
+            <div th:each="subject : ${allSubjects}">
+                <label>
+                    <input type="checkbox"
+                           name="subjects"
+                           th:value="${subject.id}"
+                           th:checked="${#lists.contains(newUser.subjects, subject.id)}"/>
+                    <span th:text="${subject.name}">Matematyka</span>
+                </label>
+            </div>
+
+        </fieldset>
+
     <button type="submit" class="btn btn-secondary btn">Zapisz</button>
 </form>
 

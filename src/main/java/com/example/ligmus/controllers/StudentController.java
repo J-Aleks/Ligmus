@@ -28,7 +28,7 @@ public class StudentController {
     public String ShowStudentGrades(@AuthenticationPrincipal CustomUserDetails user, Model model) {
 
         int studentId = user.getId();
-        String studentFullName = this.ligmusService.getStudentFullName(studentId);
+        String studentFullName = this.ligmusService.getUserFullName(studentId);
         Map<Integer, String> SubjectDescriptions = this.ligmusService.getSubjectNamesForId();
         List<Grade> grades = this.ligmusService.getGradesByUserId(studentId);
         model.addAttribute("isTeacher",false);
@@ -37,31 +37,4 @@ public class StudentController {
         model.addAttribute("subjectMap",SubjectDescriptions);
         return "grades";
     }
-
-//    @GetMapping("/")
-//    public String ShowStudents(Model model, @RequestParam(value = "sort", required = false) String sort,
-//                               @CookieValue(value = "sortCookie", required = false) String sortCookie,
-//                                HttpServletResponse response) {
-//
-//        String sortMethod = (sort != null) ? sort :
-//                (sortCookie != null) ? sortCookie : "id_asc";
-//        System.out.println("sortMethod: " + sortMethod);
-//        if(sort != null) {
-//            Cookie cookie = new Cookie("sortCookie", sort);
-//            cookie.setPath("/");
-//            cookie.setMaxAge( 60 * 60);
-//            response.addCookie(cookie);
-//        }
-//        List <User> students = this.ligmusService.sortUsers(this.ligmusService.getStudents(), sortMethod);
-//
-//        System.out.println("Students List"+ students);
-//        model.addAttribute("methodSelect" , sortMethod);
-//        model.addAttribute("students",students);
-//        return "students";
-//    }
-
-//    @GetMapping("/{studentId}/")
-
-
-
 }

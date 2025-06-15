@@ -17,7 +17,7 @@
   <p th:text="|Data urodzenia ${user.dateOfBirth} |"></p>
   <p th:if="${user.userType.name() == 'TEACHER'}">Lista uczonych przedmiotów:</p>
   <ol th:if="${user.userType.name() == 'TEACHER'}">
-    <li th:each="subject: ${user.subjects}"  th:text="|${subject.name}|"></li>
+    <li th:each="subject: ${subjects}"  th:text="|${subject.name}|"></li>
   </ol>
   <a th:href="@{'update'}" th:text="'Uaktualnij'" th:class="'btn btn-secondary'" /><br>
 

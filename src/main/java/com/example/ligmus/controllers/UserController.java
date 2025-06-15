@@ -38,6 +38,9 @@ public class UserController {
         if ( user == null) {
             throw new ResourceNotFoundException("User with id " + id + " not found");
         }
+        if(user.getUserType() == UserType.TEACHER ) {
+            model.addAttribute("subjects", this.ligmusService.getTeacherSubjects(id));
+        }
         String backUrl;
         backUrl = switch (userDetails.getUserType()) {
             case ADMIN -> "/admin-dev/";

@@ -139,6 +139,8 @@ public class LigmusService {
         gradeEntity.setStudent(dbUserRepository.findById(newGrade.getStudentId()).get());
         dbGradeRepository.save(gradeEntity);
 
+        Grade gradeToUpdate = convertGradeDtoToGrade(newGrade);
+        this.gradeRepository.updateGradeById(gradeId, gradeToUpdate);
     }
 
     private Grade convertGradeDtoToGrade(GradeDTO newGrade) {
@@ -284,6 +286,26 @@ public class LigmusService {
     }
     public List<SubjectEntity> getSubjects(){ return this.subjectRepository.findAll();}
 
+    public List<User> getUsers() {return this.userRepository.getUsers(); }
+
+    public User getStudent(int id){return this.userRepository.getStudent(id);}
+
+    public List<Subject> getSubjects(){ return this.subjectRepository.getSubjects();}
+
+    public Subject getSubject(int id){return this.subjectRepository.getSubject(id);}
+
+    public SubjectDTO getSubjectDTO(int id) {
+        Subject subject = this.subjectRepository.getSubject(id);
+        if (subject == null)
+            return null;
+        SubjectDTO subjectDTO = new SubjectDTO();
+        subjectDTO.setId(subject.getId());
+        subjectDTO.setName(subject.getName());
+        return subjectDTO;
+    }
+
+    public boolean deleteSubject(int id){return this.subjectRepository.deleteSubjectById(id);}
+
     public boolean deleteUser(int id) {
         if (!dbUserRepository.existsById(id)) {
             return false;
@@ -292,6 +314,19 @@ public class LigmusService {
         dbUserRepository.deleteById(id);
         return true;
     }
+
+    public boolean addSubject(SubjectDTO subjectDTO){
+        int id = this.subjectRepository.getNextSubjectId();
+        String name = subjectDTO.getName();
+        Subject subject = new Subject(id, name);
+        return this.subjectRepository.addSubject(subject);
+    }
+
+    public void updateSubject(int id, SubjectDTO subjectDTO) {
+        Subject subject = new Subject(id, subjectDTO.getName());
+        this.subjectRepository.updateSubject(subject);
+    }
+
 
     public List<User> sortUsers(List <User> users, String sortMethod) {
         return this.userRepository.sortUsers(users, sortMethod);
@@ -303,6 +338,16 @@ public class LigmusService {
                 .map(UserSubjectEntity::getSubject)
                 .distinct()
                 .collect(Collectors.toList());
+    }
+    public List<Subject> getTeacherSubjects(int teacherId) {
+        List<Subject> subjects = new ArrayList<>();
+        List<Integer> teacherSubjects = this.userRepository.getTeacherSubjectsId(teacherId);
+        for (Subject subject : this.subjectRepository.getSubjects()) {
+            if (teacherSubjects.contains(subject.getId())) {
+                subjects.add(subject);
+            }
+        }
+        return subjects;
     }
 
     public List<Grade> getStudentGradesFromSubject(int studentId, int subjectId) {
@@ -316,15 +361,12 @@ public class LigmusService {
         return grades;
     }
 
-    public int getIdSubject(String subjectName) { return this.subjectRepository.findByName(subjectName);}
+    public int getIdSubject(String subjectName) { return this.subjectRepository.getSubjectId(subjectName);}
 
 
     public String getSubjectName(int subjectId){
-        Optional<SubjectEntity> subject = this.subjectRepository.findById(subjectId);
-        if (subject.isPresent()){
-            return subject.get().getName();
-        }
-        return null;
+        return this.subjectRepository.getSubjectName(subjectId);
+
     }
 
     public List<User> getOtherTeachers(int teacherId) {
@@ -372,17 +414,14 @@ public class LigmusService {
         }
         return teachersNamesId;
     }
-    public HashMap<Integer, String> getSubjectNamesForId() {
-        return (HashMap<Integer, String>) subjectRepository.findAll()
-                .stream()
-                .collect(Collectors.toMap(
-                        SubjectEntity::getId,
-                        SubjectEntity::getName
-                ));
+    public HashMap<Integer, String> getSubjectNamesForId(){
+        return this.subjectRepository.getSubjectNamesForId();
+    }
+    public String getUserFullName(int userId){
+        return this.userRepository.getUserFullName(userId);
     }
     public String getStudentFullName(int studentId){
-        UserEntity userEntity = dbUserRepository.findById(studentId).get();
-        return  userEntity.getFirstName() + ' ' + userEntity.getLastName();
+        return this.userRepository.getStudentFullName(studentId);
     }
 
 

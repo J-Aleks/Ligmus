@@ -1,10 +1,9 @@
 package com.example.ligmus.repositories;
 
 import com.example.ligmus.data.DTO.UserUpdateFormDTO;
-import com.example.ligmus.data.Entities.SubjectEntity;
 import com.example.ligmus.data.users.*;
 import com.example.ligmus.data.subjects.Subject;
-import org.springframework.beans.factory.annotation.Autowired;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -15,7 +14,28 @@ import java.util.stream.Collectors;
 public class UserRepository {
     private List<User> users;
 
-    UserRepository(){
+    final
+    SubjectRepository SubjectRepository;
+
+    UserRepository(SubjectRepository SubjectRepository){
+        this.SubjectRepository = SubjectRepository;
+        users = new LinkedList<>();
+        List<Integer> subjects = new LinkedList<>();
+        subjects.add(1);
+        LocalDate localDate = LocalDate.of(1998, 4, 21);
+        users.add(new User(0, UserType.STUDENT,"test1", "Test1", "Tere1", localDate,  "{noop}password1"));
+        localDate = LocalDate.of(2005, 5, 7);
+        users.add(new User(1,UserType.STUDENT, "test2", "Test2", "Tenko2", localDate,  "{noop}password2"));
+        localDate = LocalDate.of(2006, 5, 7);
+        users.add(new User(2, UserType.ADMIN, "admin", "admin1", "admin1", localDate,"{noop}admin"));
+        users.add(new User(3,"test","{noop}test", UserType.STUDENT));
+        users.add(new User(4, UserType.TEACHER, "teach1", "teacher1", "teach", localDate, "{noop}teach",
+              subjects));
+//        subjects = new LinkedList<>();
+        subjects.add(2);
+        users.add(new User(5, UserType.TEACHER, "teach2", "teacher2", "teach", localDate, "{noop}teach",
+                subjects));
+
     }
 
     public List<User> getUsers() {
@@ -25,7 +45,7 @@ public class UserRepository {
     public User getUser(String username) {
         for (User user : users) {
             if (user.getUsername().equals(username)) {
-                return user;
+             return user;
             }
         }
         return null;
@@ -97,19 +117,20 @@ public class UserRepository {
         if(newData.getUserType() != null) {
             String newUserType = newData.getUserType();
             if (user.getUserType() == UserType.STUDENT) {
-                if (!newUserType.equals("student")) {
+                if (!newUserType.equals("STUDENT")) {
                     changeUserType(id, newUserType);
                     return true;
                 }
             }
             if (user.getUserType() == UserType.TEACHER) {
-                if (!newUserType.equals("teacher")) {
+                if (!newUserType.equals("TEACHER")) {
                     changeUserType(id, newUserType);
                     return true;
                 }
+                user.setSubjects(newData.getSubjects());
             }
             if (user.getUserType() == UserType.ADMIN) {
-                if (!newUserType.equals("admin")) {
+                if (!newUserType.equals("ADMIN")) {
                     changeUserType(id, newUserType);
                     return true;
                 }
@@ -164,12 +185,13 @@ public class UserRepository {
 //        return this.users.add(student);
 //    }
 
-    public List<SubjectEntity> getTeacherSubjects(int teacherId) {
-        List<SubjectEntity> subjects = null;
+    public List<Integer> getTeacherSubjectsId(int teacherId) {
+        List<Integer> subjects = null;
         for (User user : users) {
             if (user.getUserType() == UserType.TEACHER) {
                 if(teacherId == user.getId()) {
-                    subjects = new ArrayList<SubjectEntity>(user.getSubjects());
+                    subjects = new ArrayList<>(user.getSubjects());
+                    break;
                 }
             }
         }
@@ -210,13 +232,13 @@ public class UserRepository {
             return null;
         }
         switch (type) {
-            case "student":
+            case "STUDENT":
                 user.setUserType(UserType.STUDENT);
                 break;
-            case "teacher":
+            case "TEACHER":
                 user.setUserType(UserType.TEACHER);
                 break;
-            case "admin":
+            case "ADMIN":
                 user.setUserType(UserType.ADMIN);
                 break;
             default:
@@ -275,34 +297,11 @@ public class UserRepository {
         return otherTeachers;
     }
 
-    public String getStudentFullName(int studentId){
-        User student = this.getStudent(studentId);
-        if (student == null) {
+    public String getUserFullName(int userId){
+        User user = this.getStudent(userId);
+        if (user == null) {
             return null;
         }
-        return student.getFirstName() +' '+ student.getLastName();
+        return user.getFirstName() +' '+ user.getLastName();
     }
-
-//    public boolean addUser(User newUser){
-//        UserType userType = newUser.getUserType();
-//        User user;
-//        int nextUserId = getNextUserId();
-//        switch(userType){
-//            case STUDENT:
-//                user = new User(nextUserId, UserType.STUDENT);
-//                break;
-//            case ADMIN:
-//                user = new User(nextUserId, UserType.ADMIN);
-//                break;
-//            case TEACHER:
-//                user = new User(nextUserId, UserType.TEACHER);
-//                break;
-//            default:
-//                throw new ResourceNotFoundException("User Type is invalid");
-//        }
-//        user.setUsername(newUser.getUsername());
-//        user.setPassword(newUser.getPassword());
-//        this.users.add(user);
-//        return true;
-//    }
 }

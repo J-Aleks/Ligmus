@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/a.css}">
+    <meta charset="UTF-8">
+    <title>Informacje o Przedmiocie</title>
+</head>
+<body>
+
+<div>
+    <h3 th:text="|Indeks przedmiotu ${subject.id}|"></h3>
+    <h3 th:text="|Nazwa przedmiotu ${subject.name}|"></h3>
+
+</div>
+
+<a th:href="@{{id}/update(id=${subject.id})}" th:text="|modyfikuj przedmiot|"/>
+<a th:href="@{{id}/delete(id=${subject.id})}" th:text="|usuń przedmiot|"/>
+
+<a th:href="@{'../subjects'}" th:text="Wróć"/>
+</body>
+</html>

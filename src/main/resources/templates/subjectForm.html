@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/a.css}">
+    <link rel="stylesheet" th:href="@{/css/input.css}">
+    <link rel="stylesheet" th:href="@{/css/textarea.css}">
+    <link rel="stylesheet" th:href="@{/css/button.css}">
+    <link rel="stylesheet" th:href="@{/css/select.css}">
+    <link rel="stylesheet" th:href="@{/css/table.css}">
+    <meta charset="UTF-8">
+    <title th:if="${isUpdate}" th:text="|Dodawanie Przedmiotu|"></title>
+    <title th:if="${!isUpdate}" th:text="|Modyfikacja Przedmiotu|"></title>
+</head>
+<body>
+<header>
+    <h1 th:if="${isUpdate}" th:text="|Zmień dane przedmiotu|"></h1>
+    <h1 th:if="${!isUpdate}" th:text="|Dodaj Przedmiot|"></h1>
+</header>
+<div id="formDiv">
+    <form th:object="${subject}" th:action="@{${isUpdate ? 'update' : 'addSubject'}}" th:method="post">
+
+        <div th:if="${isUpdate}">
+            <h2 th:text="|Id Przedmiotu: ${subject.id}|"></h2>
+            <input type="hidden" id="subjectId" th:field="*{id}" ><br>
+        </div>
+
+        <label for="subjectname">Nazwa Przedmiotu</label>
+        <input type="text" id="subjectname" th:field="*{name}" ><br>
+
+
+        <button type="submit" class="btn btn-secondary btn">Zapisz</button>
+    </form>
+
+    <a th:href="@{${isUpdate ? '../../subjects' : '../subjects'}}" th:text="'Anuluj'" class="back btn btn-secondary"/>
+</div>
+</body>
+</html>

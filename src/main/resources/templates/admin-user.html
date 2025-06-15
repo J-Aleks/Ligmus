@@ -9,16 +9,19 @@
 <body>
 
 <div>
-    <h3 th:text="|indeks Użytkownika ${id}|"></h3>
-    <h3 th:text="|nazwa Użytkownika ${user.username}|"></h3>
+    <h3 th:text="|Indeks Użytkownika ${id}|"></h3>
+    <h3 th:text="|Nazwa Użytkownika ${user.username}|"></h3>
     <h3 th:text="|Typ Użytkownika ${user.userType}|"></h3>
-    <h3 th:text="|imie Użytkownika ${user.firstName}|"></h3>
-    <h3 th:text="|nazwisko Użytkownika ${user.lastName}|"></h3>
-    <h3 th:text="|data urodzenia Użytkownika ${user.dateOfBirth}|"></h3>
+    <h3 th:text="|Imie Użytkownika ${user.firstName}|"></h3>
+    <h3 th:text="|Nazwisko Użytkownika ${user.lastName}|"></h3>
+    <h3 th:text="|Data urodzenia Użytkownika ${user.dateOfBirth}|"></h3>
+    <ol th:if="${isTeacher}" th:each="subject : ${subjects}">
+        <li th:text="${subject.name}"></li>
+    </ol>
 </div>
 
-<a th:href="@{{id}/update(id=${id})}" th:text="|modyfikuj uzytkownika|"/>
-<a th:href="@{{id}/delete(id=${id})}" th:text="|usuń uzytkownika|"/>
+<a th:href="@{{id}/update(id=${id})}" th:text="|Modyfikuj uzytkownika|"/>
+<a th:href="@{{id}/delete(id=${id})}" th:text="|Usuń uzytkownika|"/>
 
 <a th:href="@{'../users'}" th:text="Wróć"/>
 </body>

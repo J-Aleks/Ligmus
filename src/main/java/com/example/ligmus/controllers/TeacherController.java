@@ -106,7 +106,7 @@ public class TeacherController {
         session.setAttribute("gradesSerialFormDraft", gradeFormDTO);
         session.setAttribute("isFormUpdate", false);
 
-        return "redirect:/teacher/";
+     return "redirect:/teacher/";
     }
 
     @PostMapping("/GradesSerialForm/add")

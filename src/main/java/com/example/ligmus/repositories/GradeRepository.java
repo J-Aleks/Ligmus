@@ -1,3 +1,4 @@
+//
 //package com.example.ligmus.repositories;
 //
 //
@@ -12,9 +13,19 @@
 //@Repository
 //public class GradeRepository {
 //
+//    private final List<Grade> grades;
 //
 //    GradeRepository(){
+//        System.out.println("GradeRepos constructor");
+//        grades = new LinkedList<>();
+//        grades.add(new Grade(0,0, 10, 2, 1));
+//        grades.add(new Grade(1,1, 10, 3,2));
+//        grades.add(new Grade(2,0, 1, 2, 1));
+//        grades.add(new Grade(3,0, 1, 2, 2));
+//    }
 //
+//    public List<Grade> getGrades() {
+//        return grades;
 //    }
 //
 //    public List<Grade> getGradesByUserId(int userId) {
@@ -64,6 +75,17 @@
 //        return tempGrade;
 //    }
 //
+//    public boolean deleteGradeById(int gradeId) {
+//        for (Grade grade : grades) {
+//            if (grade.getGradeId() == gradeId) {
+//                grades.remove(grade);
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
+//
+////    public boolean updateGrade(GradeDTO gradeDTO) {}
 //
 //
 //}

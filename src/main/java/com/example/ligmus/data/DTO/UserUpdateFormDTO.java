@@ -2,6 +2,7 @@ package com.example.ligmus.data.DTO;
 
 import com.example.ligmus.data.subjects.Subject;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
@@ -34,6 +35,6 @@ public class UserUpdateFormDTO {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate dateOfBirth;
 
-    private List<Subject> subjects;
+    private List<Integer> subjects;
     private String userType;
 }
