@@ -31,7 +31,7 @@ public class DataInit {
             if (userRepository.count() == 0) {
                 LocalDate birthDate = LocalDate.of(1998, 4, 21);
 
-                UserEntity teacher1 = new UserEntity("teach1", "$2b$12$d.a4c6qmCZ2svVljTjJqR.e1XZQvkRmX0gU.wWe9Kjixj9O9UEoZ6", "Teacher1", "Teach", birthDate, UserType.TEACHER);
+                UserEntity teacher1 = new UserEntity("teach1", "$2b$12$MQB761pt7473KntRIS.QEuLkkKm5TEOEScjGCtAqdfooar99xPZuK", "Teacher1", "Teach", birthDate, UserType.TEACHER);
                 userRepository.save(teacher1);
 
                 UserEntity student1 = new UserEntity("test1", "$2b$12$fN5Z8qf7ALJE3u9vEXGrTu.qoUCQSBWeutRcwGqGP6DuGGXdUIzjO", "Test1", "Tere1", LocalDate.of(1998, 4, 21), UserType.STUDENT);
@@ -43,7 +43,7 @@ public class DataInit {
                 UserEntity admin = new UserEntity("admin", "$2b$12$40AfIiFG63mMz6Y2/3hC6OvVaKJks4YgbiK2sqQsN3MMv/SOEhfwq", "Admin1", "Admin1", LocalDate.of(2006, 5, 7), UserType.ADMIN);
                 userRepository.save(admin);
 
-                UserEntity teacher2 = new UserEntity("teach2", "$2b$12$d.a4c6qmCZ2svVljTjJqR.e1XZQvkRmX0gU.wWe9Kjixj9O9UEoZ6", "Teacher2", "Teach", birthDate, UserType.TEACHER);
+                UserEntity teacher2 = new UserEntity("teach2", "$2b$12$MQB761pt7473KntRIS.QEuLkkKm5TEOEScjGCtAqdfooar99xPZuK", "Teacher2", "Teach", birthDate, UserType.TEACHER);
                 userRepository.save(teacher2);
 
                 userSubjectRepository.save(new UserSubjectEntity(teacher1, math));
