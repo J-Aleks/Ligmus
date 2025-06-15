@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "subject")
+@Table(name = "Subjects")
 public class SubjectEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
