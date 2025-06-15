@@ -4,6 +4,7 @@ import com.example.ligmus.data.DTO.*;
 
 import com.example.ligmus.data.Entities.GradeEntity;
 import com.example.ligmus.data.Entities.SubjectEntity;
+import com.example.ligmus.data.Entities.UserSubjectEntity;
 import com.example.ligmus.data.grades.Grade;
 import com.example.ligmus.data.subjects.Subject;
 import com.example.ligmus.data.users.*;
@@ -22,8 +23,6 @@ import java.util.stream.Collectors;
 public class LigmusService {
 
     @Autowired
-    GradeRepository gradeRepository;
-    @Autowired
     dbGradeRepository dbGradeRepository;
     @Autowired
     UserRepository userRepository;
@@ -31,6 +30,8 @@ public class LigmusService {
     dbUserRepository dbUserRepository;
     @Autowired
     SubjectRepository subjectRepository;
+    @Autowired
+    dbUserSubjectRepository dbUserSubjectRepository;
 
 //    public List<Grade> getGradesByUserId(int userId) {return this.gradeRepository.getGradesByUserId(userId);}
     public List<Grade> getGradesByUserId(int userId) {
@@ -45,7 +46,6 @@ public class LigmusService {
                 gradeEntity.getDescription()
         )).toList();
     }
-//    public Grade getGradeById(int gradeId) {return gradeRepository.getGradeById(gradeId);}
     public GradeEntity getGradeById(int gradeId){
         Optional<GradeEntity> opt = dbGradeRepository.findById(gradeId);
         if (opt.isPresent()){
@@ -119,9 +119,11 @@ public class LigmusService {
         ));
     }
 
-    public int getNextGradeIndex(){ return this.gradeRepository.getNextGradeIndex();}
+    //to i tak nic nie robi więc do usunięcia
+    public int getNextGradeIndex(){ return 0;}
 
-    public void updateGradeById(int gradeId, Grade newGrade) { this.gradeRepository.updateGradeById(gradeId, newGrade);}
+    //to i tak nie jest wywoływane
+//    public void updateGradeById(int gradeId, Grade newGrade) { this.gradeRepository.updateGradeById(gradeId, newGrade);}
 
     public void updateGradeById(int gradeId, GradeDTO newGrade) {
         GradeEntity gradeEntity = dbGradeRepository.findById(gradeId).get();
@@ -189,7 +191,13 @@ public class LigmusService {
         return this.userRepository.sortUsers(users, sortMethod);
     }
 
-    public List<SubjectEntity> getTeacherSubjects(int teacherId) {return this.userRepository.getTeacherSubjects(teacherId);}
+    public List<SubjectEntity> getTeacherSubjects(int teacherId) {
+        List<UserSubjectEntity> userSubjects = dbUserSubjectRepository.findByUserId(teacherId);
+        return userSubjects.stream()
+                .map(UserSubjectEntity::getSubject)
+                .distinct()
+                .collect(Collectors.toList());
+    }
 
 //    public List<Grade> getStudentGradesFromSubject(int studentId, int subjectId) {
 //        return this.gradeRepository.getGradesFromSubject(studentId, subjectId);

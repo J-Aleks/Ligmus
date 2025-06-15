@@ -79,13 +79,13 @@ public class GradeController {
     }
 
     @GetMapping("/add")
-    public String showGradeForm(@PathVariable int studentId ,Model model){
+    public String showGradeForm(@PathVariable int studentId ,Model model, @AuthenticationPrincipal CustomUserDetails user){
         User student = this.ligmusService.getStudent(studentId);
         if ( student == null) {
             throw new ResourceNotFoundException("Student with id " + studentId + " not found");
         }
         model.addAttribute("isUpdate", false);
-        model.addAttribute("subjects", this.ligmusService.getSubjects());
+        model.addAttribute("subjects", this.ligmusService.getTeacherSubjects(user.getId()));
         model.addAttribute("student",student);
         model.addAttribute("grade", new GradeDTO());
         return "gradeForm";
@@ -99,7 +99,7 @@ public class GradeController {
         if (bindingResult.hasErrors()) {
             System.out.println(bindingResult.getAllErrors());
             model.addAttribute("isUpdate", false);
-            model.addAttribute("subjects", this.ligmusService.getSubjects());
+            model.addAttribute("subjects", this.ligmusService.getTeacherSubjects(user.getId()));
             model.addAttribute("student",this.ligmusService.getStudent(studentId));
             model.addAttribute("grade",newGrade);
             return "gradeForm";
