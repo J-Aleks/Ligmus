@@ -12,4 +12,5 @@ public interface dbUserRepository extends JpaRepository<UserEntity, Integer> {
     UserEntity findByUsername(String username);
     List<UserEntity> findByUserType(UserType userType);
     UserEntity findByIdAndUserType(int id, UserType userType);
+    List<UserEntity> findByUserTypeAndIdNot(UserType userType, int teacherId);
 }

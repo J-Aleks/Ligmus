@@ -84,7 +84,7 @@ public class UserController {
         }
         int id = userDetails.getId();
         System.out.println("po walidacji");
-        this.ligmusService.updateUser(id, userUpdateFormDTO);
+        this.ligmusService.updateUserRegister(id, userUpdateFormDTO);
         String backUrl;
         backUrl = switch (userDetails.getUserType()) {
             case ADMIN -> "/admin-dev/";

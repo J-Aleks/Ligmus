@@ -15,32 +15,7 @@ import java.util.stream.Collectors;
 public class UserRepository {
     private List<User> users;
 
-    @Autowired
-    SubjectRepository SubjectRepository;
-
-    UserRepository(SubjectRepository SubjectRepository){
-        this.SubjectRepository = SubjectRepository;
-        users = new LinkedList<>();
-        List<SubjectEntity> subjects = new LinkedList<>();
-        Optional<SubjectEntity> optSubjectEntity = this.SubjectRepository.findById(1);
-        LocalDate localDate = LocalDate.of(1998, 4, 21);
-        if (optSubjectEntity.isPresent()){
-            subjects.add(optSubjectEntity.get());
-            users.add(new User(1, UserType.TEACHER, "teach1", "teacher1", "teach", localDate, "{noop}teach",
-                    subjects));
-        }
-        users.add(new User(2, UserType.STUDENT,"test1", "Test1", "Tere1", localDate,  "{noop}password1"));
-        localDate = LocalDate.of(2005, 5, 7);
-        users.add(new User(3,UserType.STUDENT, "test2", "Test2", "Tenko2", localDate,  "{noop}password2"));
-        localDate = LocalDate.of(2006, 5, 7);
-        users.add(new User(4, UserType.ADMIN, "admin", "admin1", "admin1", localDate,"{noop}admin"));
-        users.add(new User(6,"test","{noop}test", UserType.STUDENT));
-        optSubjectEntity = this.SubjectRepository.findById(2);
-        if (optSubjectEntity.isPresent()){
-            subjects.add(optSubjectEntity.get());
-            users.add(new User(5, UserType.TEACHER, "teach2", "teacher2", "teach", localDate, "{noop}teach",
-                    subjects));
-        }
+    UserRepository(){
     }
 
     public List<User> getUsers() {

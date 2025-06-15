@@ -71,7 +71,7 @@ public class AdminController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> entity = new HttpEntity<>(newUserJson, headers);
-        ResponseEntity<String> response = restTemplate.postForEntity("http://localhost:8080/Ligmus/api/users/add"
+        ResponseEntity<String> response = restTemplate.postForEntity("http://localhost:8088/Ligmus/api/users/add"
                 , entity, String.class);
 
 
@@ -115,7 +115,7 @@ public class AdminController {
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> entity = new HttpEntity<>(updateUserJson, headers);
         ResponseEntity<String> response = restTemplate
-                .postForEntity("http://localhost:8080/Ligmus/api/users/{id}/update", entity, String.class, id);
+                .postForEntity("http://localhost:8088/Ligmus/api/users/{id}/update", entity, String.class, id);
         System.out.println(response.getBody());
         return "redirect:/admin-dev/users/"+id;
     }
@@ -136,7 +136,7 @@ public class AdminController {
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<String> entity = new HttpEntity<>(headers);
         ResponseEntity<String> response = restTemplate
-                .postForEntity("http://localhost:8080/Ligmus/api/users/{id}/delete", entity, String.class, id);
+                .postForEntity("http://localhost:8088/Ligmus/api/users/{id}/delete", entity, String.class, id);
         System.out.println(response.getBody());
         return "redirect:/admin-dev/users";
     }

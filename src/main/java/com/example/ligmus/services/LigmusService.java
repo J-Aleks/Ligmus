@@ -12,6 +12,7 @@ import com.example.ligmus.data.users.*;
 import com.example.ligmus.exception.ResourceNotFoundException;
 import com.example.ligmus.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -33,8 +34,10 @@ public class LigmusService {
     SubjectRepository subjectRepository;
     @Autowired
     dbUserSubjectRepository dbUserSubjectRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-//    public List<Grade> getGradesByUserId(int userId) {return this.gradeRepository.getGradesByUserId(userId);}
+    //    public List<Grade> getGradesByUserId(int userId) {return this.gradeRepository.getGradesByUserId(userId);}
     public List<Grade> getGradesByUserId(int userId) {
         List<GradeEntity> gradeEntities = this.dbGradeRepository.findAllByStudent_Id(userId);
         return gradeEntities.stream().map(gradeEntity -> new Grade(
@@ -188,17 +191,57 @@ public class LigmusService {
     public int getNextUserId() {return this.userRepository.getNextUserId();}
 
     public void addUser(UserAddForm newUser) {
-        this.userRepository.addUser(newUser);
+        String hashedPassword = passwordEncoder.encode(newUser.getPassword());
+        UserEntity userEntity = new UserEntity(newUser.getUsername(), hashedPassword, UserType.valueOf(newUser.getUserType().toUpperCase()));
+        dbUserRepository.save(userEntity);
     }
 
     public boolean updateUser(int id, UserUpdateFormDTO newUser) {
-        User oldUser = getUser(id);
-        if(oldUser == null) {
+        Optional<UserEntity> optionalUserEntity = dbUserRepository.findById(id);
+        if (optionalUserEntity.isEmpty()) {
             return false;
         }
-        return this.userRepository.updateUser(id, newUser);
+        UserEntity userEntity = optionalUserEntity.get();
+        if (newUser.getUsername() != null) {
+            userEntity.setUsername(newUser.getUsername());
+        }
+        if (newUser.getFirstName() != null) {
+            userEntity.setFirstName(newUser.getFirstName());
+        }
+        if (newUser.getLastName() != null) {
+            userEntity.setLastName(newUser.getLastName());
+        }
+        if (newUser.getDateOfBirth() != null) {
+            userEntity.setDateOfBirth(newUser.getDateOfBirth());
+        }
+        if (newUser.getPassword() != null || !newUser.getPassword().isEmpty()){
+            String hashedPassword = passwordEncoder.encode(newUser.getPassword());
+            userEntity.setPassword(hashedPassword);
+        }
+        dbUserRepository.save(userEntity);
+        return true;
     }
-
+    public boolean updateUserRegister(int id, UserUpdateFormDTO newUser){
+        Optional<UserEntity> optionalUserEntity = dbUserRepository.findById(id);
+        if (optionalUserEntity.isEmpty()) {
+            return false;
+        }
+        UserEntity userEntity = optionalUserEntity.get();
+        if (newUser.getUsername() != null) {
+            userEntity.setUsername(newUser.getUsername());
+        }
+        if (newUser.getFirstName() != null) {
+            userEntity.setFirstName(newUser.getFirstName());
+        }
+        if (newUser.getLastName() != null) {
+            userEntity.setLastName(newUser.getLastName());
+        }
+        if (newUser.getDateOfBirth() != null) {
+            userEntity.setDateOfBirth(newUser.getDateOfBirth());
+        }
+        dbUserRepository.save(userEntity);
+        return true;
+    }
     public User getUser(int id) {
         UserEntity entity = dbUserRepository.findById(id).get();
         return new User(
@@ -212,7 +255,20 @@ public class LigmusService {
         );
     }
 
-    public List<User> getUsers() {return this.userRepository.getUsers(); }
+    public List<User> getUsers() {
+        List<UserEntity> entities = dbUserRepository.findAll();
+        return entities.stream()
+                .map(entity -> new User(
+                        entity.getId(),
+                        entity.getUserType(),
+                        entity.getUsername(),
+                        entity.getFirstName(),
+                        entity.getLastName(),
+                        entity.getDateOfBirth(),
+                        entity.getPassword()
+                ))
+                .collect(Collectors.toList());
+    }
 
     public User getStudent(int id) {
         UserEntity entity = dbUserRepository.findByIdAndUserType(id, UserType.STUDENT);
@@ -228,7 +284,14 @@ public class LigmusService {
     }
     public List<SubjectEntity> getSubjects(){ return this.subjectRepository.findAll();}
 
-    public boolean deleteUser(int id) { return this.userRepository.userDelete(id);}
+    public boolean deleteUser(int id) {
+        if (!dbUserRepository.existsById(id)) {
+            return false;
+        }
+        dbUserSubjectRepository.deleteById(id);
+        dbUserRepository.deleteById(id);
+        return true;
+    }
 
     public List<User> sortUsers(List <User> users, String sortMethod) {
         return this.userRepository.sortUsers(users, sortMethod);
@@ -265,7 +328,18 @@ public class LigmusService {
     }
 
     public List<User> getOtherTeachers(int teacherId) {
-        return this.userRepository.getOtherTeachers(teacherId);
+        List<UserEntity> entities = dbUserRepository.findByUserTypeAndIdNot(UserType.TEACHER, teacherId);
+        return entities.stream()
+                .map(entity -> new User(
+                        entity.getId(),
+                        entity.getUserType(),
+                        entity.getUsername(),
+                        entity.getFirstName(),
+                        entity.getLastName(),
+                        entity.getDateOfBirth(),
+                        entity.getPassword()
+                ))
+                .collect(Collectors.toList());
     }
 
     public StudentsDTO CreateDTO(int subjectId) {
