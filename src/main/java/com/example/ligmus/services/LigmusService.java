@@ -157,8 +157,18 @@ public class LigmusService {
 
     public List<SubjectEntity> getTeacherSubjects(int teacherId) {return this.userRepository.getTeacherSubjects(teacherId);}
 
+//    public List<Grade> getStudentGradesFromSubject(int studentId, int subjectId) {
+//        return this.gradeRepository.getGradesFromSubject(studentId, subjectId);
+//    }
     public List<Grade> getStudentGradesFromSubject(int studentId, int subjectId) {
-        return this.gradeRepository.getGradesFromSubject(studentId, subjectId);
+        List<GradeEntity> gradeEntities = this.dbGradeRepository.findAllByStudent_IdAndSubject_Id(studentId, subjectId);
+        List<Grade> grades = new ArrayList<>();
+        for (GradeEntity entity : gradeEntities) {
+            Grade grade = new Grade(entity.getId(), entity.getStudent().getId(), entity.getGrade(), entity.getWeight(), entity.getSubject().getId(),
+                    entity.getDescription());
+            grades.add(grade);
+        }
+        return grades;
     }
 
     public int getIdSubject(String subjectName) { return this.subjectRepository.findByName(subjectName);}
