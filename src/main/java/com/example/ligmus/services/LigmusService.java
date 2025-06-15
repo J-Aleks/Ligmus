@@ -4,6 +4,7 @@ import com.example.ligmus.data.DTO.*;
 
 import com.example.ligmus.data.Entities.GradeEntity;
 import com.example.ligmus.data.Entities.SubjectEntity;
+import com.example.ligmus.data.Entities.UserEntity;
 import com.example.ligmus.data.Entities.UserSubjectEntity;
 import com.example.ligmus.data.grades.Grade;
 import com.example.ligmus.data.subjects.Subject;
@@ -149,9 +150,34 @@ public class LigmusService {
         return gradeToUpdate;
     }
 
-    public List<User> getStudents() {return this.userRepository.getStudents(); }
+    public List<User> getStudents() {
+        List<UserEntity> studentEntities = dbUserRepository.findByUserType(UserType.STUDENT);
+        return studentEntities.stream()
+                .map(entity -> new User(
+                        entity.getId(),
+                        entity.getUserType(),
+                        entity.getUsername(),
+                        entity.getFirstName(),
+                        entity.getLastName(),
+                        entity.getDateOfBirth(),
+                        entity.getPassword()))
+                .collect(Collectors.toList());
+    }
 
-    public List<User> getTeachers() {return this.userRepository.getTeachers(); }
+
+    public List<User> getTeachers() {
+        List<UserEntity> studentEntities = dbUserRepository.findByUserType(UserType.TEACHER);
+        return studentEntities.stream()
+                .map(entity -> new User(
+                        entity.getId(),
+                        entity.getUserType(),
+                        entity.getUsername(),
+                        entity.getFirstName(),
+                        entity.getLastName(),
+                        entity.getDateOfBirth(),
+                        entity.getPassword()))
+                .collect(Collectors.toList());
+    }
 
 //    public void addStudent(Student student) { this.userRepository.addStudent(student);}
 
@@ -173,16 +199,33 @@ public class LigmusService {
         return this.userRepository.updateUser(id, newUser);
     }
 
-    public User getUser(int id){
-        return this.userRepository.getUser(id);
+    public User getUser(int id) {
+        UserEntity entity = dbUserRepository.findById(id).get();
+        return new User(
+                entity.getId(),
+                entity.getUserType(),
+                entity.getUsername(),
+                entity.getFirstName(),
+                entity.getLastName(),
+                entity.getDateOfBirth(),
+                entity.getPassword()
+        );
     }
-
-
 
     public List<User> getUsers() {return this.userRepository.getUsers(); }
 
-    public User getStudent(int id){return this.userRepository.getStudent(id);}
-
+    public User getStudent(int id) {
+        UserEntity entity = dbUserRepository.findByIdAndUserType(id, UserType.STUDENT);
+        return new User(
+                entity.getId(),
+                entity.getUserType(),
+                entity.getUsername(),
+                entity.getFirstName(),
+                entity.getLastName(),
+                entity.getDateOfBirth(),
+                entity.getPassword()
+        );
+    }
     public List<SubjectEntity> getSubjects(){ return this.subjectRepository.findAll();}
 
     public boolean deleteUser(int id) { return this.userRepository.userDelete(id);}
@@ -199,9 +242,6 @@ public class LigmusService {
                 .collect(Collectors.toList());
     }
 
-//    public List<Grade> getStudentGradesFromSubject(int studentId, int subjectId) {
-//        return this.gradeRepository.getGradesFromSubject(studentId, subjectId);
-//    }
     public List<Grade> getStudentGradesFromSubject(int studentId, int subjectId) {
         List<GradeEntity> gradeEntities = this.dbGradeRepository.findAllByStudent_IdAndSubject_Id(studentId, subjectId);
         List<Grade> grades = new ArrayList<>();
@@ -267,7 +307,8 @@ public class LigmusService {
                 ));
     }
     public String getStudentFullName(int studentId){
-        return this.userRepository.getStudentFullName(studentId);
+        UserEntity userEntity = dbUserRepository.findById(studentId).get();
+        return  userEntity.getFirstName() + ' ' + userEntity.getLastName();
     }
 
 

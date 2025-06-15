@@ -43,7 +43,7 @@ public class AdminController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> entity = new HttpEntity<>(headers);
-        ResponseEntity<List<User>> response = restTemplate.exchange("http://localhost:8080/Ligmus/api/users/",
+        ResponseEntity<List<User>> response = restTemplate.exchange("http://localhost:8088/Ligmus/api/users/",
                 HttpMethod.GET, entity, new ParameterizedTypeReference<>(){});
 
         System.out.println("JSON body: "+ response.getBody());
