@@ -8,10 +8,7 @@ import com.example.ligmus.data.grades.Grade;
 import com.example.ligmus.data.subjects.Subject;
 import com.example.ligmus.data.users.*;
 import com.example.ligmus.exception.ResourceNotFoundException;
-import com.example.ligmus.repositories.GradeRepository;
-import com.example.ligmus.repositories.SubjectRepository;
-import com.example.ligmus.repositories.UserRepository;
-import com.example.ligmus.repositories.dbGradeRepository;
+import com.example.ligmus.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +27,8 @@ public class LigmusService {
     dbGradeRepository dbGradeRepository;
     @Autowired
     UserRepository userRepository;
-
+    @Autowired
+    dbUserRepository dbUserRepository;
     @Autowired
     SubjectRepository subjectRepository;
 
@@ -40,6 +38,7 @@ public class LigmusService {
         return gradeEntities.stream().map(gradeEntity -> new Grade(
                 gradeEntity.getId(),
                 gradeEntity.getStudent().getId(),
+                gradeEntity.getTeacher().getId(),
                 gradeEntity.getGrade(),
                 gradeEntity.getWeight(),
                 gradeEntity.getSubject().getId(),
@@ -85,10 +84,22 @@ public class LigmusService {
 
     public void addGrade(Grade grade) { this.gradeRepository.addGrade(grade);}
 
+//    public void addGrade(GradeDTO grade) {
+//
+//        Grade gradeToAdd = convertGradeDtoToGrade(grade);
+//        this.gradeRepository.addGrade(gradeToAdd);
+//    }
     public void addGrade(GradeDTO grade) {
 
         Grade gradeToAdd = convertGradeDtoToGrade(grade);
-        this.gradeRepository.addGrade(gradeToAdd);
+        this.dbGradeRepository.save(new GradeEntity(
+                dbUserRepository.findById(gradeToAdd.getStudentId()).get(),
+                dbUserRepository.findById(gradeToAdd.getTeacherId()).get(),
+                gradeToAdd.getGrade(),
+                gradeToAdd.getWeight(),
+                subjectRepository.findById(gradeToAdd.getSubject()).get(),
+                gradeToAdd.getDescription()
+        ));
     }
 
     public int getNextGradeIndex(){ return this.gradeRepository.getNextGradeIndex();}
@@ -164,7 +175,7 @@ public class LigmusService {
         List<GradeEntity> gradeEntities = this.dbGradeRepository.findAllByStudent_IdAndSubject_Id(studentId, subjectId);
         List<Grade> grades = new ArrayList<>();
         for (GradeEntity entity : gradeEntities) {
-            Grade grade = new Grade(entity.getId(), entity.getStudent().getId(), entity.getGrade(), entity.getWeight(), entity.getSubject().getId(),
+            Grade grade = new Grade(entity.getId(), entity.getStudent().getId(), entity.getTeacher().getId(), entity.getGrade(), entity.getWeight(), entity.getSubject().getId(),
                     entity.getDescription());
             grades.add(grade);
         }

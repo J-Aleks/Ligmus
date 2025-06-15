@@ -106,12 +106,12 @@ public class TeacherController {
         session.setAttribute("gradesSerialFormDraft", gradeFormDTO);
         session.setAttribute("isFormUpdate", false);
 
-     return "teacher-main";
+        return "redirect:/teacher/";
     }
 
     @PostMapping("/GradesSerialForm/add")
     public String saveGrades(@ModelAttribute("form") GradeFormDTO gradeForm,
-                             HttpSession session) {
+                             @AuthenticationPrincipal CustomUserDetails userDetails) {
         int subId = gradeForm.getSubject();
         if(subId == -1) {
             throw new ResourceNotFoundException("Subject not found");
@@ -123,7 +123,7 @@ public class TeacherController {
             Grade tempGrade = new Grade();
             tempGrade.setGradeId(this.ligmusService.getNextGradeIndex());
             tempGrade.setStudentId(studentsAddGradeDTO.getId());
-            tempGrade.setTeacherId((int) session.getAttribute("userId"));
+            tempGrade.setTeacherId(userDetails.getId());
             tempGrade.setSubject(subId);
             tempGrade.setWeight(studentsAddGradeDTO.getWeight());
             tempGrade.setGrade(studentsAddGradeDTO.getGrade());
@@ -131,7 +131,7 @@ public class TeacherController {
             this.ligmusService.addGrade(tempGrade);
         }
         System.out.println(this.ligmusService.getGradesByUserId(subId));
-        return "index";
+        return "redirect:/teacher/";
     }
 
 
