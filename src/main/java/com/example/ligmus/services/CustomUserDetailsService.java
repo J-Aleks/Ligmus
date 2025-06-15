@@ -1,7 +1,9 @@
 package com.example.ligmus.services;
 
+import com.example.ligmus.data.Entities.UserEntity;
 import com.example.ligmus.data.users.User;
 import com.example.ligmus.repositories.UserRepository;
+import com.example.ligmus.repositories.dbUserRepository;
 import com.example.ligmus.security.auth.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -15,16 +17,16 @@ import org.springframework.stereotype.Service;
 public class CustomUserDetailsService  implements UserDetailsService {
 
     @Autowired
-    UserRepository userRepository;
+    dbUserRepository dbUserRepository;
 
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.getUser(username);
-        if (user == null) {
+        UserEntity userEntity = dbUserRepository.findByUsername(username);
+        if (userEntity == null) {
             throw new UsernameNotFoundException(username);
         }
-        return new CustomUserDetails(user);
+        return new CustomUserDetails(userEntity);
     }
 
     public int getCurrentUserId() {

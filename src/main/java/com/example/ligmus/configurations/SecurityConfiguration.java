@@ -10,12 +10,19 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 
 
 @Configuration
 public class SecurityConfiguration {
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
     @Autowired
     CustomAuthenticationSuccessHandler successHandler;
@@ -47,7 +54,7 @@ public class SecurityConfiguration {
 //                .exceptionHandling(exception -> exception
 //                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
 //                )
-                .userDetailsService(customUserDetailsService)
+//                .userDetailsService(customUserDetailsService)
                 .logout((logout) -> logout.logoutSuccessUrl("/").permitAll());
         return http.build();
     }
@@ -58,7 +65,8 @@ public class SecurityConfiguration {
                 http.getSharedObject(AuthenticationManagerBuilder.class);
 
         authenticationManagerBuilder
-                .userDetailsService(userDetailsService);
+                .userDetailsService(userDetailsService)
+                .passwordEncoder(passwordEncoder());
 
     return authenticationManagerBuilder.build();
     }

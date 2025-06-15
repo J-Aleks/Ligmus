@@ -1,6 +1,7 @@
 package com.example.ligmus.security.auth;
 
 import com.example.ligmus.data.Entities.SubjectEntity;
+import com.example.ligmus.data.Entities.UserEntity;
 import com.example.ligmus.data.subjects.Subject;
 import com.example.ligmus.data.users.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,8 +18,9 @@ public class CustomUserDetails implements UserDetails {
     private final User user;
 
 
-    public CustomUserDetails(User user) {
-        this.user = user;
+    public CustomUserDetails(UserEntity userEntity) {
+        this.user = new User(userEntity.getId(), userEntity.getUserType(), userEntity.getUsername(), userEntity.getFirstName(),
+                userEntity.getLastName(), userEntity.getDateOfBirth(),  userEntity.getPassword());
     }
 
     @Override
