@@ -11,6 +11,7 @@ import com.example.ligmus.data.subjects.Subject;
 import com.example.ligmus.data.users.*;
 import com.example.ligmus.exception.ResourceNotFoundException;
 import com.example.ligmus.repositories.*;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -138,9 +139,6 @@ public class LigmusService {
         gradeEntity.setTeacher(dbUserRepository.findById(newGrade.getTeacherId()).get());
         gradeEntity.setStudent(dbUserRepository.findById(newGrade.getStudentId()).get());
         dbGradeRepository.save(gradeEntity);
-
-        Grade gradeToUpdate = convertGradeDtoToGrade(newGrade);
-        this.gradeRepository.updateGradeById(gradeId, gradeToUpdate);
     }
 
     private Grade convertGradeDtoToGrade(GradeDTO newGrade) {
@@ -198,6 +196,7 @@ public class LigmusService {
         dbUserRepository.save(userEntity);
     }
 
+    @Transactional
     public boolean updateUser(int id, UserUpdateFormDTO newUser) {
         Optional<UserEntity> optionalUserEntity = dbUserRepository.findById(id);
         if (optionalUserEntity.isEmpty()) {
@@ -210,6 +209,9 @@ public class LigmusService {
         if (newUser.getFirstName() != null) {
             userEntity.setFirstName(newUser.getFirstName());
         }
+        if (newUser.getUserType() != null) {
+            userEntity.setUserType(UserType.valueOf(newUser.getUserType()));
+        }
         if (newUser.getLastName() != null) {
             userEntity.setLastName(newUser.getLastName());
         }
@@ -219,6 +221,16 @@ public class LigmusService {
         if (newUser.getPassword() != null || !newUser.getPassword().isEmpty()){
             String hashedPassword = passwordEncoder.encode(newUser.getPassword());
             userEntity.setPassword(hashedPassword);
+        }
+        if (newUser.getSubjects() != null) {
+            dbUserSubjectRepository.deleteByUser_Id(userEntity.getId());
+            List<UserSubjectEntity> newUserSubjects = newUser.getSubjects().stream()
+                    .map(subjectId -> {
+                        SubjectEntity subjectEntity = subjectRepository.findById(subjectId).get();
+                        return new UserSubjectEntity(userEntity, subjectEntity);
+                    })
+                    .collect(Collectors.toList());
+            dbUserSubjectRepository.saveAll(newUserSubjects);
         }
         dbUserRepository.save(userEntity);
         return true;
@@ -284,18 +296,26 @@ public class LigmusService {
                 entity.getPassword()
         );
     }
-    public List<SubjectEntity> getSubjects(){ return this.subjectRepository.findAll();}
+    public List<Subject> getSubjects() {
+        List<SubjectEntity> subjectEntities = subjectRepository.findAll();
+        return subjectEntities.stream()
+                .map(entity -> new Subject(entity.getId(), entity.getName()))
+                .collect(Collectors.toList());
+    }
 
-    public List<User> getUsers() {return this.userRepository.getUsers(); }
-
-    public User getStudent(int id){return this.userRepository.getStudent(id);}
-
-    public List<Subject> getSubjects(){ return this.subjectRepository.getSubjects();}
-
-    public Subject getSubject(int id){return this.subjectRepository.getSubject(id);}
-
+    public Subject getSubject(int id) {
+        Optional<SubjectEntity> optionalSubjectEntity = subjectRepository.findById(id);
+        if (optionalSubjectEntity.isEmpty()) {
+            return null;
+        }
+        SubjectEntity subjectEntity = optionalSubjectEntity.get();
+        return new Subject(
+                subjectEntity.getId(),
+                subjectEntity.getName()
+        );
+    }
     public SubjectDTO getSubjectDTO(int id) {
-        Subject subject = this.subjectRepository.getSubject(id);
+        Subject subject = getSubject(id);
         if (subject == null)
             return null;
         SubjectDTO subjectDTO = new SubjectDTO();
@@ -304,7 +324,17 @@ public class LigmusService {
         return subjectDTO;
     }
 
-    public boolean deleteSubject(int id){return this.subjectRepository.deleteSubjectById(id);}
+    @Transactional
+    public boolean deleteSubject(int id) {
+        if (!subjectRepository.existsById(id)) {
+            return false;
+        }
+        dbGradeRepository.deleteBySubject_Id(id);
+        dbUserSubjectRepository.deleteBySubject_Id(id);
+        subjectRepository.deleteById(id);
+
+        return true;
+    }
 
     public boolean deleteUser(int id) {
         if (!dbUserRepository.existsById(id)) {
@@ -316,15 +346,16 @@ public class LigmusService {
     }
 
     public boolean addSubject(SubjectDTO subjectDTO){
-        int id = this.subjectRepository.getNextSubjectId();
         String name = subjectDTO.getName();
-        Subject subject = new Subject(id, name);
-        return this.subjectRepository.addSubject(subject);
+        SubjectEntity subject = new SubjectEntity(name);
+        subjectRepository.save(subject);
+        return true;
     }
 
     public void updateSubject(int id, SubjectDTO subjectDTO) {
-        Subject subject = new Subject(id, subjectDTO.getName());
-        this.subjectRepository.updateSubject(subject);
+        SubjectEntity subjectEntity = subjectRepository.findById(id).get();
+        subjectEntity.setName(subjectDTO.getName());
+        subjectRepository.save(subjectEntity);
     }
 
 
@@ -332,22 +363,13 @@ public class LigmusService {
         return this.userRepository.sortUsers(users, sortMethod);
     }
 
-    public List<SubjectEntity> getTeacherSubjects(int teacherId) {
+    public List<Subject> getTeacherSubjects(int teacherId) {
         List<UserSubjectEntity> userSubjects = dbUserSubjectRepository.findByUserId(teacherId);
         return userSubjects.stream()
                 .map(UserSubjectEntity::getSubject)
                 .distinct()
+                .map(entity -> new Subject(entity.getId(), entity.getName()))
                 .collect(Collectors.toList());
-    }
-    public List<Subject> getTeacherSubjects(int teacherId) {
-        List<Subject> subjects = new ArrayList<>();
-        List<Integer> teacherSubjects = this.userRepository.getTeacherSubjectsId(teacherId);
-        for (Subject subject : this.subjectRepository.getSubjects()) {
-            if (teacherSubjects.contains(subject.getId())) {
-                subjects.add(subject);
-            }
-        }
-        return subjects;
     }
 
     public List<Grade> getStudentGradesFromSubject(int studentId, int subjectId) {
@@ -361,11 +383,11 @@ public class LigmusService {
         return grades;
     }
 
-    public int getIdSubject(String subjectName) { return this.subjectRepository.getSubjectId(subjectName);}
+    public int getIdSubject(String subjectName) { return this.subjectRepository.findByName(subjectName);}
 
 
     public String getSubjectName(int subjectId){
-        return this.subjectRepository.getSubjectName(subjectId);
+        return this.subjectRepository.findById(subjectId).get().getName();
 
     }
 
@@ -414,15 +436,26 @@ public class LigmusService {
         }
         return teachersNamesId;
     }
-    public HashMap<Integer, String> getSubjectNamesForId(){
-        return this.subjectRepository.getSubjectNamesForId();
+    public HashMap<Integer, String> getSubjectNamesForId() {
+        List<SubjectEntity> subjectEntities = subjectRepository.findAll();
+        HashMap<Integer, String> subjectsNamesId = new HashMap<>();
+        for (SubjectEntity subjectEntity : subjectEntities) {
+            subjectsNamesId.put(subjectEntity.getId(), subjectEntity.getName());
+        }
+        return subjectsNamesId;
     }
     public String getUserFullName(int userId){
-        return this.userRepository.getUserFullName(userId);
-    }
-    public String getStudentFullName(int studentId){
-        return this.userRepository.getStudentFullName(studentId);
+        UserEntity userEntity = dbUserRepository.findById(userId).get();
+        return  userEntity.getFirstName() + ' ' + userEntity.getLastName();
     }
 
+    public List<Integer> getGradesId(){
+        List<Integer> gradesIdList = new ArrayList<>();
+        List<GradeEntity> gradeList = this.dbGradeRepository.findAll();
+        for (GradeEntity gradeEntity : gradeList) {
+            gradesIdList.add(gradeEntity.getId());
+        }
+        return gradesIdList;
+    }
 
 }

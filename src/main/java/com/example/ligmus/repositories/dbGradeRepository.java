@@ -11,4 +11,5 @@ import java.util.List;;
 public interface dbGradeRepository extends JpaRepository<GradeEntity, Integer> {
     List<GradeEntity> findAllByStudent_Id(int studentId);
     List<GradeEntity> findAllByStudent_IdAndSubject_Id(int studentId, int subjectId);
+    void deleteBySubject_Id(int id);
 }

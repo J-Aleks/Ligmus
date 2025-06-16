@@ -67,7 +67,7 @@ public class ShareController {
         int userId = user.getId();
         System.out.println("userId = " + userId);
         List<User> otherTeachers = this.ligmusService.getOtherTeachers(userId);
-        List<SubjectEntity> assignedSubjects = this.ligmusService.getTeacherSubjects(userId);
+        List<Subject> assignedSubjects = this.ligmusService.getTeacherSubjects(userId);
         model.addAttribute("otherTeachers", otherTeachers);
         model.addAttribute("subjects", assignedSubjects);
         model.addAttribute("shareForm", new ShareLinkDTO());

@@ -62,8 +62,8 @@ public class GradeController {
         List<GradeDTO> gradeDTO = new ArrayList<>();
         int teacherId = user.getId();
         Map<Integer, String> SubjectDescriptions = this.ligmusService.getSubjectNamesForId();
-        List<SubjectEntity> TeacherSubjectList = this.ligmusService.getTeacherSubjects(teacherId);
-        for (SubjectEntity subject : TeacherSubjectList) {
+        List<Subject> TeacherSubjectList = this.ligmusService.getTeacherSubjects(teacherId);
+        for (Subject subject : TeacherSubjectList) {
             gradeDTO.addAll(this.ligmusService.getStudentGradesFromSubjectDTO(studentId, subject.getId()));
             System.out.println(gradeDTO);
         }

@@ -1,6 +1,7 @@
 package com.example.ligmus.security.auth;
 
 import com.example.ligmus.data.Entities.SubjectEntity;
+import com.example.ligmus.data.Entities.UserEntity;
 import com.example.ligmus.data.subjects.Subject;
 import com.example.ligmus.data.users.*;
 import org.springframework.security.core.GrantedAuthority;

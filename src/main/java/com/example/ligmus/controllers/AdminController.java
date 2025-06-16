@@ -116,6 +116,7 @@ public class AdminController {
             model.addAttribute("isTeacher", true);
             model.addAttribute("subjects", this.ligmusService.getTeacherSubjects(user.getId()));
             model.addAttribute("allSubjects", this.ligmusService.getSubjects());
+            model.addAttribute("userSubjects", this.ligmusService.getTeacherSubjects(id));
         }
         model.addAttribute("newUser", user);
         model.addAttribute("isUpdate", true);

@@ -1,10 +1,8 @@
 package com.example.ligmus.controllers;
 
 
-import com.example.ligmus.data.DTO.GradeDTO;
 import com.example.ligmus.data.DTO.GradeFormDTO;
 import com.example.ligmus.data.DTO.StudentsAddGradeDTO;
-import com.example.ligmus.data.Entities.SubjectEntity;
 import com.example.ligmus.data.grades.Grade;
 import com.example.ligmus.data.subjects.Subject;
 import com.example.ligmus.data.users.User;
@@ -48,7 +46,7 @@ public class TeacherController {
 
 
         int teacherId = user.getId();
-        List<SubjectEntity> teacherSubjectList = this.ligmusService.getTeacherSubjects(teacherId);
+        List<Subject> teacherSubjectList = this.ligmusService.getTeacherSubjects(teacherId);
         if (teacherSubjectList.isEmpty()) {
             throw new IllegalStateException("Teacher not teach any subjects");
         }
@@ -130,7 +128,6 @@ public class TeacherController {
             tempGrade.setDescription(studentsAddGradeDTO.getDescription());
             this.ligmusService.addGrade(tempGrade);
         }
-        System.out.println(this.ligmusService.getGradesByUserId(subId));
         return "redirect:/teacher/";
     }
 
